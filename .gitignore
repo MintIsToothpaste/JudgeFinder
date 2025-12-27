@@ -1,0 +1,19 @@
+# IntelliJ / Android Studio
+.idea/
+
+# Local / machine-specific
+*.iml
+
+# Gradle / build outputs
+.gradle/
+build/
+
+# Android
+local.properties
+captures/
+.externalNativeBuild/
+.cxx/
+
+# OS / Editor junk
+.DS_Store
+Thumbs.db
