@@ -1,0 +1,9 @@
+timezone = "Asia/Seoul"
+db_path = "data/judgefinder.db"
+enabled_sources = ["sample_city"]
+
+[sources.sample_city]
+municipality = "sample_city"
+source_type = "html"
+list_url = "https://example.com/sample_city/notices"
+fixture_path = "tests/fixtures/sample_city_list.html"

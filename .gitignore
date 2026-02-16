@@ -1,0 +1,80 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Packaging / build artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+
+# Test / type / lint caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.hypothesis/
+
+# Logs
+*.log
+logs/
+
+# Local data / databases
+data/
+*.db
+*.sqlite3
+
+# Environment files
+.env
+.env.*
+.envrc
+
+# Secrets / credentials
+*.key
+*.pem
+*.p12
+*.pfx
+*.jks
+*.crt
+*.cer
+id_rsa
+id_ed25519
+*.secret
+secrets.*
+
+# Config files that may include API keys
+config/*.toml
+!config/config.example.toml
+
+# IDE / editor
+.vscode/
+.idea/
+.ipynb_checkpoints/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Crawling outputs / dumps (may include PII)
+crawl_results/
+crawled/
+results/
+output/
+outputs/
+exports/
+dumps/
+tmp/
+temp/

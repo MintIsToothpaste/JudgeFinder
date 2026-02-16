@@ -1,0 +1,43 @@
+from __future__ import annotations
+
+from zoneinfo import ZoneInfo
+
+from judgefinder.adapters.config import AppConfig
+from judgefinder.adapters.sources.sample_city.source import SampleCitySource
+from judgefinder.domain.ports import NoticeSource
+from judgefinder.infrastructure.http.client import HttpClient
+
+
+class SourceRegistry:
+    def __init__(self, config: AppConfig, http_client: HttpClient, timezone: ZoneInfo) -> None:
+        self._config = config
+        self._http_client = http_client
+        self._timezone = timezone
+
+    def build_enabled_sources(self) -> list[NoticeSource]:
+        sources: list[NoticeSource] = []
+        for slug in self._config.enabled_sources:
+            source_config = self._config.sources.get(slug)
+            if source_config is None:
+                raise ValueError(f"Source '{slug}' is enabled but not configured.")
+
+            if slug == "sample_city":
+                sources.append(
+                    SampleCitySource(
+                        slug=source_config.slug,
+                        municipality=source_config.municipality,
+                        source_type=source_config.source_type,
+                        list_url=source_config.list_url,
+                        fixture_path=source_config.fixture_path,
+                        timezone=self._timezone,
+                        http_client=self._http_client,
+                    )
+                )
+                continue
+
+            raise ValueError(f"Unknown source slug: {slug}")
+
+        return sources
+
+    def list_enabled_source_slugs(self) -> list[str]:
+        return list(self._config.enabled_sources)
