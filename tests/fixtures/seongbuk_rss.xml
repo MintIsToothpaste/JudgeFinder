@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>성북구 고시공고</title>
+    <item>
+      <no>1001</no>
+      <title>제안서 평가위원(후보자) 공개모집 공고</title>
+      <writer>행정지원과</writer>
+      <regdate>2026-02-16</regdate>
+      <link>https://www.sb.go.kr/www/notice/1001</link>
+    </item>
+    <item>
+      <no>1002</no>
+      <title>정비사업 용역 공고</title>
+      <writer>도시정비과</writer>
+      <regdate>2026-02-16 09:00:00</regdate>
+      <link>/www/notice/1002</link>
+      <description>상세 내용은 본문을 참고하세요.</description>
+      <content:encoded><![CDATA[평가위원 후보자 등록 안내]]></content:encoded>
+    </item>
+    <item>
+      <no>1003</no>
+      <title>제안서 평가위원 후보자 모집 공고</title>
+      <writer>도시정비과</writer>
+      <regdate>2026-02-15</regdate>
+      <link>/www/notice/1003</link>
+    </item>
+    <item>
+      <no>1004</no>
+      <title>일반 행정 공지</title>
+      <writer>행정지원과</writer>
+      <regdate>2026-02-16</regdate>
+      <link>/www/notice/1004</link>
+    </item>
+    <item>
+      <no>1005</no>
+      <title>평가위원(후보자) 모집 공고</title>
+      <writer>행정지원과</writer>
+      <regdate>not-a-date</regdate>
+      <link>/www/notice/1005</link>
+    </item>
+  </channel>
+</rss>

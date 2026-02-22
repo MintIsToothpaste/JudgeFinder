@@ -4,6 +4,7 @@ from zoneinfo import ZoneInfo
 
 from judgefinder.adapters.config import AppConfig
 from judgefinder.adapters.sources.sample_city.source import SampleCitySource
+from judgefinder.adapters.sources.seongbuk.source import SeongbukSource
 from judgefinder.domain.ports import NoticeSource
 from judgefinder.infrastructure.http.client import HttpClient
 
@@ -24,6 +25,20 @@ class SourceRegistry:
             if slug == "sample_city":
                 sources.append(
                     SampleCitySource(
+                        slug=source_config.slug,
+                        municipality=source_config.municipality,
+                        source_type=source_config.source_type,
+                        list_url=source_config.list_url,
+                        fixture_path=source_config.fixture_path,
+                        timezone=self._timezone,
+                        http_client=self._http_client,
+                    )
+                )
+                continue
+
+            if slug == "seongbuk":
+                sources.append(
+                    SeongbukSource(
                         slug=source_config.slug,
                         municipality=source_config.municipality,
                         source_type=source_config.source_type,

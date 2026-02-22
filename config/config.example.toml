@@ -1,9 +1,15 @@
 timezone = "Asia/Seoul"
 db_path = "data/judgefinder.db"
-enabled_sources = ["sample_city"]
+enabled_sources = ["sample_city", "seongbuk"]
 
 [sources.sample_city]
 municipality = "sample_city"
 source_type = "html"
 list_url = "https://example.com/sample_city/notices"
 fixture_path = "tests/fixtures/sample_city_list.html"
+
+[sources.seongbuk]
+municipality = "성북구"
+source_type = "api"
+list_url = "https://www.sb.go.kr/www/gosiToRss.do"
+# fixture_path = "tests/fixtures/seongbuk_rss.xml"

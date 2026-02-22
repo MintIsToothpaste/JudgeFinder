@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -29,23 +29,57 @@ def app(ctx: click.Context, config_path: Path, verbose: bool) -> None:
 
 @app.command("collect")
 @click.option("--date", "raw_date", default="today", show_default=True)
+@click.option(
+    "--days",
+    type=click.IntRange(min=1),
+    default=1,
+    show_default=True,
+    help="Collect notices for N days ending at --date.",
+)
 @click.pass_obj
-def collect(container: AppContainer, raw_date: str) -> None:
-    target_date = _resolve_date(raw_date=raw_date, timezone_name=container.config.timezone)
-    LOGGER.debug("Collecting notices for %s", target_date.isoformat())
-    notices = container.collect_use_case.execute(target_date)
-    for notice in notices:
-        click.echo(notice.url)
+def collect(container: AppContainer, raw_date: str, days: int) -> None:
+    target_dates = _resolve_target_dates(
+        raw_date=raw_date,
+        timezone_name=container.config.timezone,
+        days=days,
+    )
+    seen_urls: set[str] = set()
+
+    for target_date in target_dates:
+        LOGGER.debug("Collecting notices for %s", target_date.isoformat())
+        notices = container.collect_use_case.execute(target_date)
+        for notice in notices:
+            if notice.url in seen_urls:
+                continue
+            seen_urls.add(notice.url)
+            click.echo(notice.url)
 
 
 @app.command("list")
 @click.option("--date", "raw_date", default="today", show_default=True)
+@click.option(
+    "--days",
+    type=click.IntRange(min=1),
+    default=1,
+    show_default=True,
+    help="List notices for N days ending at --date.",
+)
 @click.pass_obj
-def list_notices(container: AppContainer, raw_date: str) -> None:
-    target_date = _resolve_date(raw_date=raw_date, timezone_name=container.config.timezone)
-    notices = container.list_use_case.execute(target_date)
-    for notice in notices:
-        click.echo(notice.url)
+def list_notices(container: AppContainer, raw_date: str, days: int) -> None:
+    target_dates = _resolve_target_dates(
+        raw_date=raw_date,
+        timezone_name=container.config.timezone,
+        days=days,
+    )
+    seen_urls: set[str] = set()
+
+    for target_date in target_dates:
+        notices = container.list_use_case.execute(target_date)
+        for notice in notices:
+            if notice.url in seen_urls:
+                continue
+            seen_urls.add(notice.url)
+            click.echo(notice.url)
 
 
 @app.command("sources")
@@ -62,6 +96,12 @@ def _resolve_date(raw_date: str, timezone_name: str) -> date:
         return date.fromisoformat(raw_date)
     except ValueError as exc:
         raise click.BadParameter("Date must be 'today' or YYYY-MM-DD.") from exc
+
+
+def _resolve_target_dates(raw_date: str, timezone_name: str, days: int) -> list[date]:
+    end_date = _resolve_date(raw_date=raw_date, timezone_name=timezone_name)
+    start_date = end_date - timedelta(days=days - 1)
+    return [start_date + timedelta(days=offset) for offset in range(days)]
 
 
 def _configure_logging(verbose: bool) -> None:
