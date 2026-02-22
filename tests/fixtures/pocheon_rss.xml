@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>RSS - 고시공고</title>
+    <item>
+      <title><![CDATA[포천시 도시관리계획 결정 공고]]></title>
+      <link>https://www.pocheon.go.kr/www/selectBbsNttView.do?bbsNo=19&amp;nttNo=1901</link>
+      <pubDate>수, 20 5월 2009 08:47:51 +0900</pubDate>
+      <description><![CDATA[제안서 평가위원 후보자 모집 안내]]></description>
+    </item>
+    <item>
+      <title><![CDATA[포천시 일반 공고]]></title>
+      <link>https://www.pocheon.go.kr/www/selectBbsNttView.do?bbsNo=19&amp;nttNo=1902</link>
+      <pubDate>수, 20 5월 2009 08:47:51 +0900</pubDate>
+      <description><![CDATA[일반 안내]]></description>
+    </item>
+    <item>
+      <title><![CDATA[포천시 제안서 평가위원 모집(이전)]]></title>
+      <link>https://www.pocheon.go.kr/www/selectBbsNttView.do?bbsNo=19&amp;nttNo=1900</link>
+      <pubDate>화, 19 5월 2009 12:00:00 +0900</pubDate>
+      <description><![CDATA[평가위원 모집]]></description>
+    </item>
+  </channel>
+</rss>

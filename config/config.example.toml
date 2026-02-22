@@ -13,3 +13,33 @@ municipality = "성북구"
 source_type = "api"
 list_url = "https://www.sb.go.kr/www/gosiToRss.do"
 # fixture_path = "tests/fixtures/seongbuk_rss.xml"
+
+[sources.hanam]
+municipality = "하남시"
+source_type = "api"
+list_url = "https://www.hanam.go.kr/rssBbsNtt.do?bbsNo=31"
+# fixture_path = "tests/fixtures/hanam_rss.xml"
+
+[sources.pocheon]
+municipality = "포천시"
+source_type = "api"
+list_url = "https://www.pocheon.go.kr/rssBbsNtt.do?bbsNo=19"
+# fixture_path = "tests/fixtures/pocheon_rss.xml"
+
+[sources.cheorwon]
+municipality = "철원군"
+source_type = "api"
+list_url = "https://www.cwg.go.kr/rssBbsNtt.do?bbsNo=25"
+# fixture_path = "tests/fixtures/cheorwon_rss.xml"
+
+[sources.jecheon]
+municipality = "제천시"
+source_type = "api"
+list_url = "https://www.jecheon.go.kr/rssBbsNtt.do?bbsNo=18"
+# fixture_path = "tests/fixtures/jecheon_rss.xml"
+
+[sources.okcheon]
+municipality = "옥천군"
+source_type = "api"
+list_url = "https://www.oc.go.kr/rssBbsNtt.do?bbsNo=40"
+# fixture_path = "tests/fixtures/okcheon_rss.xml"

@@ -10,6 +10,7 @@ setup(
     install_requires=[
         "click>=8.1",
         "requests>=2.31",
+        "python-certifi-win32>=1.6; platform_system == 'Windows'",
         "beautifulsoup4>=4.12",
         "sqlalchemy>=2.0",
         "tomli>=2.0; python_version < '3.11'",

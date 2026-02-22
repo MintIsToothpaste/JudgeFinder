@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>제천시청 - 시정소식 - 고시공고</title>
+    <item>
+      <title><![CDATA[특정공법 제안서 평가 결과 공개]]></title>
+      <link>http://www.jecheon.go.kr/www/selectBbsNttView.do?bbsNo=18&amp;nttNo=1801</link>
+      <pubDate>2026.02.13</pubDate>
+      <description><![CDATA[평가위원회 심의 결과를 공개합니다.]]></description>
+    </item>
+    <item>
+      <title><![CDATA[제천시 일반 공고]]></title>
+      <link>http://www.jecheon.go.kr/www/selectBbsNttView.do?bbsNo=18&amp;nttNo=1802</link>
+      <pubDate>2026.02.13</pubDate>
+      <description><![CDATA[일반 안내]]></description>
+    </item>
+    <item>
+      <title><![CDATA[특정공법 제안서 평가 결과 공개(이전)]]></title>
+      <link>http://www.jecheon.go.kr/www/selectBbsNttView.do?bbsNo=18&amp;nttNo=1800</link>
+      <pubDate>2026.02.12</pubDate>
+      <description><![CDATA[평가위원회 심의 결과를 공개합니다.]]></description>
+    </item>
+  </channel>
+</rss>

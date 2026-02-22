@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>RSS - 고시/공고</title>
+    <item>
+      <title><![CDATA[철원군 제안서 평가위원(후보자) 모집 공고]]></title>
+      <link>https://www.cwg.go.kr/www/selectBbsNttView.do?bbsNo=25&amp;nttNo=2501</link>
+      <pubDate>Wed, 11 Feb 2026 14:46:44 +0900</pubDate>
+      <description><![CDATA[평가위원 등록 안내]]></description>
+    </item>
+    <item>
+      <title><![CDATA[철원군 일반 공고]]></title>
+      <link>https://www.cwg.go.kr/www/selectBbsNttView.do?bbsNo=25&amp;nttNo=2502</link>
+      <pubDate>Wed, 11 Feb 2026 10:00:00 +0900</pubDate>
+      <description><![CDATA[일반 안내]]></description>
+    </item>
+    <item>
+      <title><![CDATA[철원군 제안서 평가위원 모집(이전)]]></title>
+      <link>https://www.cwg.go.kr/www/selectBbsNttView.do?bbsNo=25&amp;nttNo=2500</link>
+      <pubDate>Tue, 10 Feb 2026 09:00:00 +0900</pubDate>
+      <description><![CDATA[평가위원 모집]]></description>
+    </item>
+  </channel>
+</rss>

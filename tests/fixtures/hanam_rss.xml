@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>RSS - 열린시정-고시/공고</title>
+    <item>
+      <title><![CDATA[하남시 제안서 평가위원 후보자 모집 공고]]></title>
+      <link>/www/selectBbsNttView.do?bbsNo=31&amp;nttNo=3101</link>
+      <pubDate>2015-08-27</pubDate>
+      <description><![CDATA[평가위원 신청 안내]]></description>
+    </item>
+    <item>
+      <title><![CDATA[하남시 일반 고시공고]]></title>
+      <link>/www/selectBbsNttView.do?bbsNo=31&amp;nttNo=3102</link>
+      <pubDate>2015-08-27</pubDate>
+      <description><![CDATA[일반 안내]]></description>
+    </item>
+    <item>
+      <title><![CDATA[하남시 제안서 평가위원 후보자 모집 공고(이전)]]></title>
+      <link>/www/selectBbsNttView.do?bbsNo=31&amp;nttNo=3100</link>
+      <pubDate>2015-08-26</pubDate>
+      <description><![CDATA[평가위원 신청 안내]]></description>
+    </item>
+  </channel>
+</rss>
