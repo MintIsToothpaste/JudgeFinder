@@ -131,3 +131,35 @@ def test_parse_municipal_rss_notices_rewrites_ip_host_links_to_list_host() -> No
 
     assert len(notices) == 1
     assert notices[0].url == "https://www.oc.go.kr/www/selectBbsNttView.do?bbsNo=40&nttNo=9001"
+
+
+def test_parse_municipal_rss_notices_rewrites_jecheon_mobile_links_to_desktop() -> None:
+    rss_xml = """
+<rss version="2.0">
+  <channel>
+    <item>
+      <title>committee notice</title>
+      <link>http://www.okjc.net/mobile/selectBbsNttView.do?key=1424&amp;bbsNo=18&amp;nttNo=396005</link>
+      <pubDate>2026-02-26</pubDate>
+      <description>committee</description>
+    </item>
+  </channel>
+</rss>
+"""
+    fetched_at = datetime(2026, 2, 22, 10, 0, tzinfo=ZoneInfo("Asia/Seoul"))
+
+    notices = parse_municipal_rss_notices(
+        rss_xml,
+        municipality="jecheon",
+        list_url="https://www.jecheon.go.kr/rssBbsNtt.do?bbsNo=18",
+        target_date=date(2026, 2, 26),
+        fetched_at=fetched_at,
+        source_type=SourceType.API,
+        keywords=("committee",),
+    )
+
+    assert len(notices) == 1
+    assert (
+        notices[0].url
+        == "https://www.jecheon.go.kr/www/selectBbsNttView.do?key=5233&bbsNo=18&nttNo=396005"
+    )

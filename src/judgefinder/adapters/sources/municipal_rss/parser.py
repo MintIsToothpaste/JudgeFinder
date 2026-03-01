@@ -5,7 +5,7 @@ import re
 from collections.abc import Iterable
 from datetime import date, datetime
 from ipaddress import ip_address
-from urllib.parse import urljoin, urlparse, urlunparse
+from urllib.parse import ParseResult, parse_qs, urlencode, urljoin, urlparse, urlunparse
 from xml.etree import ElementTree as ET
 
 from judgefinder.domain.entities import Notice, SourceType
@@ -178,6 +178,11 @@ def _build_date_safely(*, year: int, month: int, day: int, raw: str) -> date | N
 def _normalize_notice_url(*, list_url: str, link: str) -> str:
     absolute_url = urljoin(list_url, link)
     parsed = urlparse(absolute_url)
+
+    mobile_desktop_url = _rewrite_mobile_notice_url(list_url=list_url, parsed=parsed)
+    if mobile_desktop_url is not None:
+        return mobile_desktop_url
+
     host = parsed.hostname
     if host is None:
         return absolute_url
@@ -191,3 +196,36 @@ def _normalize_notice_url(*, list_url: str, link: str) -> str:
     if not list_parsed.netloc:
         return absolute_url
     return urlunparse(parsed._replace(scheme=list_parsed.scheme, netloc=list_parsed.netloc))
+
+
+def _rewrite_mobile_notice_url(*, list_url: str, parsed: ParseResult) -> str | None:
+    if parsed.path != "/mobile/selectBbsNttView.do":
+        return None
+    if parsed.hostname not in {"okjc.net", "www.okjc.net", "jecheon.go.kr", "www.jecheon.go.kr"}:
+        return None
+
+    query_params = parse_qs(parsed.query, keep_blank_values=True)
+    bbs_no = query_params.get("bbsNo", [""])[0]
+    ntt_no = query_params.get("nttNo", [""])[0]
+    if not bbs_no or not ntt_no:
+        return None
+
+    list_parsed = urlparse(list_url)
+    if not list_parsed.netloc:
+        return None
+
+    rewritten_query: dict[str, str] = {"bbsNo": bbs_no, "nttNo": ntt_no}
+    # Jecheon desktop board requires key=5233 for bbsNo=18 detail pages.
+    if list_parsed.hostname in {"jecheon.go.kr", "www.jecheon.go.kr"} and bbs_no == "18":
+        rewritten_query = {"key": "5233", "bbsNo": bbs_no, "nttNo": ntt_no}
+
+    return urlunparse(
+        parsed._replace(
+            scheme=list_parsed.scheme or "https",
+            netloc=list_parsed.netloc,
+            path="/www/selectBbsNttView.do",
+            query=urlencode(rewritten_query),
+            params="",
+            fragment="",
+        )
+    )
