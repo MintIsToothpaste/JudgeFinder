@@ -23,10 +23,10 @@ from judgefinder.domain.entities import SourceType
         (
             "pocheon",
             "포천시",
-            "https://www.pocheon.go.kr/rssBbsNtt.do?bbsNo=19",
-            "pocheon_rss.xml",
-            date(2009, 5, 20),
-            "https://www.pocheon.go.kr/www/selectBbsNttView.do?bbsNo=19&nttNo=1901",
+            "https://www.pocheon.go.kr/www/selectEminwonList.do?key=12563&notAncmtSeCode=01",
+            "pocheon_eminwon_list.html",
+            date(2026, 2, 2),
+            "https://www.pocheon.go.kr/www/selectEminwonView.do?key=12563&notAncmtMgtNo=64616&notAncmtSeCode=01",
         ),
         (
             "cheorwon",

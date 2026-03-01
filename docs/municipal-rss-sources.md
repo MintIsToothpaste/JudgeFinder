@@ -15,7 +15,7 @@ list_url = "https://www.hanam.go.kr/rssBbsNtt.do?bbsNo=31"
 [sources.pocheon]
 municipality = "포천시"
 source_type = "api"
-list_url = "https://www.pocheon.go.kr/rssBbsNtt.do?bbsNo=19"
+list_url = "https://www.pocheon.go.kr/www/selectEminwonList.do?key=12563&notAncmtSeCode=01"
 
 [sources.cheorwon]
 municipality = "철원군"
