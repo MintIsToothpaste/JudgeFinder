@@ -30,6 +30,8 @@ class PocheonEminwonSource:
     fixture_path: Path | None = None
     timeout_seconds: float = 10.0
     max_retries: int = 3
+    use_session: bool = False
+    include_referer: bool = True
     max_pages: int = 200
     page_unit: int = 10
     keywords: tuple[str, ...] = DEFAULT_KEYWORDS
@@ -50,8 +52,9 @@ class PocheonEminwonSource:
                 "Chrome/122.0.0.0 Safari/537.36"
             ),
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-            "Referer": referer,
         }
+        if self.include_referer and referer:
+            self.request_headers["Referer"] = referer
 
     def fetch(self, target_date: date) -> list[Notice]:
         fetched_at = datetime.now(tz=self.timezone)
@@ -125,6 +128,7 @@ class PocheonEminwonSource:
                     request_url,
                     timeout_seconds=self.timeout_seconds,
                     headers=self.request_headers,
+                    use_session=self.use_session,
                 )
                 self.page_cache[page_index] = payload
                 return payload

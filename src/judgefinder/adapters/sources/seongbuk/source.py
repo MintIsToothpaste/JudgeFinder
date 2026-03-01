@@ -26,19 +26,23 @@ class SeongbukSource:
     fixture_path: Path | None = None
     timeout_seconds: float = 10.0
     max_retries: int = 3
+    use_session: bool = False
+    include_referer: bool = True
     max_pages: int = 30
     page_cache: dict[int, str] = field(default_factory=dict, init=False, repr=False)
-    request_headers: dict[str, str] = field(
-        default_factory=lambda: {
+    request_headers: dict[str, str] = field(default_factory=dict, init=False, repr=False)
+
+    def __post_init__(self) -> None:
+        self.request_headers = {
             "User-Agent": (
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
                 "AppleWebKit/537.36 (KHTML, like Gecko) "
                 "Chrome/122.0.0.0 Safari/537.36"
             ),
             "Accept": "application/rss+xml, application/xml;q=0.9, */*;q=0.8",
-            "Referer": "https://www.sb.go.kr/",
         }
-    )
+        if self.include_referer:
+            self.request_headers["Referer"] = "https://www.sb.go.kr/"
 
     def fetch(self, target_date: date) -> list[Notice]:
         fetched_at = datetime.now(tz=self.timezone)
@@ -86,6 +90,7 @@ class SeongbukSource:
                     request_url,
                     timeout_seconds=self.timeout_seconds,
                     headers=self.request_headers,
+                    use_session=self.use_session,
                 )
                 self.page_cache[page_no] = payload
                 return payload
