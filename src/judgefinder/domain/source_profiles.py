@@ -37,6 +37,7 @@ class RequestStrategy:
     retries: int = 3
     timeout_seconds: float = 10.0
     throttle_seconds: float = 0.0
+    verify_tls: bool = True
 
     @classmethod
     def from_access_profile(cls, access_profile: AccessProfile) -> RequestStrategy:

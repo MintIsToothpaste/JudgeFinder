@@ -31,6 +31,7 @@ class GenericEngineSource:
     max_retries: int = 3
     use_session: bool = False
     include_referer: bool = False
+    verify_tls: bool = True
     throttle_seconds: float = 0.0
     max_pages: int = 8
     keywords: tuple[str, ...] = DEFAULT_KEYWORDS
@@ -136,6 +137,7 @@ class GenericEngineSource:
                     timeout_seconds=self.timeout_seconds,
                     headers=self.request_headers,
                     use_session=self.use_session,
+                    verify_tls=self.verify_tls,
                 )
                 self.page_cache[page_index] = payload
                 if self.throttle_seconds > 0:
@@ -144,7 +146,7 @@ class GenericEngineSource:
             except Exception as exc:  # pragma: no cover - retry branch
                 last_error = exc
                 if attempt < self.max_retries:
-                    LOGGER.warning(
+                    LOGGER.debug(
                         "%s generic engine fetch failed (attempt %s/%s): %s",
                         self.slug,
                         attempt,
@@ -228,7 +230,16 @@ def _apply_search_params(
 def _resolve_page_param(list_url: str, *, engine_type: EngineType) -> str:
     parsed_url = urlparse(list_url)
     query_params = parse_qs(parsed_url.query, keep_blank_values=True)
-    for candidate in ("pageIndex", "pageNo", "page", "nowPage"):
+    for candidate in (
+        "pageIndex",
+        "pageNo",
+        "p",
+        "page",
+        "nowPage",
+        "curPage",
+        "startPage",
+        "GotoPage",
+    ):
         if candidate in query_params:
             return candidate
 
@@ -255,4 +266,4 @@ def _normalize_text(value: str) -> str:
 
 def _is_portal_saeol_gosi_list(list_url: str) -> bool:
     path = urlparse(list_url).path.lower()
-    return "/portal/saeol/gosilist.do" in path
+    return "/portal/saeol/gosilist.do" in path or "/portal/saeol/gosi/list.do" in path

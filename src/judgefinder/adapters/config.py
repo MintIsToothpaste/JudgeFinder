@@ -176,12 +176,18 @@ def _read_request_strategy(
         default=default_strategy.throttle_seconds,
         min_value=0.0,
     )
+    verify_tls = _read_optional_bool(
+        value,
+        "verify_tls",
+        default=default_strategy.verify_tls,
+    )
     return RequestStrategy(
         session=session,
         referer=referer,
         retries=retries,
         timeout_seconds=timeout_seconds,
         throttle_seconds=throttle_seconds,
+        verify_tls=verify_tls,
     )
 
 

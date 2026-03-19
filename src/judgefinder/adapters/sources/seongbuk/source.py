@@ -28,6 +28,7 @@ class SeongbukSource:
     max_retries: int = 3
     use_session: bool = False
     include_referer: bool = True
+    verify_tls: bool = True
     max_pages: int = 30
     page_cache: dict[int, str] = field(default_factory=dict, init=False, repr=False)
     request_headers: dict[str, str] = field(default_factory=dict, init=False, repr=False)
@@ -91,13 +92,14 @@ class SeongbukSource:
                     timeout_seconds=self.timeout_seconds,
                     headers=self.request_headers,
                     use_session=self.use_session,
+                    verify_tls=self.verify_tls,
                 )
                 self.page_cache[page_no] = payload
                 return payload
             except Exception as exc:
                 last_error = exc
                 if attempt < self.max_retries:
-                    LOGGER.warning(
+                    LOGGER.debug(
                         "Seongbuk RSS fetch failed (attempt %s/%s): %s",
                         attempt,
                         self.max_retries,

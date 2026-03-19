@@ -16,7 +16,7 @@ class NoopSource:
     reason: str
 
     def fetch(self, target_date: date) -> list[Notice]:
-        LOGGER.warning(
+        LOGGER.info(
             "Skipping source '%s' (%s) for %s: %s",
             self.slug,
             self.municipality,

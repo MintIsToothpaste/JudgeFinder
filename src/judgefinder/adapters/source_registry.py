@@ -10,7 +10,7 @@ from judgefinder.adapters.sources.pocheon_eminwon.source import PocheonEminwonSo
 from judgefinder.adapters.sources.sample_city.source import SampleCitySource
 from judgefinder.adapters.sources.seongbuk.source import SeongbukSource
 from judgefinder.domain.ports import NoticeSource
-from judgefinder.domain.source_profiles import AccessProfile, EngineType
+from judgefinder.domain.source_profiles import AccessProfile, EngineType, FallbackStrategy
 from judgefinder.infrastructure.http.client import HttpClient
 
 MUNICIPAL_RSS_SLUGS: set[str] = {
@@ -23,6 +23,10 @@ MUNICIPAL_RSS_SLUGS: set[str] = {
 SKIP_COLLECTION_ACCESS_PROFILES: set[AccessProfile] = {
     AccessProfile.JS_RENDERED,
     AccessProfile.BLOCKED_WAF,
+}
+
+SKIP_COLLECTION_FALLBACK_STRATEGIES: set[FallbackStrategy] = {
+    FallbackStrategy.MANUAL_REVIEW,
 }
 
 GENERIC_ENGINE_TYPES: set[EngineType] = {
@@ -48,7 +52,7 @@ class SourceRegistry:
             if source_config is None:
                 raise ValueError(f"Source '{slug}' is enabled but not configured.")
 
-            if source_config.access_profile in SKIP_COLLECTION_ACCESS_PROFILES:
+            if _should_skip_collection(source_config):
                 sources.append(
                     NoopSource(
                         slug=source_config.slug,
@@ -83,7 +87,7 @@ class SourceRegistry:
                 sources.append(self._build_pocheon_source(source_config))
                 continue
 
-            if slug in MUNICIPAL_RSS_SLUGS:
+            if _should_use_municipal_rss(source_config):
                 sources.append(self._build_municipal_rss_source(source_config))
                 continue
 
@@ -125,6 +129,7 @@ class SourceRegistry:
             max_retries=strategy.retries,
             use_session=strategy.session,
             include_referer=_should_include_referer(source_config),
+            verify_tls=strategy.verify_tls,
         )
 
     def _build_pocheon_source(self, source_config: SourceConfig) -> PocheonEminwonSource:
@@ -141,6 +146,7 @@ class SourceRegistry:
             max_retries=strategy.retries,
             use_session=strategy.session,
             include_referer=_should_include_referer(source_config),
+            verify_tls=strategy.verify_tls,
         )
 
     def _build_municipal_rss_source(self, source_config: SourceConfig) -> MunicipalRssSource:
@@ -157,6 +163,7 @@ class SourceRegistry:
             max_retries=strategy.retries,
             use_session=strategy.session,
             include_referer=_should_include_referer(source_config),
+            verify_tls=strategy.verify_tls,
         )
 
     def _build_generic_engine_source(self, source_config: SourceConfig) -> GenericEngineSource:
@@ -174,6 +181,7 @@ class SourceRegistry:
             max_retries=strategy.retries,
             use_session=strategy.session,
             include_referer=_should_include_referer(source_config),
+            verify_tls=strategy.verify_tls,
             throttle_seconds=strategy.throttle_seconds,
         )
 
@@ -186,3 +194,20 @@ def _should_include_referer(source_config: SourceConfig) -> bool:
         AccessProfile.SESSION_REQUIRED,
         AccessProfile.UNKNOWN_ACCESS,
     }
+
+
+def _should_skip_collection(source_config: SourceConfig) -> bool:
+    return (
+        source_config.access_profile in SKIP_COLLECTION_ACCESS_PROFILES
+        or source_config.fallback_strategy in SKIP_COLLECTION_FALLBACK_STRATEGIES
+    )
+
+
+def _should_use_municipal_rss(source_config: SourceConfig) -> bool:
+    if source_config.slug not in MUNICIPAL_RSS_SLUGS:
+        return False
+    if source_config.engine_type is EngineType.JSON_LIST_API:
+        return True
+    if source_config.source_type.value == "api":
+        return True
+    return "rssbbsntt.do" in source_config.list_url.lower()

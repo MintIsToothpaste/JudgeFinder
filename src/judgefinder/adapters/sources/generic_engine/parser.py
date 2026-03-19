@@ -4,6 +4,7 @@ import json
 import re
 from dataclasses import dataclass
 from datetime import date, datetime
+from html import unescape
 from urllib.parse import parse_qs, urlencode, urljoin, urlparse, urlunparse
 
 from bs4 import BeautifulSoup, Tag
@@ -43,9 +44,12 @@ NotAncmtType_KEYS: tuple[str, ...] = ("notAncmtSeCode", "not_ancmt_se_code")
 NOTICE_URL_HINTS: tuple[str, ...] = (
     "selectbbsnttview.do",
     "selecteminwonview.do",
+    "eminwonannouncedetail.do",
+    "bbsmsgdetail.do",
     "ofraction.do",
     "sapgosibizprocess.do",
     "view.do",
+    "view.ulsan",
     "nttno=",
     "notancmtmgtno=",
 )
@@ -69,6 +73,13 @@ FN_SEARCH_DETAIL_PATTERN = re.compile(
     r"fn_search_detail\(\s*['\"]?(\d+)['\"]?\s*\)",
     re.IGNORECASE,
 )
+SEARCH_DETAIL_PATTERN = re.compile(
+    r"searchDetail\(\s*['\"]?(\d+)['\"]?\s*\)",
+    re.IGNORECASE,
+)
+EMBEDDED_URL_PATTERN = re.compile(r"""['"]((?:https?:)?//[^'"]+|/[^'"]+|emwp/[^'"]+)['"]""")
+NOTICE_NUMBER_PATTERN = re.compile(r"제\s*\d{4}(?:-\d+)?호")
+NOTICE_IDENTIFIER_PATTERN = re.compile(r"\b\d{4}-\d+\b")
 
 
 @dataclass(slots=True)
@@ -113,7 +124,7 @@ def _parse_html_candidates(
         if not _is_probable_notice_url(url, engine_type=engine_type):
             continue
 
-        title = _normalize_whitespace(anchor.get_text(" ", strip=True))
+        title = _extract_candidate_title(anchor)
         if not title:
             continue
 
@@ -175,9 +186,20 @@ def _parse_json_candidates(
 
 
 def _normalize_candidate_url(anchor: Tag, href: str, *, list_url: str) -> str:
+    href = href.replace("¬_", "&not_")
     onclick_raw = anchor.get("onclick")
     onclick = onclick_raw if isinstance(onclick_raw, str) else ""
+    data_action = _extract_candidate_action_url(anchor)
+    if data_action:
+        return _strip_url_path_params(urljoin(list_url, data_action))
+    if href.lower().startswith("emwp/"):
+        parsed = urlparse(list_url)
+        site_root = f"{parsed.scheme}://{parsed.netloc}/"
+        return _strip_url_path_params(urljoin(site_root, href))
     normalized_href = href.strip().lower()
+    embedded_url = _extract_embedded_notice_url(" ".join(part for part in (href, onclick) if part), list_url)
+    if embedded_url:
+        return embedded_url
     if normalized_href.startswith("javascript:") or (
         onclick and normalized_href in {"", "#", "javascript:;", "javascript:void(0);"}
     ):
@@ -189,8 +211,8 @@ def _normalize_candidate_url(anchor: Tag, href: str, *, list_url: str) -> str:
             )
             if part
         )
-        return _build_url_from_javascript(javascript_source, list_url=list_url)
-    return urljoin(list_url, href)
+        return _strip_url_path_params(_build_url_from_javascript(javascript_source, list_url=list_url))
+    return _strip_url_path_params(urljoin(list_url, href))
 
 
 def _build_url_from_javascript(source: str, *, list_url: str) -> str:
@@ -201,6 +223,8 @@ def _build_url_from_javascript(source: str, *, list_url: str) -> str:
         not_ancmt_no = _extract_identifier(source, BOARD_VIEW_PATTERN)
     if not not_ancmt_no:
         not_ancmt_no = _extract_identifier(source, FN_SEARCH_DETAIL_PATTERN)
+    if not not_ancmt_no:
+        not_ancmt_no = _extract_identifier(source, SEARCH_DETAIL_PATTERN)
 
     parsed = urlparse(list_url)
     list_query = parse_qs(parsed.query, keep_blank_values=True)
@@ -218,7 +242,7 @@ def _build_url_from_javascript(source: str, *, list_url: str) -> str:
             )
         )
 
-    if not_ancmt_no and "/portal/saeol/gosilist.do" in parsed.path.lower():
+    if not_ancmt_no and _is_portal_saeol_notice_list_path(parsed.path):
         query = {"notAncmtMgtNo": not_ancmt_no}
         menu_id = list_query.get("mId", [""])[0]
         if menu_id:
@@ -259,11 +283,74 @@ def _build_url_from_javascript(source: str, *, list_url: str) -> str:
                 fragment="",
             )
         )
+
+    if not_ancmt_no and _is_ofr_action_list_path(parsed.path):
+        query = {
+            name: values[0]
+            for name, values in list_query.items()
+            if values and name not in {"pageIndex", "not_ancmt_sj", "not_ancmt_cn", "dept_nm"}
+        }
+        query["not_ancmt_mgt_no"] = not_ancmt_no
+        query["method"] = "selectOfrNotAncmt"
+        query["methodnm"] = "selectOfrNotAncmtRegst"
+        return urlunparse(
+            parsed._replace(
+                path="/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do",
+                query=urlencode(query),
+                params="",
+                fragment="",
+            )
+        )
     return ""
 
 
+def _extract_candidate_action_url(anchor: Tag) -> str:
+    href_value = anchor.get("href")
+    normalized_href = href_value.strip().lower() if isinstance(href_value, str) else ""
+    if normalized_href not in {"", "#", "javascript:;", "javascript:void(0);"}:
+        return ""
+
+    for attribute_name in ("data-action", "data-href", "data-url"):
+        value = anchor.get(attribute_name)
+        if isinstance(value, str) and value.strip():
+            return value.strip()
+    return ""
+
+
+def _extract_embedded_notice_url(source: str, list_url: str) -> str:
+    for raw_candidate in EMBEDDED_URL_PATTERN.findall(source):
+        candidate = unescape(raw_candidate.strip()).replace("¬_", "&not_")
+        if not candidate:
+            continue
+        if candidate.lower().startswith("emwp/"):
+            parsed = urlparse(list_url)
+            site_root = f"{parsed.scheme}://{parsed.netloc}/"
+            normalized = urljoin(site_root, candidate)
+        elif candidate.startswith("//"):
+            normalized = f"{urlparse(list_url).scheme}:{candidate}"
+        else:
+            normalized = urljoin(list_url, candidate)
+        normalized = _strip_url_path_params(normalized)
+        if any(marker in normalized.lower() for marker in NOTICE_URL_HINTS):
+            return normalized
+        if _has_detail_query_signature(normalized):
+            return normalized
+        if _has_content_id_signature(normalized):
+            return normalized
+        if _has_show_detail_path(normalized):
+            return normalized
+    return ""
+
+
+def _strip_url_path_params(url: str) -> str:
+    parsed = urlparse(url)
+    if not parsed.params:
+        return url
+    return urlunparse(parsed._replace(params=""))
+
+
 def _extract_context_text(anchor: Tag) -> str:
-    row = anchor.find_parent(["tr", "li", "article", "div"])
+    row = _find_context_container(anchor)
     if row is not None:
         return _normalize_whitespace(row.get_text(" ", strip=True))
     return _normalize_whitespace(anchor.get_text(" ", strip=True))
@@ -274,6 +361,79 @@ def _extract_identifier(value: str, pattern: re.Pattern[str]) -> str:
     if match is None:
         return ""
     return match.group(1)
+
+
+def _extract_candidate_title(anchor: Tag) -> str:
+    anchor_text = _normalize_whitespace(anchor.get_text(" ", strip=True))
+    if _is_descriptive_title(anchor_text):
+        return anchor_text
+
+    row = _find_context_container(anchor)
+    if row is None:
+        return anchor_text
+
+    best_title = anchor_text
+    best_score = _score_title_candidate(anchor_text, anchor_text=anchor_text)
+    for cell in row.find_all(["td", "th"], recursive=False):
+        cell_text = _normalize_whitespace(cell.get_text(" ", strip=True))
+        score = _score_title_candidate(cell_text, anchor_text=anchor_text)
+        if score > best_score:
+            best_title = cell_text
+            best_score = score
+
+    return best_title
+
+
+def _find_context_container(anchor: Tag) -> Tag | None:
+    return anchor.find_parent(["tr", "li", "article", "div"])
+
+
+def _score_title_candidate(value: str, *, anchor_text: str) -> int:
+    text = value.strip()
+    if not text or text == anchor_text:
+        return -1
+    if _extract_date_from_text(text) is not None:
+        return -1
+    if text.isdigit():
+        return -1
+
+    score = min(len(text), 80)
+    if _is_department_name(text):
+        score -= 25
+    if NOTICE_NUMBER_PATTERN.search(text):
+        score -= 25
+    if NOTICE_IDENTIFIER_PATTERN.search(text):
+        score -= 25
+    return score
+
+
+def _is_descriptive_title(value: str) -> bool:
+    text = value.strip()
+    if not text or text.isdigit():
+        return False
+    if _extract_date_from_text(text) is not None:
+        return False
+    return not _is_department_name(text)
+
+
+def _is_department_name(value: str) -> bool:
+    if len(value) > 20:
+        return False
+    return value.endswith(
+        (
+            "과",
+            "국",
+            "실",
+            "팀",
+            "소",
+            "동",
+            "면",
+            "읍",
+            "센터",
+            "사업소",
+            "담당관",
+        )
+    )
 
 
 def _extract_date_from_mapping(mapping: dict[str, object]) -> date | None:
@@ -294,7 +454,7 @@ def _extract_date_from_mapping(mapping: dict[str, object]) -> date | None:
 def _extract_url_from_mapping(mapping: dict[str, object], *, list_url: str) -> str:
     direct_url = _first_string(mapping, URL_KEYS)
     if direct_url:
-        return urljoin(list_url, direct_url)
+        return _strip_url_path_params(urljoin(list_url, direct_url))
 
     ntt_no = _first_string(mapping, NttNo_KEYS)
     bbs_no = _first_string(mapping, BbsNo_KEYS)
@@ -426,6 +586,12 @@ def _is_probable_notice_url(url: str, *, engine_type: EngineType) -> bool:
     lowered = url.lower()
     if any(marker in lowered for marker in NOTICE_URL_HINTS):
         return True
+    if _has_detail_query_signature(url):
+        return True
+    if _has_content_id_signature(url):
+        return True
+    if _has_show_detail_path(url):
+        return True
     if engine_type is EngineType.SAEOL_GOSI and "saeolgosi" in lowered:
         return True
     if engine_type is EngineType.CITYNET_SAPGOSI and "sapgosi" in lowered:
@@ -454,3 +620,48 @@ def _dedupe_candidates(candidates: list[GenericNoticeCandidate]) -> list[Generic
 
 def _normalize_whitespace(value: str) -> str:
     return " ".join(value.split())
+
+
+def _is_portal_saeol_notice_list_path(path: str) -> bool:
+    lowered = path.lower()
+    return "/portal/saeol/gosilist.do" in lowered or "/portal/saeol/gosi/list.do" in lowered
+
+
+def _is_ofr_action_list_path(path: str) -> bool:
+    lowered = path.lower()
+    return "/emwp/gov/mogaha/ntis/web/ofr/action/ofraction.do" in lowered
+
+
+def _has_detail_query_signature(url: str) -> bool:
+    parsed = urlparse(url)
+    query = parse_qs(parsed.query, keep_blank_values=True)
+    mode = query.get("mode", [""])[0].lower()
+    notice_id = query.get("no", [""])[0]
+    return mode in {"v", "view"} and bool(notice_id)
+
+
+def _has_content_id_signature(url: str) -> bool:
+    parsed = urlparse(url)
+    query = parse_qs(parsed.query, keep_blank_values=True)
+    if not any(query.get(key, [""])[0] for key in ("id", "i", "seq")):
+        return False
+
+    path = parsed.path.lower()
+    return any(
+        token in path
+        for token in (
+            "/news/",
+            "/notice/",
+            "/announcement/",
+            "/recruitment/",
+            "/legislation/",
+            "/headline/",
+            "/tender",
+            "/work/",
+            "/gunbo/",
+        )
+    )
+
+
+def _has_show_detail_path(url: str) -> bool:
+    return "/show/" in urlparse(url).path.lower()

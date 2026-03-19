@@ -123,3 +123,398 @@ def test_parse_generic_engine_saeol_fn_search_detail_candidates() -> None:
         candidates[0].url
         == "https://www.djjunggu.go.kr/prog/saeolGosi/GOSI/sub03_06/view.do?notAncmtMgtNo=46819"
     )
+
+
+def test_parse_generic_engine_supports_data_action_notice_links() -> None:
+    payload = """
+    <html>
+      <body>
+        <table>
+          <tr>
+            <td>20260313</td>
+            <td>
+              <a
+                href="#"
+                data-action="/portal/saeol/gosi/view.do?notAncmtMgtNo=41717&mId=0301040000"
+                onclick="req.post(this); return false;"
+              >
+                Proposal evaluation result notice
+              </a>
+            </td>
+          </tr>
+        </table>
+      </body>
+    </html>
+    """
+    candidates = parse_generic_engine_candidates(
+        payload,
+        list_url="https://www.yc.go.kr/portal/saeol/gosi/list.do?mId=0301040000",
+        engine_type=EngineType.SAEOL_GOSI,
+    )
+
+    assert len(candidates) == 1
+    assert candidates[0].published_date == date(2026, 3, 13)
+    assert (
+        candidates[0].url
+        == "https://www.yc.go.kr/portal/saeol/gosi/view.do?notAncmtMgtNo=41717&mId=0301040000"
+    )
+
+
+def test_parse_generic_engine_supports_view_ulsan_notice_links() -> None:
+    payload = """
+    <html>
+      <body>
+        <table>
+          <tr>
+            <td>2026-03-13</td>
+            <td>
+              <a href="/board/view.ulsan?boardId=BBS_0000057&startPage=1&dataSid=720254">
+                Notice on rice seedling support
+              </a>
+            </td>
+          </tr>
+        </table>
+      </body>
+    </html>
+    """
+    candidates = parse_generic_engine_candidates(
+        payload,
+        list_url="https://www.junggu.ulsan.kr/board/list.ulsan?boardId=BBS_0000057&startPage=1",
+        engine_type=EngineType.GENERIC_EGOV_BBS,
+    )
+
+    assert len(candidates) == 1
+    assert candidates[0].published_date == date(2026, 3, 13)
+    assert (
+        candidates[0].url
+        == "https://www.junggu.ulsan.kr/board/view.ulsan?boardId=BBS_0000057&startPage=1&dataSid=720254"
+    )
+
+
+def test_parse_generic_engine_supports_bbs_msg_detail_notice_links() -> None:
+    payload = """
+    <html>
+      <body>
+        <table>
+          <tr>
+            <td>2026.03.13</td>
+            <td>
+              <a href="/main/bbs/bbsMsgDetail.do?msg_seq=13476&bcd=announce">
+                District notice
+              </a>
+            </td>
+          </tr>
+        </table>
+      </body>
+    </html>
+    """
+    candidates = parse_generic_engine_candidates(
+        payload,
+        list_url="https://www.icdonggu.go.kr/main/information/news/announce.jsp",
+        engine_type=EngineType.GENERIC_EGOV_BBS,
+    )
+
+    assert len(candidates) == 1
+    assert candidates[0].published_date == date(2026, 3, 13)
+    assert (
+        candidates[0].url
+        == "https://www.icdonggu.go.kr/main/bbs/bbsMsgDetail.do?msg_seq=13476&bcd=announce"
+    )
+
+
+def test_parse_generic_engine_supports_eminwon_announce_detail_links() -> None:
+    payload = """
+    <html>
+      <body>
+        <table>
+          <tr>
+            <td>[Any District Notice]</td>
+            <td>
+              <a href="/main/eminwon/eminwonAnnounceDetail.do?mgt_no=70083">
+                Care service provider recruitment notice
+              </a>
+            </td>
+            <td>2026-03-13</td>
+          </tr>
+        </table>
+      </body>
+    </html>
+    """
+    candidates = parse_generic_engine_candidates(
+        payload,
+        list_url="https://www.namdong.go.kr/main/news/announce.jsp",
+        engine_type=EngineType.GENERIC_EGOV_BBS,
+    )
+
+    assert len(candidates) == 1
+    assert candidates[0].published_date == date(2026, 3, 13)
+    assert (
+        candidates[0].url
+        == "https://www.namdong.go.kr/main/eminwon/eminwonAnnounceDetail.do?mgt_no=70083"
+    )
+
+
+def test_parse_generic_engine_supports_ofr_search_detail_links() -> None:
+    payload = """
+    <html>
+      <body>
+        <table>
+          <tr>
+            <td>2026-03-13</td>
+            <td>
+              <a href="#" onclick="javaScript:searchDetail('43729')">
+                Buk-gu notice
+              </a>
+            </td>
+          </tr>
+        </table>
+      </body>
+    </html>
+    """
+    candidates = parse_generic_engine_candidates(
+        payload,
+        list_url=(
+            "https://eminwon.bukgu.ulsan.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do"
+            "?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&subCheck=Y"
+            "&ofr_pageSize=10&not_ancmt_se_code=01,03,04&title=%EA%B3%A0%EC%8B%9C%EA%B3%B5%EA%B3%A0"
+            "&countYn=Y&nodate_recent_mm=12&epcCheck=Y&method=selectListOfrNotAncmt"
+            "&methodnm=selectListOfrNotAncmtHomepage"
+        ),
+        engine_type=EngineType.EMINWON_OFR,
+    )
+
+    assert len(candidates) == 1
+    assert candidates[0].published_date == date(2026, 3, 13)
+    assert (
+        candidates[0].url
+        == "https://eminwon.bukgu.ulsan.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do"
+        "?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&subCheck=Y&ofr_pageSize=10"
+        "&not_ancmt_se_code=01%2C03%2C04&title=%EA%B3%A0%EC%8B%9C%EA%B3%B5%EA%B3%A0"
+        "&countYn=Y&nodate_recent_mm=12&epcCheck=Y&method=selectOfrNotAncmt"
+        "&methodnm=selectOfrNotAncmtRegst&not_ancmt_mgt_no=43729"
+    )
+
+
+def test_parse_generic_engine_resolves_emwp_relative_links_from_site_root() -> None:
+    payload = """
+    <html>
+      <body>
+        <table>
+          <tr>
+            <td>2026-03-13</td>
+            <td>
+              <a href="emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?not_ancmt_mgt_no=27478">
+                Dong-gu notice
+              </a>
+            </td>
+          </tr>
+        </table>
+      </body>
+    </html>
+    """
+    candidates = parse_generic_engine_candidates(
+        payload,
+        list_url=(
+            "https://eminwon.donggu.ulsan.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do"
+            "?jndinm=OfrNotAncmtEJB&method=selectListOfrNotAncmt"
+        ),
+        engine_type=EngineType.EMINWON_OFR,
+    )
+
+    assert len(candidates) == 1
+    assert candidates[0].published_date == date(2026, 3, 13)
+    assert (
+        candidates[0].url
+        == "https://eminwon.donggu.ulsan.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?not_ancmt_mgt_no=27478"
+    )
+
+
+def test_parse_generic_engine_supports_mode_v_detail_links() -> None:
+    payload = """
+    <html>
+      <body>
+        <table>
+          <tr>
+            <td>2026-03-13</td>
+            <td>
+              <a href="?mode=V&no=2ef66d4431ac1e9f2fcf6d188a06976c&GotoPage=1">
+                Yeongdong notice
+              </a>
+            </td>
+          </tr>
+        </table>
+      </body>
+    </html>
+    """
+    candidates = parse_generic_engine_candidates(
+        payload,
+        list_url="https://www.yd21.go.kr/kr/html/sub02/020103.html?GotoPage=1",
+        engine_type=EngineType.GENERIC_EGOV_BBS,
+    )
+
+    assert len(candidates) == 1
+    assert candidates[0].published_date == date(2026, 3, 13)
+    assert (
+        candidates[0].url
+        == "https://www.yd21.go.kr/kr/html/sub02/020103.html?mode=V&no=2ef66d4431ac1e9f2fcf6d188a06976c&GotoPage=1"
+    )
+
+
+def test_parse_generic_engine_uses_row_title_when_anchor_text_is_numeric() -> None:
+    payload = """
+    <html>
+      <body>
+        <table>
+          <tr>
+            <td><a href="#" onclick="javaScript:searchDetail('36786')">1132</a></td>
+            <td>Yangyang Notice No. 2026-324</td>
+            <td>Land survey public notice</td>
+            <td>Civil Affairs Division</td>
+            <td>2026-03-13</td>
+            <td>19</td>
+          </tr>
+        </table>
+      </body>
+    </html>
+    """
+    candidates = parse_generic_engine_candidates(
+        payload,
+        list_url=(
+            "https://eminwon.yangyang.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do"
+            "?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&subCheck=Y"
+            "&ofr_pageSize=10&not_ancmt_se_code=01,04,05,06"
+            "&title=%EA%B3%A0%EC%8B%9C%EA%B3%B5%EA%B3%A0&countYn=Y"
+            "&method=selectListOfrNotAncmt&methodnm=selectListOfrNotAncmtHomepage"
+        ),
+        engine_type=EngineType.EMINWON_OFR,
+    )
+
+    assert len(candidates) == 1
+    assert candidates[0].title == "Land survey public notice"
+    assert candidates[0].published_date == date(2026, 3, 13)
+
+
+def test_parse_generic_engine_supports_content_id_detail_links() -> None:
+    payload = """
+    <html>
+      <body>
+        <table>
+          <tr>
+            <td>2026.03.13</td>
+            <td><a href="?id=30755&dn=">Yecheon announcement</a></td>
+          </tr>
+        </table>
+      </body>
+    </html>
+    """
+    candidates = parse_generic_engine_candidates(
+        payload,
+        list_url="https://www.ycg.kr/open.content/ko/administrative/news/announcement/?p=1",
+        engine_type=EngineType.GENERIC_EGOV_BBS,
+    )
+
+    assert len(candidates) == 1
+    assert candidates[0].published_date == date(2026, 3, 13)
+    assert (
+        candidates[0].url
+        == "https://www.ycg.kr/open.content/ko/administrative/news/announcement/?id=30755&dn="
+    )
+
+
+def test_parse_generic_engine_supports_show_detail_paths() -> None:
+    payload = """
+    <html>
+      <body>
+        <table>
+          <tr>
+            <td>2026-03-13</td>
+            <td>
+              <a href="/home/www/open_information/yeongam_news/announcement/announcement_01/show/39047?page=1&search=&not_ancmt_sj=">
+                Yeongam announcement
+              </a>
+            </td>
+          </tr>
+        </table>
+      </body>
+    </html>
+    """
+    candidates = parse_generic_engine_candidates(
+        payload,
+        list_url=(
+            "https://www.yeongam.go.kr/home/www/open_information/yeongam_news/"
+            "announcement/announcement_01/yeongam.go?page=1"
+        ),
+        engine_type=EngineType.GENERIC_EGOV_BBS,
+    )
+
+    assert len(candidates) == 1
+    assert candidates[0].published_date == date(2026, 3, 13)
+    assert (
+        candidates[0].url
+        == "https://www.yeongam.go.kr/home/www/open_information/yeongam_news/announcement/announcement_01/show/39047?page=1&search=&not_ancmt_sj="
+    )
+
+
+def test_parse_generic_engine_supports_popup_center_detail_links() -> None:
+    payload = """
+    <html>
+      <body>
+        <table>
+          <tr>
+            <td>2026-03-13</td>
+            <td>
+              <a
+                href="#popup"
+                onclick="popupCenter('http://eminwon.brcn.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?subCheck=N&amp;jndinm=OfrNotAncmtEJB&amp;context=NTIS&amp;method=selectOfrNotAncmt&amp;methodnm=selectOfrNotAncmtRegst&amp;not_ancmt_se_code=01,02,04&amp;not_ancmt_mgt_no=55063', 'popwin'); return false;"
+              >
+                Boryeong city notice
+              </a>
+            </td>
+          </tr>
+        </table>
+      </body>
+    </html>
+    """
+    candidates = parse_generic_engine_candidates(
+        payload,
+        list_url="https://www.brcn.go.kr/prog/eminwon/kor/BB/sub04_03_01/list.do?pageIndex=1",
+        engine_type=EngineType.GENERIC_EGOV_BBS,
+    )
+
+    assert len(candidates) == 1
+    assert candidates[0].published_date == date(2026, 3, 13)
+    assert (
+        candidates[0].url
+        == "http://eminwon.brcn.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?subCheck=N&jndinm=OfrNotAncmtEJB&context=NTIS&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&not_ancmt_se_code=01,02,04&not_ancmt_mgt_no=55063"
+    )
+
+
+def test_parse_generic_engine_strips_session_path_params_from_detail_links() -> None:
+    payload = """
+    <html>
+      <body>
+        <table>
+          <tr>
+            <td>2026-03-13</td>
+            <td>
+              <a href="./selectBbsNttView.do;JSESSIONID=ABC123?key=478&amp;bbsNo=87&amp;nttNo=200210&amp;pageIndex=1">
+                Donghae notice
+              </a>
+            </td>
+          </tr>
+        </table>
+      </body>
+    </html>
+    """
+    candidates = parse_generic_engine_candidates(
+        payload,
+        list_url="https://dh.go.kr/www/selectBbsNttList.do?bbsNo=87&key=478&pageIndex=1",
+        engine_type=EngineType.GENERIC_EGOV_BBS,
+    )
+
+    assert len(candidates) == 1
+    assert candidates[0].published_date == date(2026, 3, 13)
+    assert (
+        candidates[0].url
+        == "https://dh.go.kr/www/selectBbsNttView.do?key=478&bbsNo=87&nttNo=200210&pageIndex=1"
+    )

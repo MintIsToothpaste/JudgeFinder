@@ -32,6 +32,7 @@ class PocheonEminwonSource:
     max_retries: int = 3
     use_session: bool = False
     include_referer: bool = True
+    verify_tls: bool = True
     max_pages: int = 200
     page_unit: int = 10
     keywords: tuple[str, ...] = DEFAULT_KEYWORDS
@@ -129,13 +130,14 @@ class PocheonEminwonSource:
                     timeout_seconds=self.timeout_seconds,
                     headers=self.request_headers,
                     use_session=self.use_session,
+                    verify_tls=self.verify_tls,
                 )
                 self.page_cache[page_index] = payload
                 return payload
             except Exception as exc:  # pragma: no cover - retry branch
                 last_error = exc
                 if attempt < self.max_retries:
-                    LOGGER.warning(
+                    LOGGER.debug(
                         "%s eminwon fetch failed (attempt %s/%s): %s",
                         self.slug,
                         attempt,

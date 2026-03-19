@@ -12,6 +12,11 @@ from judgefinder.bootstrap import AppContainer, create_app
 LOGGER = logging.getLogger(__name__)
 
 
+class _SuppressMalformedHeaderWarning(logging.Filter):
+    def filter(self, record: logging.LogRecord) -> bool:
+        return not record.getMessage().startswith("Failed to parse headers (url=")
+
+
 @click.group()
 @click.option(
     "--config-path",
@@ -107,6 +112,7 @@ def _resolve_target_dates(raw_date: str, timezone_name: str, days: int) -> list[
 def _configure_logging(verbose: bool) -> None:
     level = logging.DEBUG if verbose else logging.WARNING
     logging.basicConfig(level=level, format="%(asctime)s %(levelname)s %(name)s - %(message)s")
+    logging.getLogger("urllib3.connection").addFilter(_SuppressMalformedHeaderWarning())
 
 
 if __name__ == "__main__":

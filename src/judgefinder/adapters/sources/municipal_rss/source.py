@@ -31,6 +31,7 @@ class MunicipalRssSource:
     max_retries: int = 3
     use_session: bool = False
     include_referer: bool = True
+    verify_tls: bool = True
     max_pages: int = 1
     page_param: str | None = None
     keywords: tuple[str, ...] = DEFAULT_KEYWORDS
@@ -100,13 +101,14 @@ class MunicipalRssSource:
                     timeout_seconds=self.timeout_seconds,
                     headers=self.request_headers,
                     use_session=self.use_session,
+                    verify_tls=self.verify_tls,
                 )
                 self.page_cache[page_no] = payload
                 return payload
             except Exception as exc:
                 last_error = exc
                 if attempt < self.max_retries:
-                    LOGGER.warning(
+                    LOGGER.debug(
                         "%s RSS fetch failed (attempt %s/%s): %s",
                         self.slug,
                         attempt,

@@ -39,6 +39,7 @@ def test_load_config_uses_default_engine_access_and_strategy(tmp_path: Path) -> 
     assert source.request_strategy.session is False
     assert source.request_strategy.referer is False
     assert source.request_strategy.retries == 3
+    assert source.request_strategy.verify_tls is True
 
 
 def test_load_config_parses_new_source_profile_fields(tmp_path: Path) -> None:
@@ -64,6 +65,7 @@ def test_load_config_parses_new_source_profile_fields(tmp_path: Path) -> None:
                 "retries = 7",
                 "timeout_seconds = 15.5",
                 "throttle_seconds = 0.4",
+                "verify_tls = false",
             ]
         ),
         encoding="utf-8",
@@ -80,6 +82,7 @@ def test_load_config_parses_new_source_profile_fields(tmp_path: Path) -> None:
     assert source.request_strategy.retries == 7
     assert source.request_strategy.timeout_seconds == 15.5
     assert source.request_strategy.throttle_seconds == 0.4
+    assert source.request_strategy.verify_tls is False
 
 
 def test_load_config_raises_for_invalid_engine_type(tmp_path: Path) -> None:

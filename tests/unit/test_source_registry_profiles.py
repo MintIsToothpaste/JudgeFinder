@@ -7,6 +7,7 @@ from zoneinfo import ZoneInfo
 from judgefinder.adapters.config import AppConfig, SourceConfig
 from judgefinder.adapters.source_registry import SourceRegistry
 from judgefinder.adapters.sources.generic_engine.source import GenericEngineSource
+from judgefinder.adapters.sources.municipal_rss.source import MunicipalRssSource
 from judgefinder.adapters.sources.noop.source import NoopSource
 from judgefinder.adapters.sources.pocheon_eminwon.source import PocheonEminwonSource
 from judgefinder.domain.entities import SourceType
@@ -26,11 +27,13 @@ class DummyHttpClient:
         timeout_seconds: float = 10.0,
         headers: Mapping[str, str] | None = None,
         use_session: bool = False,
+        verify_tls: bool = True,
     ) -> str:
         _ = url
         _ = timeout_seconds
         _ = headers
         _ = use_session
+        _ = verify_tls
         return ""
 
     def get_response(
@@ -39,11 +42,13 @@ class DummyHttpClient:
         timeout_seconds: float = 10.0,
         headers: Mapping[str, str] | None = None,
         use_session: bool = False,
+        verify_tls: bool = True,
     ) -> HttpResponse:
         _ = url
         _ = timeout_seconds
         _ = headers
         _ = use_session
+        _ = verify_tls
         return HttpResponse(status_code=200, text="", headers={}, url=url)
 
 
@@ -78,6 +83,7 @@ def test_source_registry_selects_generic_engine_adapter_for_non_pocheon_eminwon(
     assert isinstance(source, GenericEngineSource)
     assert source.use_session is True
     assert source.max_retries == 4
+    assert source.verify_tls is True
 
 
 def test_source_registry_keeps_pocheon_specialized_adapter() -> None:
@@ -110,6 +116,38 @@ def test_source_registry_keeps_pocheon_specialized_adapter() -> None:
     assert isinstance(sources[0], PocheonEminwonSource)
 
 
+def test_source_registry_allows_cheorwon_to_use_generic_engine_when_configured() -> None:
+    source_config = SourceConfig(
+        slug="cheorwon",
+        municipality="Cheorwon",
+        source_type=SourceType.HTML,
+        list_url="https://www.cwg.go.kr/www/selectBbsNttList.do?bbsNo=25&key=1226&pageIndex=1",
+        fixture_path=None,
+        engine_type=EngineType.GENERIC_EGOV_BBS,
+        access_profile=AccessProfile.UNKNOWN_ACCESS,
+        request_strategy=RequestStrategy(verify_tls=False),
+        fallback_strategy=FallbackStrategy.NONE,
+    )
+    config = AppConfig(
+        timezone="Asia/Seoul",
+        db_path=Path("data/judgefinder.db"),
+        enabled_sources=["cheorwon"],
+        sources={"cheorwon": source_config},
+    )
+
+    registry = SourceRegistry(
+        config=config,
+        http_client=DummyHttpClient(),
+        timezone=ZoneInfo("Asia/Seoul"),
+    )
+    sources = registry.build_enabled_sources()
+
+    assert len(sources) == 1
+    assert isinstance(sources[0], GenericEngineSource)
+    assert not isinstance(sources[0], MunicipalRssSource)
+    assert sources[0].verify_tls is False
+
+
 def test_source_registry_skips_blocked_waf_sources() -> None:
     source_config = SourceConfig(
         slug="blocked-city",
@@ -127,6 +165,36 @@ def test_source_registry_skips_blocked_waf_sources() -> None:
         db_path=Path("data/judgefinder.db"),
         enabled_sources=["blocked-city"],
         sources={"blocked-city": source_config},
+    )
+
+    registry = SourceRegistry(
+        config=config,
+        http_client=DummyHttpClient(),
+        timezone=ZoneInfo("Asia/Seoul"),
+    )
+    sources = registry.build_enabled_sources()
+
+    assert len(sources) == 1
+    assert isinstance(sources[0], NoopSource)
+
+
+def test_source_registry_skips_manual_review_fallback_sources() -> None:
+    source_config = SourceConfig(
+        slug="manual-city",
+        municipality="Manual City",
+        source_type=SourceType.HTML,
+        list_url="https://manual.example.com/list",
+        fixture_path=None,
+        engine_type=EngineType.GENERIC_EGOV_BBS,
+        access_profile=AccessProfile.UNKNOWN_ACCESS,
+        request_strategy=RequestStrategy(),
+        fallback_strategy=FallbackStrategy.MANUAL_REVIEW,
+    )
+    config = AppConfig(
+        timezone="Asia/Seoul",
+        db_path=Path("data/judgefinder.db"),
+        enabled_sources=["manual-city"],
+        sources={"manual-city": source_config},
     )
 
     registry = SourceRegistry(
