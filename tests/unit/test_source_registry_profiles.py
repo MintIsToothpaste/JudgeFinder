@@ -4,6 +4,8 @@ from collections.abc import Mapping
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+import pytest
+
 from judgefinder.adapters.config import AppConfig, SourceConfig
 from judgefinder.adapters.source_registry import SourceRegistry
 from judgefinder.adapters.sources.generic_engine.source import GenericEngineSource
@@ -50,6 +52,52 @@ class DummyHttpClient:
         _ = use_session
         _ = verify_tls
         return HttpResponse(status_code=200, text="", headers={}, url=url)
+
+
+@pytest.mark.parametrize("source_type", [SourceType.HTML, SourceType.API])
+def test_source_registry_routes_hanam_to_configured_generic_engine(
+    source_type: SourceType,
+) -> None:
+    source_config = SourceConfig(
+        slug="hanam",
+        municipality="Hanam",
+        source_type=source_type,
+        list_url="https://www.hanam.go.kr/www/selectGosiList.do?key=171&searchCnd=SJ",
+        engine_type=EngineType.GENERIC_EGOV_BBS,
+    )
+    config = AppConfig(
+        timezone="Asia/Seoul",
+        db_path=Path("data/judgefinder.db"),
+        enabled_sources=["hanam"],
+        sources={"hanam": source_config},
+    )
+    registry = SourceRegistry(config, DummyHttpClient(), ZoneInfo("Asia/Seoul"))
+    sources = registry.build_enabled_sources()
+
+    assert len(sources) == 1
+    assert isinstance(sources[0], GenericEngineSource)
+
+
+@pytest.mark.parametrize("slug", ["jecheon", "cheorwon", "okcheon"])
+def test_source_registry_preserves_other_municipal_rss_adapters(slug: str) -> None:
+    config = AppConfig(
+        timezone="Asia/Seoul",
+        db_path=Path("data/judgefinder.db"),
+        enabled_sources=[slug],
+        sources={
+            slug: SourceConfig(
+                slug=slug,
+                municipality=slug,
+                source_type=SourceType.API,
+                list_url=f"https://www.{slug}.go.kr/rssBbsNtt.do?bbsNo=18",
+            ),
+        },
+    )
+    registry = SourceRegistry(config, DummyHttpClient(), ZoneInfo("Asia/Seoul"))
+    sources = registry.build_enabled_sources()
+
+    assert len(sources) == 1
+    assert isinstance(sources[0], MunicipalRssSource)
 
 
 def test_source_registry_selects_generic_engine_adapter_for_non_pocheon_eminwon() -> None:

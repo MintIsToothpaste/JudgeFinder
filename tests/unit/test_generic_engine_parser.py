@@ -1,9 +1,134 @@
 from __future__ import annotations
 
+import json
 from datetime import date
+from pathlib import Path
+
+import pytest
 
 from judgefinder.adapters.sources.generic_engine.parser import parse_generic_engine_candidates
 from judgefinder.domain.source_profiles import EngineType
+
+
+def test_parse_generic_engine_hanam_gosi_list() -> None:
+    payload = (Path(__file__).parents[1] / "fixtures/hanam_gosi_list.html").read_text(
+        encoding="utf-8"
+    )
+    candidates = parse_generic_engine_candidates(
+        payload,
+        list_url="https://www.hanam.go.kr/www/selectGosiList.do?key=171",
+        engine_type=EngineType.GENERIC_EGOV_BBS,
+    )
+
+    assert len(candidates) == 3
+    assert candidates[0].title == (
+        "「하남 교산지구 자족용지 핵심 타깃기업 발굴 용역」 제안서 평가위원(후보자) 모집 공고"
+    )
+    assert candidates[0].url == (
+        "https://www.hanam.go.kr/www/selectGosiData.do"
+        "?key=171&not_ancmt_mgt_no=52650&not_ancmt_se_code=01,04"
+    )
+    assert candidates[0].published_date == date(2026, 9, 22)
+    assert candidates[1].published_date == date(2026, 9, 23)
+    assert candidates[2].published_date == date(2022, 12, 5)
+
+
+@pytest.mark.parametrize(
+    "href",
+    [
+        "/www/selectGosiList.do?not_ancmt_mgt_no=52650",
+        "/www/selectGosiData.do",
+        "/www/selectGosiData.do?not_ancmt_mgt_no=",
+        "/www/selectGosiData.do?not_ancmt_mgt_no=invalid",
+        "/www/selectGosiData.do?not_ancmt_mgt_no=-1",
+        "/www/selectGosiData.do?not_ancmt_mgt_no=0",
+        "/www/selectGosiData.do?not_ancmt_mgt_no=52650&not_ancmt_mgt_no=52651",
+        "/www/selectGosiData.do.bak?not_ancmt_mgt_no=52650",
+        "/www/download.do?not_ancmt_mgt_no=52650",
+        "/www/other.do?next=selectGosiData.do&not_ancmt_mgt_no=52650",
+    ],
+)
+def test_parse_generic_engine_rejects_invalid_gosi_detail_links(href: str) -> None:
+    payload = f'<table><tr><td>2026-09-22</td><td><a href="{href}">Notice</a></td></tr></table>'
+    assert parse_generic_engine_candidates(
+        payload,
+        list_url="https://www.hanam.go.kr/www/selectGosiList.do?key=171",
+        engine_type=EngineType.GENERIC_EGOV_BBS,
+    ) == []
+
+
+@pytest.mark.parametrize("registered", ["", "invalid", "20260230"])
+def test_parse_gosi_does_not_replace_invalid_registration_date_with_posting_period(
+    registered: str,
+) -> None:
+    payload = f"""
+    <table>
+      <thead><tr><th>제목</th><th>등록일</th><th>게재기간</th></tr></thead>
+      <tbody><tr>
+        <td><a href="./selectGosiData.do?not_ancmt_mgt_no=52650">Notice</a></td>
+        <td>{registered}</td><td>2026-09-22 ~ 2026-10-08</td>
+      </tr></tbody>
+    </table>
+    """
+    assert parse_generic_engine_candidates(
+        payload,
+        list_url="https://www.hanam.go.kr/www/selectGosiList.do?key=171",
+        engine_type=EngineType.GENERIC_EGOV_BBS,
+    ) == []
+
+
+def test_parse_gosi_detail_links_without_table_headers() -> None:
+    payload = """
+    <table><tr><td>2026-09-22</td>
+      <td><a href="./selectGosiData.do?not_ancmt_mgt_no=52650">Notice</a></td>
+    </tr></table>
+    """
+    candidates = parse_generic_engine_candidates(
+        payload,
+        list_url="https://www.hanam.go.kr/www/selectGosiList.do?key=171",
+        engine_type=EngineType.GENERIC_EGOV_BBS,
+    )
+    assert len(candidates) == 1
+    assert candidates[0].published_date == date(2026, 9, 22)
+
+
+@pytest.mark.parametrize(
+    "attributes",
+    [
+        'href="#" data-action="/www/selectGosiData.do?not_ancmt_mgt_no=52650"',
+        'href="#" onclick="open(\'/www/selectGosiData.do?not_ancmt_mgt_no=52650\')"',
+    ],
+)
+def test_parse_gosi_detail_action_links(attributes: str) -> None:
+    payload = (
+        '<table><tr><td>2026-09-22</td>'
+        f'<td><a {attributes}>Notice</a></td></tr></table>'
+    )
+    candidates = parse_generic_engine_candidates(
+        payload,
+        list_url="https://www.hanam.go.kr/www/selectGosiList.do?key=171",
+        engine_type=EngineType.GENERIC_EGOV_BBS,
+    )
+    assert len(candidates) == 1
+    assert candidates[0].url == (
+        "https://www.hanam.go.kr/www/selectGosiData.do?not_ancmt_mgt_no=52650"
+    )
+
+
+def test_parse_gosi_json_links_preserves_explicit_registration_date() -> None:
+    payload = json.dumps({"items": [{
+        "title": "Notice",
+        "url": "/www/selectGosiData.do?not_ancmt_mgt_no=52650",
+        "regDate": "20260923",
+        "postingPeriod": "2026-09-22 ~ 2026-10-08",
+    }]})
+    candidates = parse_generic_engine_candidates(
+        payload,
+        list_url="https://www.hanam.go.kr/www/selectGosiList.do?key=171",
+        engine_type=EngineType.JSON_LIST_API,
+    )
+    assert len(candidates) == 1
+    assert candidates[0].published_date == date(2026, 9, 23)
 
 
 def test_parse_generic_engine_html_candidates() -> None:

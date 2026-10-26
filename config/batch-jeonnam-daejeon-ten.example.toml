@@ -1,0 +1,257 @@
+# Isolated live HTML validation; production config and DB remain unchanged.
+# Window: 2025-10-05 through 2026-10-04. Daejeon requires explicit date bounds.
+timezone = "Asia/Seoul"
+db_path = "data/live-tests/jeonnam-daejeon-ten-2026-10-04/notices.db"
+enabled_sources = ["hampyeong", "yeonggwang", "jangseong", "wando", "jindo", "shinan", "daejeon", "daejeon_donggu", "daejeon_seogu", "yuseong"]
+
+[sources.hampyeong]
+municipality = "함평군"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.hampyeong.go.kr/pg/GosiList.do?pageId=www273&listGubun=A&search_Type=0&notAncmtSeCode=01,02,03,04"
+recruitment_only = true
+max_pages = 40
+[sources.hampyeong.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.hampyeong.html_profile]
+container_selector = "div.board_list"
+row_selector = "div.board_list_body > div.body_row"
+link_selector = "div.subject a"
+date_selector = "div.regdate"
+detail_title_selector = "#board_view th:-soup-contains-own('제목') + td"
+detail_date_selector = "#board_view th:-soup-contains-own('등록일') + td"
+id_pattern = 'SEQ=([1-9][0-9]*)'
+detail_url_template = "/pg/GosiDetail.do?SEQ={id}&pageId=www273&listGubun=A&notAncmtSeCode=01,02,03,04"
+search_param = "searchText"
+page_param = "pageIndex"
+
+[sources.yeonggwang]
+municipality = "영광군"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.yeonggwang.go.kr/bbs/?b_id=gosigonggo&site=headquarter_new&mn=9059&sc_key=subject&per_page=10"
+recruitment_only = true
+max_pages = 40
+[sources.yeonggwang.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.yeonggwang.html_profile]
+container_selector = "#board_list table"
+row_selector = "tbody > tr:has(> td)"
+link_selector = "td.t_title a"
+date_selector = "td.t_date"
+detail_title_selector = "th:-soup-contains-own('제목') + td"
+detail_date_selector = "th:-soup-contains-own('등록일') + td"
+id_pattern = 'bs_idx=([1-9][0-9]*)'
+detail_url_template = "/bbs/?b_id=gosigonggo&site=headquarter_new&mn=9059&type=view&bs_idx={id}"
+search_param = "sc_word"
+page_param = "page"
+offset_param = "offset"
+page_size = 10
+page_number_selector = "#paginate_complex p.btn_page span.on"
+
+[sources.jangseong]
+municipality = "장성군"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.jangseong.go.kr/home/www/news/jangseong/announcement?search=search_title"
+recruitment_only = true
+max_pages = 40
+[sources.jangseong.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.jangseong.html_profile]
+container_selector = "table#board_list_table"
+row_selector = "tbody > tr:has(> td)"
+link_selector = "td:nth-of-type(3) a"
+date_selector = "td:nth-of-type(5)"
+detail_title_selector = "div.show_info > h3"
+detail_date_selector = "div.show_info > div.reg_info"
+id_pattern = '/show/([1-9][0-9]*)'
+detail_url_template = "/home/www/news/jangseong/announcement/show/{id}"
+search_param = "not_ancmt_sj"
+page_param = "page"
+page_number_selector = "div.pagenum > strong"
+
+[sources.wando]
+municipality = "완도군"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.wando.go.kr/wando/sub.cs?m=318&search_type=title"
+recruitment_only = true
+max_pages = 40
+[sources.wando.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.wando.html_profile]
+container_selector = "table.board_t1"
+row_selector = "tbody > tr:has(> td)"
+link_selector = "td.nttSj a"
+date_selector = "td.date"
+detail_title_selector = "#board_basic_view .news_tit > h3"
+detail_date_selector = "#board_basic_view .news_tit dt:-soup-contains-own('작성일') + dd"
+id_pattern = 'nttId=([1-9][0-9]*)'
+detail_url_template = "/wando/sub.cs?m=1031&nttId={id}"
+search_param = "search_word"
+page_param = "pageIndex"
+page_number_selector = "div.paging a.on"
+
+[sources.jindo]
+municipality = "진도군"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.jindo.go.kr/home/gosi/general.cs?m=878&searchCondition=notAncmtSj"
+recruitment_only = true
+max_pages = 40
+[sources.jindo.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.jindo.html_profile]
+container_selector = "table.gosi_list"
+row_selector = "tbody > tr:has(> td)"
+link_selector = "td.title a"
+date_selector = "td.date"
+detail_title_selector = "div.board_view dl.view_head dt > span.txt"
+detail_date_selector = "p.table_unit > em"
+id_pattern = 'notAncmtMgtNo=([1-9][0-9]*)'
+detail_url_template = "/home/gosi/general.cs?act=view&notAncmtMgtNo={id}"
+search_param = "searchKeyword"
+page_param = "pageIndex"
+page_number_selector = "div.current_pages > em"
+
+[sources.shinan]
+municipality = "신안군"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.shinan.go.kr/home/www/openinfo/participation_07/participation_07_04/page.wscms?search=search_title"
+recruitment_only = true
+max_pages = 40
+[sources.shinan.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.shinan.html_profile]
+container_selector = "table#board_list_table"
+row_selector = "tbody > tr:has(> td)"
+link_selector = "td:nth-of-type(3) a"
+date_selector = "td:nth-of-type(4)"
+detail_title_selector = "th:has(> label:-soup-contains-own('제목')) + td"
+detail_date_selector = "th:has(> label:-soup-contains-own('등록일')) + td"
+id_pattern = '/show/([1-9][0-9]*)'
+detail_url_template = "/home/www/openinfo/participation_07/participation_07_04/show/{id}"
+search_param = "not_ancmt_sj"
+page_param = "page"
+page_number_selector = "div.pagenum > strong"
+
+[sources.daejeon]
+municipality = "대전광역시"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.daejeon.go.kr/drh/drhGosiList.do?gosigbn=A&menuSeq=1908&conifmstdt=2025-10-05&conifmenddt=2026-10-04"
+recruitment_only = true
+max_pages = 40
+[sources.daejeon.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.daejeon.html_profile]
+container_selector = "table.board_table_list"
+row_selector = "tbody > tr:has(> td)"
+link_selector = "td.title a"
+date_selector = "td:nth-of-type(4)"
+detail_title_selector = "div.board_view li.title > span.txt"
+detail_date_selector = "div.board_view span.subject:-soup-contains-own('게재일자') + span.txt"
+id_pattern = 'sno=([1-9][0-9]*)'
+detail_url_template = "/drh/drhGosiView.do?gosigbn=A&sno={id}&menuSeq=1908"
+search_param = "title"
+page_param = "pageIndex"
+page_number_selector = "div.pagination > strong"
+
+[sources.daejeon_donggu]
+municipality = "대전 동구"
+source_type = "html"
+engine_type = "eminwon_ofr"
+list_url = "https://eminwon.donggu.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?not_ancmt_se_code=01,04&jndinm=OfrNotAncmtEJB&context=NTIS&method=selectListOfrNotAncmt&methodnm=selectListOfrNotAncmtHomepage&ofr_pageSize=10&homepage_pbs_yn=Y&subCheck=Y&list_gubun=A"
+recruitment_only = true
+max_pages = 40
+[sources.daejeon_donggu.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.daejeon_donggu.html_profile]
+container_selector = "table[summary='고시공고 목록']"
+row_selector = "tbody > tr:has(> td:nth-of-type(3) a[onclick])"
+link_selector = "td:nth-of-type(3) a"
+link_attribute = "onclick"
+date_selector = "td:nth-of-type(5)"
+detail_title_selector = "th:-soup-contains-own('제목') + td"
+detail_date_selector = "th:-soup-contains-own('등록일') + td"
+id_pattern = "searchDetail[(]'([1-9][0-9]*)'"
+detail_url_template = "/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&subCheck=Y&not_ancmt_mgt_no={id}"
+search_param = "not_ancmt_sj"
+page_param = "pageIndex"
+
+[sources.daejeon_seogu]
+municipality = "대전 서구"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.seogu.go.kr/prog/saeolGosi/GOSI/kor/sub04_02_01/list.do"
+recruitment_only = true
+max_pages = 40
+[sources.daejeon_seogu.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.daejeon_seogu.html_profile]
+container_selector = "table[data-tabletype='bbsTable']"
+row_selector = "tbody > tr:has(> td)"
+link_selector = "td.subject[data-key-no]"
+link_attribute = "data-key-no"
+date_selector = "td[data-cell-header='등록일']"
+detail_title_selector = "span#notAncmtSj"
+detail_date_selector = "span#pbsHopYmd"
+id_pattern = '^([1-9][0-9]*)$'
+detail_url_template = "/prog/saeolGosi/GOSI/kor/sub04_02_01/view.do?notAncmtMgtNo={id}"
+search_param = "searchKeyword"
+page_param = "pageIndex"
+page_number_selector = "li.page-item.active > a.page-link"
+
+[sources.yuseong]
+municipality = "유성구"
+source_type = "html"
+engine_type = "eminwon_ofr"
+list_url = "https://eminwon.yuseong.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?not_ancmt_se_code=01,04&jndinm=OfrNotAncmtEJB&context=NTIS&method=selectListOfrNotAncmt&methodnm=selectListOfrNotAncmtHomepage&ofr_pageSize=10&homepage_pbs_yn=Y&subCheck=Y&list_gubun=A"
+recruitment_only = true
+max_pages = 40
+[sources.yuseong.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.yuseong.html_profile]
+container_selector = "table.tbl_type"
+row_selector = "tbody > tr:has(> td:nth-of-type(3) a[onclick])"
+link_selector = "td:nth-of-type(3) a"
+link_attribute = "onclick"
+date_selector = "td:nth-of-type(5)"
+detail_title_selector = "th:-soup-contains-own('제목') + td"
+detail_date_selector = "th:-soup-contains-own('등록일') + td"
+id_pattern = "searchDetail[(]'([1-9][0-9]*)'"
+detail_url_template = "/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&subCheck=Y&not_ancmt_mgt_no={id}"
+search_param = "not_ancmt_sj"
+page_param = "pageIndex"

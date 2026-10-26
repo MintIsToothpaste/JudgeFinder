@@ -1,0 +1,197 @@
+# Isolated live validation; production config/config.toml is unchanged.
+timezone = "Asia/Seoul"
+db_path = "data/live-tests/seoul-ten-2026-09-27/notices.db"
+enabled_sources = ["gwangjin", "dongdaemun", "jungnang", "gangbuk", "dobong", "nowon", "eunpyeong", "seodaemun", "mapo", "yangcheon"]
+
+[sources.gwangjin]
+municipality = "광진구"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.gwangjin.go.kr/portal/bbs/B0000378/list.do?menuNo=200192&searchCnd=0"
+recruitment_only = true
+[sources.gwangjin.request_strategy]
+timeout_seconds = 30.0
+throttle_seconds = 1.0
+[sources.gwangjin.html_profile]
+container_selector = ".table.m table"
+row_selector = "tbody tr"
+link_selector = "td.tit a"
+detail_date_selector = "dt:-soup-contains-own('등록일') + dd"
+id_pattern = '[?&]notAncmtMgtNo=([1-9][0-9]*)(?:&|$)'
+detail_url_template = "/portal/bbs/B0000378/view.do?notAncmtMgtNo={id}&menuNo=200192"
+search_param = "searchWrd"
+
+[sources.dongdaemun]
+municipality = "동대문구"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.ddm.go.kr/www/selectEminwonWebList.do?key=3291&searchNotAncmtSeCode=01,02,04,05,06,07&searchCnd=notAncmtSj"
+recruitment_only = true
+[sources.dongdaemun.request_strategy]
+session = true
+referer = true
+timeout_seconds = 30.0
+throttle_seconds = 1.0
+[sources.dongdaemun.html_profile]
+container_selector = "table.p-table"
+row_selector = "tbody tr"
+link_selector = "a[href*='selectEminwonWebView.do']"
+detail_date_selector = "th:-soup-contains-own('등록일') + td"
+id_pattern = '[?&]notAncmtMgtNo=([1-9][0-9]*)(?:&|$)'
+detail_url_template = "/www/selectEminwonWebView.do?key=3291&notAncmtMgtNo={id}&searchNotAncmtSeCode=01,02,04,05,06,07"
+search_param = "searchKrwd"
+
+[sources.jungnang]
+municipality = "중랑구"
+source_type = "html"
+engine_type = "integrated_search_gosi"
+list_url = "https://www.jungnang.go.kr/portal/main/search.do?colTarget=board&rowsperPage=10&sorting=Date&dtSearch=all&searchPeroid=all"
+recruitment_only = true
+[sources.jungnang.request_strategy]
+session = true
+referer = true
+timeout_seconds = 30.0
+throttle_seconds = 1.0
+[sources.jungnang.html_profile]
+container_selector = ".con_sh_list"
+row_selector = "a.text_link[href*='/portal/bbs/view/B0000117/']"
+link_selector = ""
+detail_title_selector = "h2.htit"
+detail_date_selector = "th:-soup-contains-own('등록일') + td"
+id_pattern = '/B0000117/([1-9][0-9]*)(?:[.?]|$)'
+detail_url_template = "/portal/bbs/view/B0000117/{id}?menuNo=200475"
+search_param = "searchTerm"
+page_param = "pageNum"
+
+[sources.gangbuk]
+municipality = "강북구"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.gangbuk.go.kr/portal/bbs/B0000245/list.do?menuNo=200082&searchCnd=1"
+recruitment_only = true
+[sources.gangbuk.request_strategy]
+session = true
+referer = true
+timeout_seconds = 30.0
+throttle_seconds = 1.0
+[sources.gangbuk.html_profile]
+container_selector = ".bd-list table"
+row_selector = "tbody tr"
+link_selector = "td.title a"
+date_selector = "td:nth-of-type(5)"
+id_pattern = '[?&]nttId=([1-9][0-9]*)(?:&|$)'
+detail_url_template = "/portal/bbs/B0000245/view.do?menuNo=200082&nttId={id}"
+search_param = "searchWrd"
+
+[sources.dobong]
+municipality = "도봉구"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.dobong.go.kr/bbs.asp?code=10008769&strSearchType=1"
+recruitment_only = true
+[sources.dobong.request_strategy]
+timeout_seconds = 30.0
+throttle_seconds = 1.0
+[sources.dobong.html_profile]
+container_selector = "table.boardList"
+row_selector = "tbody tr"
+link_selector = "td[data-cell-header='제목'] a"
+date_selector = "td[data-cell-header='등록일']"
+id_pattern = '[?&]pcode=([1-9][0-9]*)(?:&|$)'
+detail_url_template = "/bbs.asp?bmode=D&pcode={id}&code=10008769"
+search_param = "strSearchKeyword"
+page_param = "intPage"
+
+[sources.nowon]
+municipality = "노원구"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.nowon.kr/www/user/bbs/BD_selectBbsList.do?q_bbsCode=1004&q_clCode=0&q_searchKeyTy=sj___1002"
+recruitment_only = true
+[sources.nowon.request_strategy]
+session = true
+referer = true
+timeout_seconds = 30.0
+throttle_seconds = 1.0
+[sources.nowon.html_profile]
+container_selector = "table.table-list"
+row_selector = "tbody tr"
+link_selector = "td.cell-subject a"
+date_selector = "td.cell-date"
+detail_title_selector = "#content h1.article-subject"
+id_pattern = '[?&]q_bbscttSn=([1-9][0-9]*)(?:&|$)'
+# q_clCode selects the public site layout, even when its value is zero.
+detail_url_template = "/www/user/bbs/BD_selectBbs.do?q_bbsCode=1004&q_bbscttSn={id}&q_clCode=0"
+search_param = "q_searchVal"
+page_param = "q_currPage"
+
+[sources.eunpyeong]
+municipality = "은평구"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.ep.go.kr/www/selectEminwonList.do?key=754&notAncmtSeCode=01&searchCnd=notAncmtSj"
+recruitment_only = true
+[sources.eunpyeong.request_strategy]
+timeout_seconds = 30.0
+throttle_seconds = 1.0
+[sources.eunpyeong.html_profile]
+container_selector = "table.table.responsive"
+row_selector = "tbody tr"
+link_selector = "td.p-subject a"
+date_selector = "td:nth-of-type(4)"
+id_pattern = '[?&]notAncmtMgtNo=([1-9][0-9]*)(?:&|$)'
+detail_url_template = "/www/selectEminwonView.do?key=754&notAncmtMgtNo={id}&notAncmtSeCode=01"
+search_param = "searchKrwd"
+
+[sources.seodaemun]
+municipality = "서대문구"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.sdm.go.kr/news/notice/notice.do?sdmBoardConfSeq=82&mode=list&keycol=title&np=10"
+recruitment_only = true
+[sources.seodaemun.request_strategy]
+timeout_seconds = 30.0
+throttle_seconds = 1.0
+[sources.seodaemun.html_profile]
+container_selector = "table.boardList"
+row_selector = "tbody tr"
+link_selector = "td.aleft a"
+date_selector = "td:nth-of-type(4)"
+id_pattern = '''^javascript:goView\('([1-9][0-9]*)'\);?$'''
+detail_url_template = "/news/notice/notice.do?mode=view&sdmBoardSeq={id}"
+search_param = "keyword"
+page_param = "cp"
+request_method = "POST"
+request_encoding = "euc-kr"
+
+[sources.mapo]
+municipality = "마포구"
+source_type = "api"
+engine_type = "json_list_api"
+list_url = "https://www.mapo.go.kr/site/rest"
+recruitment_only = true
+[sources.mapo.request_strategy]
+session = true
+referer = true
+timeout_seconds = 30.0
+throttle_seconds = 1.0
+
+[sources.yangcheon]
+municipality = "양천구"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.yangcheon.go.kr/site/yangcheon/ex/bbs/List.do?cbIdx=254&tgtTypeCd=SUB_CONT"
+recruitment_only = true
+[sources.yangcheon.request_strategy]
+timeout_seconds = 30.0
+throttle_seconds = 1.0
+[sources.yangcheon.html_profile]
+container_selector = "table.basic-list.cbIdx_254"
+row_selector = "tbody tr"
+link_selector = "td.subject a"
+link_attribute = "onclick"
+date_selector = "td:nth-of-type(5)"
+detail_title_selector = "#bbsTitle"
+id_pattern = '''^doBbsFView\('254','([1-9][0-9]*)','[0-9]+','[0-9]+'\);return false;$'''
+detail_url_template = "/site/yangcheon/ex/bbs/View.do?cbIdx=254&bcIdx={id}"
+search_param = "searchKey"

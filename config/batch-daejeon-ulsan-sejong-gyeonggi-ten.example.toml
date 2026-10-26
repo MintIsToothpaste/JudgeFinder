@@ -1,0 +1,259 @@
+# Isolated live validation; production config and DB remain unchanged.
+# Window: 2025-10-05 through 2026-10-04. Do not infer missing dates.
+timezone = "Asia/Seoul"
+db_path = "data/live-tests/daejeon-ulsan-sejong-gyeonggi-ten-2026-10-04/notices.db"
+# Sejong is held: the recruitment has neither a listing nor a detail date.
+# Suwon remains diagnostic-only for archive coverage, even if current notices parse.
+enabled_sources = ["daedeok","ulsan","ulsan_junggu","ulsan_namgu","ulsan_donggu","ulsan_bukgu","ulju","gyeonggi","suwon"]
+
+[sources.daedeok]
+municipality = "대덕구"
+source_type = "html"
+engine_type = "eminwon_ofr"
+list_url = "https://eminwon.daedeok.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?not_ancmt_se_code=01,04&jndinm=OfrNotAncmtEJB&context=NTIS&method=selectListOfrNotAncmt&methodnm=selectListOfrNotAncmtHomepage&ofr_pageSize=10&homepage_pbs_yn=Y&subCheck=Y&list_gubun=A"
+recruitment_only = true
+max_pages = 40
+[sources.daedeok.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.daedeok.html_profile]
+container_selector = "table[width='98%'][cellspacing='1']"
+row_selector = "tbody > tr:has(> td:nth-of-type(3)[onclick])"
+link_selector = "td:nth-of-type(3)[onclick]"
+link_attribute = "onclick"
+date_selector = "td:nth-of-type(5)"
+detail_title_selector = "td:-soup-contains-own('제목') + td"
+detail_date_selector = "td:-soup-contains-own('등록일') + td"
+id_pattern = "searchDetail[(]'([1-9][0-9]*)'"
+detail_url_template = "/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&subCheck=Y&not_ancmt_mgt_no={id}"
+search_param = "not_ancmt_sj"
+page_param = "pageIndex"
+
+[sources.ulsan_junggu]
+municipality = "울산 중구"
+source_type = "html"
+engine_type = "eminwon_ofr"
+list_url = "https://eminwon.junggu.ulsan.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?not_ancmt_se_code=01,02,04&jndinm=OfrNotAncmtEJB&context=NTIS&method=selectListOfrNotAncmt&methodnm=selectListOfrNotAncmtHomepage&ofr_pageSize=10&homepage_pbs_yn=Y&subCheck=Y&list_gubun=A"
+recruitment_only = true
+max_pages = 40
+[sources.ulsan_junggu.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.ulsan_junggu.html_profile]
+container_selector = "table[summary='제목,담당부서,등록일 등을 포함한 고시공고 목록표입니다']"
+row_selector = "tbody > tr:has(> td a[onclick])"
+link_selector = "td:nth-of-type(3) a"
+link_attribute = "onclick"
+date_selector = "td:nth-of-type(5)"
+detail_title_selector = "th:-soup-contains-own('제목') + td"
+detail_date_selector = "th:-soup-contains-own('등록일') + td"
+id_pattern = "searchDetail[(]'([1-9][0-9]*)'"
+detail_url_template = "/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&subCheck=Y&not_ancmt_mgt_no={id}"
+search_param = "not_ancmt_sj"
+page_param = "pageIndex"
+
+[sources.ulsan_namgu]
+municipality = "울산 남구"
+source_type = "html"
+engine_type = "eminwon_ofr"
+list_url = "https://eminwon.ulsannamgu.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?not_ancmt_se_code=01,04&jndinm=OfrNotAncmtEJB&context=NTIS&method=selectListOfrNotAncmt&methodnm=selectListOfrNotAncmtHomepage&ofr_pageSize=10&homepage_pbs_yn=Y&subCheck=Y&list_gubun=A"
+recruitment_only = true
+max_pages = 40
+[sources.ulsan_namgu.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.ulsan_namgu.html_profile]
+container_selector = "table.basic_table"
+row_selector = "tbody > tr:has(> td a[onclick])"
+link_selector = "td:nth-of-type(2) a"
+link_attribute = "onclick"
+date_selector = "td:nth-of-type(4)"
+detail_title_selector = "div.bbs_detail_tit > h2"
+detail_date_selector = "div.bbs_detail_tit li.date"
+id_pattern = "searchDetail[(]'([1-9][0-9]*)'"
+detail_url_template = "/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&subCheck=Y&not_ancmt_mgt_no={id}"
+search_param = "not_ancmt_sj"
+page_param = "pageIndex"
+
+[sources.ulsan_donggu]
+municipality = "울산 동구"
+source_type = "html"
+engine_type = "eminwon_ofr"
+list_url = "https://eminwon.donggu.ulsan.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?not_ancmt_se_code=01,03,04,05&jndinm=OfrNotAncmtEJB&context=NTIS&method=selectListOfrNotAncmt&methodnm=selectListOfrNotAncmtHomepage&ofr_pageSize=10&homepage_pbs_yn=Y&subCheck=Y&list_gubun=A"
+recruitment_only = true
+max_pages = 40
+[sources.ulsan_donggu.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.ulsan_donggu.html_profile]
+container_selector = "table.bbs_list"
+row_selector = "tbody > tr:has(> td a[onclick])"
+link_selector = "td:nth-of-type(2) a"
+link_attribute = "onclick"
+date_selector = "td:nth-of-type(4)"
+detail_title_selector = "div.bbs_detail_tit > h2"
+detail_date_selector = "div.bbs_detail_tit li:has(> strong:-soup-contains-own('등록일'))"
+id_pattern = "searchDetail[(]'([1-9][0-9]*)'"
+detail_url_template = "/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&subCheck=Y&not_ancmt_mgt_no={id}"
+search_param = "not_ancmt_sj"
+page_param = "pageIndex"
+
+[sources.ulsan_bukgu]
+municipality = "울산 북구"
+source_type = "html"
+engine_type = "eminwon_ofr"
+list_url = "https://eminwon.bukgu.ulsan.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?not_ancmt_se_code=01,03,04&jndinm=OfrNotAncmtEJB&context=NTIS&method=selectListOfrNotAncmt&methodnm=selectListOfrNotAncmtHomepage&ofr_pageSize=10&homepage_pbs_yn=Y&subCheck=Y&list_gubun=A"
+recruitment_only = true
+max_pages = 40
+[sources.ulsan_bukgu.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.ulsan_bukgu.html_profile]
+container_selector = "table.cont_table[summary='고시공고 목록']"
+row_selector = "tbody > tr:has(> td a[onclick])"
+link_selector = "td:nth-of-type(3) a"
+link_attribute = "onclick"
+date_selector = "td:nth-of-type(5)"
+detail_title_selector = "th:-soup-contains-own('제목') + td"
+detail_date_selector = "th:-soup-contains-own('등록일') + td"
+id_pattern = "searchDetail[(]'([1-9][0-9]*)'"
+detail_url_template = "/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&subCheck=Y&not_ancmt_mgt_no={id}"
+search_param = "not_ancmt_sj"
+page_param = "pageIndex"
+
+[sources.ulsan]
+municipality = "울산광역시"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.ulsan.go.kr/u/rep/transfer/notice/list.ulsan?mId=001004002000000000&srchType=srchSj"
+recruitment_only = true
+max_pages = 40
+[sources.ulsan.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.ulsan.html_profile]
+container_selector = "table.tbl_bd_list"
+row_selector = "tbody > tr:has(> td)"
+link_selector = "td.gosi a"
+date_selector = "td:nth-of-type(6)"
+detail_title_selector = "th:-soup-contains-own('제목') + td"
+detail_date_selector = "th:-soup-contains-own('게재 일자') + td"
+id_pattern = '/([1-9][0-9]*)[.]ulsan'
+detail_url_template = "/u/rep/transfer/notice/{id}.ulsan?mId=001004002000000000&gosiGbn=A"
+search_param = "srchWord"
+page_param = "curPage"
+page_number_selector = "ul.pagination li.active a"
+
+[sources.ulju]
+municipality = "울주군"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.ulju.ulsan.kr/ulju/saeol/gosi/list.do?mId=0403020000&seCode=04&searchType=tit"
+recruitment_only = true
+max_pages = 40
+[sources.ulju.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.ulju.html_profile]
+container_selector = "table.bod_list.gosi"
+row_selector = "tbody > tr:has(> td)"
+link_selector = "td.list_tit a"
+link_attribute = "data-action"
+date_selector = "td.list_date"
+detail_title_selector = "div.bod_view > h4"
+detail_date_selector = "li.view_date"
+id_pattern = 'notAncmtMgtNo=([1-9][0-9]*)'
+detail_url_template = "/ulju/saeol/gosi/view.do?notAncmtMgtNo={id}&mId=0403020000"
+search_param = "searchTxt"
+page_param = "page"
+page_number_selector = "p.page_num > em"
+
+[sources.sejong]
+municipality = "세종특별자치시"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.sejong.go.kr/prog/publicNotice/kor/sub02_030301/C1_1/list.do?searchCondition=not_ancmt_sj&searchStartDate=2025-10-05&searchEndDate=2026-10-04"
+recruitment_only = true
+max_pages = 40
+[sources.sejong.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.sejong.html_profile]
+container_selector = "table.table-bordered.text-center"
+row_selector = "tbody > tr:has(> td)"
+link_selector = "td.text-left a"
+date_selector = "td:nth-of-type(5)"
+detail_title_selector = "th:-soup-contains-own('제목') + td"
+detail_date_selector = "th:-soup-contains-own('게재(공고)기간') + td"
+id_pattern = 'not_ancmt_mgt_no=([1-9][0-9]*)'
+detail_url_template = "/prog/publicNotice/kor/sub02_030301/C1_1/view.do?not_ancmt_mgt_no={id}"
+search_param = "searchKeyword"
+page_param = "pageIndex"
+page_number_selector = "li.page-item.active a"
+
+[sources.gyeonggi]
+municipality = "경기도"
+source_type = "api"
+engine_type = "json_list_api"
+list_url = "https://www.gg.go.kr/ajax/board/getList.do?bsIdx=469&bcIdx=0&menuId=1547&keyfield=SUBJECT&limit=10"
+recruitment_only = true
+max_pages = 40
+[sources.gyeonggi.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.gyeonggi.json_profile]
+rows_path = "items"
+title_key = "SUBJECT"
+date_key = "WRITE_DATE2"
+id_key = "B_IDX"
+detail_url_template = "/bbs/boardView.do?bIdx={id}&bsIdx=469&menuId=1547"
+total_path = "total"
+search_param = "keyword"
+page_param = "page"
+offset_param = "offset"
+offset_base = 0
+page_size = 10
+request_method = "POST"
+
+[sources.suwon]
+municipality = "수원시"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.suwon.go.kr/web/saeallOfr/BD_ofrList.do?q_searchKey=SJ"
+recruitment_only = true
+max_pages = 40
+[sources.suwon.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.suwon.html_profile]
+container_selector = "table.p-table"
+row_selector = "tbody > tr:has(> td)"
+link_selector = "td a[href*='BD_ofrView']"
+date_selector = "td:nth-of-type(5)"
+detail_title_selector = "span.p-table__subject_text"
+detail_date_selector = "th:-soup-contains-own('게재(공고)일자') + td"
+id_pattern = 'notAncmtMgtNo=([1-9][0-9]*)'
+detail_url_template = "/web/saeallOfr/BD_ofrView.do?notAncmtMgtNo={id}"
+search_param = "q_searchVal"
+page_param = "q_currPage"
+page_number_selector = "#dataForm em.em_b_black"

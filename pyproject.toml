@@ -11,8 +11,10 @@ requires-python = ">=3.10"
 dependencies = [
     "click>=8.1",
     "requests>=2.31",
+    "truststore>=0.10,<1",
     "python-certifi-win32>=1.6; platform_system == 'Windows'",
     "beautifulsoup4>=4.12",
+    "html5lib>=1.1,<2",
     "sqlalchemy>=2.0",
     "tomli>=2.0; python_version < '3.11'",
     "tzdata>=2024.1",

@@ -1,0 +1,107 @@
+# Live HTML validation only; does not change config/config.toml.
+timezone = "Asia/Seoul"
+db_path = "data/live-tests/batch-2026-09-27/notices.db"
+enabled_sources = ["seoul", "jongno", "seoul_junggu", "yongsan", "seongdong"]
+
+[sources.seoul]
+municipality = "서울특별시"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.seoul.go.kr/news/news_notice.do?bbsNo=277&srchKey=sj&curPage=1"
+recruitment_only = true
+
+[sources.seoul.request_strategy]
+timeout_seconds = 30.0
+throttle_seconds = 1.0
+
+[sources.seoul.html_profile]
+container_selector = "table.sib-lst-type-basic"
+row_selector = "tbody tr"
+link_selector = "td.sib-lst-type-basic-subject a"
+date_selector = "td:nth-of-type(4)"
+id_pattern = '''^javascript:fnTbbsView\('([1-9][0-9]*)'\);?$'''
+detail_url_template = "?bbsNo=277&nttNo={id}"
+search_param = "srchText"
+page_param = "curPage"
+
+[sources.jongno]
+municipality = "종로구"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.jongno.go.kr/portal/bbs/selectBoardList.do?bbsId=BBSMSTR_000000000201&menuId=1753&menuNo=1753&searchCnd=0&pageIndex=1"
+recruitment_only = true
+
+[sources.jongno.request_strategy]
+timeout_seconds = 30.0
+throttle_seconds = 1.0
+
+[sources.jongno.html_profile]
+container_selector = "table.list_type01"
+row_selector = "tbody tr"
+link_selector = "td.sj a"
+date_selector = "td.date1"
+id_pattern = '''^javascript:viewMove\('([1-9][0-9]*)'\);?$'''
+detail_url_template = "/portal/bbs/selectBoardArticle.do?bbsId=BBSMSTR_000000000201&menuNo=1753&menuId=1753&nttId={id}"
+search_param = "searchWrd"
+
+[sources.seoul_junggu]
+municipality = "서울 중구"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.junggu.seoul.kr/content.do?cmsid=15450&searchField=all&page=1"
+recruitment_only = true
+
+[sources.seoul_junggu.request_strategy]
+timeout_seconds = 30.0
+throttle_seconds = 1.0
+
+[sources.seoul_junggu.html_profile]
+container_selector = ".board_list table"
+row_selector = "tbody tr"
+link_selector = "p.title a"
+date_selector = "td:nth-of-type(4)"
+id_pattern = '[?&]cid=([1-9][0-9]*)(?:&|$)'
+detail_url_template = "/content.do?cmsid=15450&mode=view&cid={id}"
+search_param = "searchValue"
+page_param = "page"
+
+[sources.yongsan]
+municipality = "용산구"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.yongsan.go.kr/portal/bbs/B0000041/list.do?menuNo=200228&searchCnd=1&pageIndex=1"
+recruitment_only = true
+
+[sources.yongsan.request_strategy]
+timeout_seconds = 30.0
+throttle_seconds = 1.0
+
+[sources.yongsan.html_profile]
+container_selector = ".bd-list table"
+row_selector = "tbody tr"
+link_selector = "td.title a"
+date_selector = "td:nth-of-type(5)"
+id_pattern = '[?&]nttId=([1-9][0-9]*)(?:&|$)'
+detail_url_template = "/portal/bbs/B0000041/view.do?nttId={id}&menuNo=200228"
+search_param = "searchWrd"
+
+[sources.seongdong]
+municipality = "성동구"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.sd.go.kr/main/selectBbsNttList.do?bbsNo=166&key=1307&searchCnd=SJ&pageIndex=1"
+recruitment_only = true
+
+[sources.seongdong.request_strategy]
+timeout_seconds = 30.0
+throttle_seconds = 1.0
+verify_tls = true
+
+[sources.seongdong.html_profile]
+container_selector = "table.p-table"
+row_selector = "tbody tr"
+link_selector = "a[href*='selectBbsNttView.do']"
+date_selector = "td:nth-of-type(3)"
+id_pattern = '[?&]nttNo=([1-9][0-9]*)(?:&|$)'
+detail_url_template = "/main/selectBbsNttView.do?bbsNo=166&nttNo={id}&key=1307"
+search_param = "searchKrwd"

@@ -1,0 +1,318 @@
+# Isolated validation only. Production config is not changed.
+# Window: 2025-10-05 through 2026-10-04.
+timezone = "Asia/Seoul"
+db_path = "data/live-tests/jeonnam-gwangju-ten-2026-10-04/notices.db"
+enabled_sources = ["yeosu", "yeosu_current", "suncheon", "naju", "naju_current", "gwangyang", "gwangju_donggu", "gwangju_seogu", "gwangju_seogu_current", "gwangju_namgu", "gwangju_bukgu", "gwangsan", "damyang"]
+
+[sources.yeosu]
+municipality = "여수시"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.yeosu.go.kr/www/govt/news/notify/complete_notify?search_type=title"
+recruitment_only = true
+max_pages = 40
+[sources.yeosu.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.yeosu.html_profile]
+container_selector = "table.board_basic"
+row_selector = "tbody tr:has(> td)"
+link_selector = "td:nth-of-type(3) a"
+date_selector = "td:nth-of-type(5)"
+detail_title_selector = "div.view_titlebox h3"
+detail_date_selector = "div.view_titlebox dt:-soup-contains-own('날짜') + dd"
+id_pattern = "idx=([1-9][0-9]*)"
+detail_url_template = "/www/govt/news/notify/complete_notify?idx={id}&mode=view"
+search_param = "search_word"
+page_param = "page"
+
+[sources.yeosu_current]
+municipality = "여수시"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.yeosu.go.kr/www/govt/news/notify/new_notifys/new_notify?search_type=title"
+recruitment_only = true
+max_pages = 40
+[sources.yeosu_current.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.yeosu_current.html_profile]
+container_selector = "table.board_basic"
+row_selector = "tbody tr:has(> td)"
+link_selector = "td:nth-of-type(3) a"
+date_selector = "td:nth-of-type(5)"
+detail_title_selector = "div.view_titlebox h3"
+detail_date_selector = "div.view_titlebox dt:-soup-contains-own('날짜') + dd"
+id_pattern = "idx=([1-9][0-9]*)"
+detail_url_template = "/www/govt/news/notify/new_notifys/new_notify?idx={id}&mode=view"
+search_param = "search_word"
+page_param = "page"
+
+[sources.suncheon]
+municipality = "순천시"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.suncheon.go.kr/kr/news/0004/0005/0001/?searchCondition=title"
+recruitment_only = true
+max_pages = 40
+[sources.suncheon.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.suncheon.html_profile]
+container_selector = "table.bbsList"
+row_selector = "tbody tr:has(> td)"
+link_selector = "td:nth-of-type(3) a"
+date_selector = "td:nth-of-type(5)"
+detail_title_selector = "th:-soup-contains-own('제목') + td"
+detail_date_selector = "th:-soup-contains-own('등록일') + td"
+id_pattern = "seq=([1-9][0-9]*)"
+detail_url_template = "/kr/news/0004/0005/0001/?mode=view&seq={id}"
+search_param = "searchKeyword"
+page_param = "pageIndex"
+page_number_selector = "a.on[title='현재페이지']"
+
+[sources.naju]
+municipality = "나주시"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.naju.go.kr/www/administration/notice/old_gosi_new?search_type=title&start_date=2025-10-05&finish_date=2026-10-04"
+recruitment_only = true
+max_pages = 40
+[sources.naju.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.naju.html_profile]
+container_selector = "table.table_list"
+row_selector = "tbody tr:has(> td)"
+link_selector = "td:nth-of-type(3) a"
+date_selector = "td:nth-of-type(5)"
+detail_title_selector = "div.view_title p.title"
+detail_date_selector = "div.view_title span.tit:-soup-contains-own('등록일') + span.sub"
+id_pattern = "idx=([1-9][0-9]*)"
+detail_url_template = "/www/administration/notice/old_gosi_new?idx={id}&mode=view"
+search_param = "search_word"
+page_param = "page"
+
+[sources.naju_current]
+municipality = "나주시"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.naju.go.kr/www/administration/notice/gosi_new?search_type=title&start_date=2025-10-05&finish_date=2026-10-04"
+recruitment_only = true
+max_pages = 40
+[sources.naju_current.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.naju_current.html_profile]
+container_selector = "table.table_list"
+row_selector = "tbody tr:has(> td)"
+link_selector = "td:nth-of-type(3) a"
+date_selector = "td:nth-of-type(5)"
+detail_title_selector = "div.view_title p.title"
+detail_date_selector = "div.view_title span.tit:-soup-contains-own('등록일') + span.sub"
+id_pattern = "idx=([1-9][0-9]*)"
+detail_url_template = "/www/administration/notice/gosi_new?idx={id}&mode=view"
+search_param = "search_word"
+page_param = "page"
+
+[sources.gwangyang]
+municipality = "광양시"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+# The official announcement menu explicitly supplies type_code=02,04.
+list_url = "https://gwangyang.go.kr/saeol/gosi.es?mid=a10909020000&type_code=02,04&keyField=T"
+recruitment_only = true
+max_pages = 40
+[sources.gwangyang.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.gwangyang.html_profile]
+container_selector = "table.p-table.simple"
+row_selector = "tbody tr:has(> td)"
+link_selector = "td:nth-of-type(3) a"
+date_selector = "td:nth-of-type(5)"
+detail_title_selector = "th.bbs_tit"
+detail_date_selector = "th:-soup-contains-own('등록일') + td"
+id_pattern = "seq=([1-9][0-9]*)"
+detail_url_template = "/saeol/gosi.es?mid=a10909020000&act=view&type_code=02,04&seq={id}"
+search_param = "keyWord"
+page_param = "nPage"
+
+[sources.gwangju_donggu]
+municipality = "광주 동구"
+source_type = "html"
+engine_type = "eminwon_ofr"
+list_url = "https://eminwon.donggu.gwangju.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?not_ancmt_se_code=01,04,05&jndinm=OfrNotAncmtEJB&context=NTIS&method=selectListOfrNotAncmt&methodnm=selectListOfrNotAncmtHomepage&ofr_pageSize=10&homepage_pbs_yn=Y&subCheck=Y&list_gubun=A"
+recruitment_only = true
+max_pages = 40
+[sources.gwangju_donggu.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.gwangju_donggu.html_profile]
+container_selector = "div.tstyle_list"
+row_selector = "div.dbody > ul"
+link_selector = "li.title a"
+link_attribute = "onclick"
+date_selector = "li.col04"
+detail_title_selector = "div.title"
+detail_date_selector = "span#pbs_hop_ymd"
+id_pattern = "searchDetail\\('([1-9][0-9]*)'\\)"
+detail_url_template = "/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&subCheck=Y&not_ancmt_mgt_no={id}"
+search_param = "not_ancmt_sj"
+
+[sources.gwangju_seogu]
+municipality = "광주 서구"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.seogu.gwangju.kr/api/eminwon/gosiBeforeXmlList.es?mid=a10807020000&keyField=A"
+recruitment_only = true
+max_pages = 40
+[sources.gwangju_seogu.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.gwangju_seogu.html_profile]
+container_selector = "table.tstyle_list"
+row_selector = "tbody tr:has(> td)"
+link_selector = "td:nth-of-type(2) a"
+date_selector = "td:nth-of-type(4)"
+detail_title_selector = "article.board_view h2.title"
+detail_date_selector = "article.board_view li.date span"
+search_param = "keyWord"
+page_param = "nPage"
+
+[sources.gwangju_seogu_current]
+municipality = "광주 서구"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.seogu.gwangju.kr/api/eminwon/gosiXmlList.es?mid=a10807010000&keyField=A"
+recruitment_only = true
+max_pages = 40
+[sources.gwangju_seogu_current.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.gwangju_seogu_current.html_profile]
+container_selector = "table.tstyle_list"
+row_selector = "tbody tr:has(> td)"
+link_selector = "td:nth-of-type(2) a"
+date_selector = "td:nth-of-type(4)"
+detail_title_selector = "article.board_view h2.title"
+detail_date_selector = "article.board_view li.date span"
+search_param = "keyWord"
+page_param = "nPage"
+
+[sources.gwangju_namgu]
+municipality = "광주 남구"
+source_type = "html"
+engine_type = "eminwon_ofr"
+list_url = "https://eminwon.namgu.gwangju.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?not_ancmt_se_code=01,04&jndinm=OfrNotAncmtEJB&context=NTIS&method=selectListOfrNotAncmt&methodnm=selectListOfrNotAncmtHomepage&ofr_pageSize=10&homepage_pbs_yn=Y&subCheck=Y&list_gubun=A"
+recruitment_only = true
+max_pages = 40
+[sources.gwangju_namgu.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.gwangju_namgu.html_profile]
+container_selector = "div.tstyle_list"
+row_selector = "div.dbody > ul"
+link_selector = "li.title a"
+link_attribute = "onclick"
+date_selector = "li.col04"
+detail_title_selector = "div.title"
+detail_date_selector = "span#pbs_hop_ymd"
+id_pattern = "searchDetail\\('([1-9][0-9]*)'\\)"
+detail_url_template = "/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&subCheck=Y&not_ancmt_mgt_no={id}"
+search_param = "not_ancmt_sj"
+
+[sources.gwangju_bukgu]
+municipality = "광주 북구"
+source_type = "html"
+engine_type = "eminwon_ofr"
+list_url = "https://eminwon.bukgu.gwangju.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?not_ancmt_se_code=01,03,04&jndinm=OfrNotAncmtEJB&context=NTIS&method=selectListOfrNotAncmt&methodnm=selectListOfrNotAncmtHomepage&ofr_pageSize=10&homepage_pbs_yn=Y&subCheck=Y&list_gubun=A"
+recruitment_only = true
+max_pages = 40
+[sources.gwangju_bukgu.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.gwangju_bukgu.html_profile]
+container_selector = "table[summary*='고시공고 목록표']"
+row_selector = "tr:has(> td:nth-of-type(3) a[onclick])"
+link_selector = "td:nth-of-type(3) a"
+link_attribute = "onclick"
+date_selector = "td:nth-of-type(5)"
+detail_title_selector = "h3.title"
+detail_date_selector = "dt:-soup-contains-own('등록일') + dd"
+id_pattern = "searchDetail\\('([1-9][0-9]*)'\\)"
+detail_url_template = "/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&subCheck=Y&not_ancmt_mgt_no={id}"
+search_param = "not_ancmt_sj"
+
+[sources.gwangsan]
+municipality = "광산구"
+source_type = "html"
+engine_type = "eminwon_ofr"
+# The portal JSON cache omits newer records present in official Saeol.
+list_url = "https://eminwon.gwangsan.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?not_ancmt_se_code=01,03,04&jndinm=OfrNotAncmtEJB&context=NTIS&method=selectListOfrNotAncmt&methodnm=selectListOfrNotAncmtHomepage&ofr_pageSize=10&homepage_pbs_yn=Y&subCheck=Y&list_gubun=A"
+recruitment_only = true
+max_pages = 40
+[sources.gwangsan.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.gwangsan.html_profile]
+container_selector = "table#board-list"
+row_selector = "tbody tr:has(> td)"
+link_selector = "td:nth-of-type(2) a"
+date_selector = "td:nth-of-type(4)"
+detail_title_selector = "div.viewTit"
+detail_date_selector = "div.viewYmd"
+id_pattern = "not_ancmt_mgt_no=([1-9][0-9]*)"
+detail_url_template = "/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&subCheck=Y&not_ancmt_mgt_no={id}"
+search_param = "not_ancmt_sj"
+
+[sources.damyang]
+municipality = "담양군"
+source_type = "api"
+engine_type = "json_list_api"
+list_url = "https://www.damyang.go.kr/eminwon/getSearchList?listType=01,02,03,04&listGubun=A&searchKey=B_Subject&ROW_CNT=10"
+recruitment_only = true
+max_pages = 40
+[sources.damyang.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.damyang.json_profile]
+rows_path = "RSLT_DATA.searchList.dataMap"
+title_key = "col3"
+date_key = "col5"
+id_key = "col0"
+detail_url_template = "/eminwon/searchDetail?notAncmtMgtNo={id}&domainId=DOM_0000001&menuCd=DOM_000000190001002001&contentsSid=2&listType=01"
+status_path = "RSLT_CD"
+success_value = "0000"
+total_path = "PG_TOT_CNT"
+page_path = "RSLT_DATA.searchList.pageMap.nowPage"
+search_param = "searchVal"
+page_param = "CUR_PAGE_IDX"
+offset_param = "BEGIN_ROW_IDX"
+page_size = 10

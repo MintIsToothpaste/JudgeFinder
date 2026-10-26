@@ -1,0 +1,260 @@
+# Isolated public HTML validation. Production settings and DB stay unchanged.
+# Window: 2025-10-05 through 2026-10-04.
+# Bucheon/Pyeongtaek are diagnostic-only until expired-notice coverage is verified.
+timezone = "Asia/Seoul"
+db_path = "data/live-tests/gyeonggi-cities-ten-2026-10-04/notices.db"
+enabled_sources = ["seongnam","uijeongbu","anyang","bucheon","gwangmyeong","pyeongtaek","dongducheon","ansan","goyang","gwacheon"]
+
+[sources.seongnam]
+municipality = "성남시"
+source_type = "html"
+engine_type = "eminwon_ofr"
+list_url = "https://eminwon.seongnam.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&method=selectListOfrNotAncmt&methodnm=selectListOfrNotAncmtHomepage&homepage_pbs_yn=Y&subCheck=Y&ofr_pageSize=10&list_gubun=A&not_ancmt_se_code=01,04,05"
+recruitment_only = true
+max_pages = 40
+[sources.seongnam.request_strategy]
+session = true
+referer = true
+timeout_seconds = 45.0
+throttle_seconds = 1.0
+[sources.seongnam.html_profile]
+row_selector = "tbody > tr:has(> td)"
+container_selector = "table.bd00Bbs"
+link_selector = "td.title a"
+link_attribute = "onclick"
+date_selector = "td:nth-of-type(5)"
+detail_title_selector = "th:-soup-contains-own('제목') + td"
+detail_date_selector = "th:-soup-contains-own('등록일') + td"
+id_pattern = "searchDetail[(]'([1-9][0-9]*)'"
+detail_url_template = "/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&subCheck=Y&not_ancmt_mgt_no={id}"
+search_param = "not_ancmt_sj"
+page_param = "pageIndex"
+
+[sources.uijeongbu]
+municipality = "의정부시"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.ui4u.go.kr/portal/saeol/gosiList.do?seCode=01&mId=0301040000&searchType=not_ancmt_sj"
+recruitment_only = true
+max_pages = 40
+[sources.uijeongbu.request_strategy]
+session = true
+referer = true
+timeout_seconds = 45.0
+throttle_seconds = 1.0
+[sources.uijeongbu.html_profile]
+row_selector = "tbody > tr:has(> td)"
+container_selector = "table.bod_list.gosi"
+link_selector = "td:nth-of-type(3) a"
+link_attribute = "onclick"
+date_selector = "td:nth-of-type(5)"
+detail_title_selector = "div.bod_view h4"
+detail_date_selector = "div.bod_view li:has(> span:-soup-contains-own('등록일'))"
+id_pattern = "boardView[(]'[0-9]+', '([1-9][0-9]*)'"
+detail_url_template = "/portal/saeol/gosiView.do?notAncmtMgtNo={id}&mId=0301040000"
+search_param = "searchTxt"
+page_param = "page"
+page_number_selector = ".bod_page strong"
+
+[sources.anyang]
+municipality = "안양시"
+source_type = "html"
+engine_type = "eminwon_ofr"
+list_url = "https://eminwon.anyang.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&method=selectListOfrNotAncmt&methodnm=selectListOfrNotAncmtHomepage&homepage_pbs_yn=Y&subCheck=Y&ofr_pageSize=10&list_gubun=A&not_ancmt_se_code=01,04"
+recruitment_only = true
+max_pages = 40
+[sources.anyang.request_strategy]
+session = true
+referer = true
+timeout_seconds = 45.0
+throttle_seconds = 1.0
+[sources.anyang.html_profile]
+row_selector = "tbody > tr:has(> td)"
+container_selector = "table:has(> caption:-soup-contains('리스트'))"
+link_selector = "td:nth-of-type(2) a"
+link_attribute = "onclick"
+date_selector = "td:nth-of-type(4)"
+detail_title_selector = "th:-soup-contains('제목') + td"
+detail_date_selector = "th:-soup-contains('등록일') + td"
+id_pattern = "searchDetail[(]'([1-9][0-9]*)'"
+detail_url_template = "/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&subCheck=Y&not_ancmt_mgt_no={id}"
+search_param = "not_ancmt_sj"
+page_param = "pageIndex"
+
+[sources.bucheon]
+municipality = "부천시"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.bucheon.go.kr/site/program/gosi/list?menuid=148002003001&searchselect=ancmt_sj"
+recruitment_only = true
+max_pages = 40
+[sources.bucheon.request_strategy]
+session = true
+referer = true
+timeout_seconds = 45.0
+throttle_seconds = 1.0
+[sources.bucheon.html_profile]
+row_selector = "tbody > tr:has(> td)"
+container_selector = "table.table-style.t-col"
+link_selector = "td:nth-of-type(3) a"
+date_selector = "td:nth-of-type(5)"
+detail_title_selector = "th.title"
+detail_date_selector = "th:-soup-contains-own('게재(공고)일자') + td"
+id_pattern = "ancmt_mgt_no=([1-9][0-9]*)"
+detail_url_template = "/site/program/gosi/view?ancmt_mgt_no={id}&menuid=148002003001"
+search_param = "searchword"
+page_param = "currentpage"
+page_number_selector = ".paging a.on"
+
+[sources.gwangmyeong]
+municipality = "광명시"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.gm.go.kr/pt/user/nftcBbs/BD_selectNftcBbsList.do?q_nftcBbsCode=1001&q_searchKeyTy=1001"
+recruitment_only = true
+max_pages = 40
+[sources.gwangmyeong.request_strategy]
+session = true
+referer = true
+timeout_seconds = 45.0
+throttle_seconds = 1.0
+[sources.gwangmyeong.html_profile]
+row_selector = "tbody > tr:has(> td)"
+container_selector = "table.bbsList"
+link_selector = "td:nth-of-type(3) a"
+link_attribute = "onclick"
+date_selector = "td:nth-of-type(5)"
+detail_title_selector = "th:-soup-contains-own('제목') + td"
+detail_date_selector = "th:-soup-contains-own('등록일') + td"
+id_pattern = "opDetail[(]'([1-9][0-9]*)'"
+detail_url_template = "/pt/user/nftcBbs/BD_selectNftcBbsDetail.do?q_nftcBbsCode=1001&q_nftcBbsMgtno={id}"
+search_param = "q_searchVal"
+page_param = "q_currPage"
+page_number_selector = "a.on[title^='현재']"
+
+[sources.pyeongtaek]
+municipality = "평택시"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.pyeongtaek.go.kr/pyeongtaek/saeol/gosi/list.do?mid=0401020100&seCode=01&searchType=tit"
+recruitment_only = true
+max_pages = 40
+[sources.pyeongtaek.request_strategy]
+session = true
+referer = true
+timeout_seconds = 45.0
+throttle_seconds = 1.0
+[sources.pyeongtaek.html_profile]
+row_selector = "tbody > tr:has(> td)"
+container_selector = "table.tbl_gosi"
+link_selector = "td.list_tit a"
+link_attribute = "data-action"
+date_selector = "td.list_date"
+detail_title_selector = "div.bod_view h4"
+detail_date_selector = "div.bod_view li:has(> span:-soup-contains-own('등록일'))"
+id_pattern = "notAncmtMgtNo=([1-9][0-9]*)"
+detail_url_template = "/pyeongtaek/saeol/gosi/view.do?notAncmtMgtNo={id}&mid=0401020100"
+search_param = "searchTxt"
+page_param = "page"
+page_number_selector = ".board_page strong"
+
+[sources.dongducheon]
+municipality = "동두천시"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.ddc.go.kr/ddc/selectGosiList.do?key=340&not_ancmt_se_code=04&searchCnd=SJ"
+recruitment_only = true
+max_pages = 40
+[sources.dongducheon.request_strategy]
+session = true
+referer = true
+timeout_seconds = 45.0
+throttle_seconds = 1.0
+[sources.dongducheon.html_profile]
+row_selector = "tbody > tr:has(> td)"
+container_selector = "table.bbs_default.list"
+link_selector = "td.subject a"
+date_selector = "td:nth-of-type(5)"
+detail_title_selector = "th:-soup-contains-own('제 목') + td"
+detail_date_selector = "th:-soup-contains-own('게재일자') + td"
+id_pattern = "not_ancmt_mgt_no=([1-9][0-9]*)"
+detail_url_template = "/ddc/selectGosiData.do?key=340&not_ancmt_se_code=04&not_ancmt_mgt_no={id}"
+search_param = "searchKrwd"
+page_param = "pageIndex"
+page_number_selector = ".pagination .page strong"
+
+[sources.ansan]
+municipality = "안산시"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.ansan.go.kr/www/common/bbs/selectPageListBbs.do?bbs_code=WWW13&sch_type=sj"
+recruitment_only = true
+max_pages = 40
+[sources.ansan.request_strategy]
+session = true
+referer = true
+timeout_seconds = 45.0
+throttle_seconds = 1.0
+[sources.ansan.html_profile]
+row_selector = "tbody > tr:has(> td)"
+container_selector = "table.p-table.simple"
+link_selector = "td.p-subject a"
+link_attribute = "onclick"
+date_selector = "td:nth-of-type(5)"
+detail_title_selector = "th:-soup-contains-own('제목') + td"
+detail_date_selector = ".bbs__view > span:-soup-contains-own('작성일') strong"
+id_pattern = "fnGoDetail[(][ ]*([1-9][0-9]*)"
+detail_url_template = "/www/common/bbs/selectBbsDetail.do?bbs_code=WWW13&bbs_seq={id}"
+search_param = "sch_text"
+page_param = "currentPage"
+page_number_selector = ".p-page__link.active"
+
+[sources.goyang]
+municipality = "고양시"
+source_type = "html"
+engine_type = "eminwon_ofr"
+list_url = "https://eminwon.goyang.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&method=selectListOfrNotAncmt&methodnm=selectListOfrNotAncmtHomepage&homepage_pbs_yn=Y&subCheck=Y&ofr_pageSize=10&list_gubun=A&not_ancmt_se_code=04,05"
+recruitment_only = true
+max_pages = 40
+[sources.goyang.request_strategy]
+session = true
+referer = true
+timeout_seconds = 45.0
+throttle_seconds = 1.0
+[sources.goyang.html_profile]
+row_selector = "tbody > tr:has(> td)"
+container_selector = "table.table-list"
+link_selector = "td:nth-of-type(3) a"
+id_pattern = "searchDetail[(]'([1-9][0-9]*)'"
+date_selector = "td:nth-of-type(5)"
+detail_title_selector = "h3.article-subject"
+detail_date_selector = ".article-info li:-soup-contains-own('등록일')"
+detail_url_template = "/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&subCheck=Y&not_ancmt_mgt_no={id}"
+search_param = "not_ancmt_sj"
+page_param = "pageIndex"
+
+[sources.gwacheon]
+municipality = "과천시"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.gccity.go.kr/portal/saeol/gosi/list.do?mId=0301040000&seCode=01&searchType=tit"
+recruitment_only = true
+max_pages = 40
+[sources.gwacheon.request_strategy]
+session = true
+referer = true
+timeout_seconds = 45.0
+throttle_seconds = 1.0
+[sources.gwacheon.html_profile]
+row_selector = "tbody > tr:has(> td)"
+container_selector = "table.bod_list.gosi"
+link_selector = "td.list_tit a"
+link_attribute = "data-action"
+date_selector = "td.list_date"
+detail_title_selector = "div.bod_view h4"
+detail_date_selector = "div.bod_view li:has(> span:-soup-contains-own('등록일'))"
+id_pattern = "notAncmtMgtNo=([1-9][0-9]*)"
+detail_url_template = "/portal/saeol/gosi/view.do?notAncmtMgtNo={id}&mId=0301040000"
+search_param = "searchTxt"
+page_param = "page"
+page_number_selector = "p.page_num em"

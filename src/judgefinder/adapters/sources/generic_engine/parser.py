@@ -9,6 +9,11 @@ from urllib.parse import parse_qs, urlencode, urljoin, urlparse, urlunparse
 
 from bs4 import BeautifulSoup, Tag
 
+from judgefinder.adapters.sources.generic_engine.gwanak import (
+    build_gwanak_detail_url,
+    gwanak_board_kind,
+    gwanak_registration_text,
+)
 from judgefinder.domain.source_profiles import EngineType
 
 TITLE_KEYS: tuple[str, ...] = (
@@ -88,6 +93,7 @@ class GenericNoticeCandidate:
     url: str
     published_date: date
     searchable_text: str
+    body_text: str = ""
 
 
 def parse_generic_engine_candidates(
@@ -129,7 +135,7 @@ def _parse_html_candidates(
             continue
 
         context_text = _extract_context_text(anchor)
-        published_date = _extract_date_from_text(context_text)
+        published_date = _extract_candidate_date(anchor, url=url, context_text=context_text)
         if published_date is None:
             continue
 
@@ -189,6 +195,8 @@ def _normalize_candidate_url(anchor: Tag, href: str, *, list_url: str) -> str:
     href = href.replace("¬_", "&not_")
     onclick_raw = anchor.get("onclick")
     onclick = onclick_raw if isinstance(onclick_raw, str) else ""
+    if gwanak_board_kind(list_url) and href.lower().startswith(("#", "javascript:")):
+        return build_gwanak_detail_url(anchor, list_url=list_url)
     data_action = _extract_candidate_action_url(anchor)
     if data_action:
         return _strip_url_path_params(urljoin(list_url, data_action))
@@ -197,7 +205,9 @@ def _normalize_candidate_url(anchor: Tag, href: str, *, list_url: str) -> str:
         site_root = f"{parsed.scheme}://{parsed.netloc}/"
         return _strip_url_path_params(urljoin(site_root, href))
     normalized_href = href.strip().lower()
-    embedded_url = _extract_embedded_notice_url(" ".join(part for part in (href, onclick) if part), list_url)
+    embedded_url = _extract_embedded_notice_url(
+        " ".join(part for part in (href, onclick) if part), list_url,
+    )
     if embedded_url:
         return embedded_url
     if normalized_href.startswith("javascript:") or (
@@ -211,7 +221,9 @@ def _normalize_candidate_url(anchor: Tag, href: str, *, list_url: str) -> str:
             )
             if part
         )
-        return _strip_url_path_params(_build_url_from_javascript(javascript_source, list_url=list_url))
+        return _strip_url_path_params(
+            _build_url_from_javascript(javascript_source, list_url=list_url),
+        )
     return _strip_url_path_params(urljoin(list_url, href))
 
 
@@ -331,6 +343,8 @@ def _extract_embedded_notice_url(source: str, list_url: str) -> str:
         else:
             normalized = urljoin(list_url, candidate)
         normalized = _strip_url_path_params(normalized)
+        if _is_select_gosi_detail_url(normalized):
+            return normalized
         if any(marker in normalized.lower() for marker in NOTICE_URL_HINTS):
             return normalized
         if _has_detail_query_signature(normalized):
@@ -354,6 +368,23 @@ def _extract_context_text(anchor: Tag) -> str:
     if row is not None:
         return _normalize_whitespace(row.get_text(" ", strip=True))
     return _normalize_whitespace(anchor.get_text(" ", strip=True))
+
+
+def _extract_candidate_date(anchor: Tag, *, url: str, context_text: str) -> date | None:
+    if gwanak_board_kind(url, detail=True):
+        return _extract_date_from_text(gwanak_registration_text(anchor, detail_url=url))
+    if _is_select_gosi_detail_url(url):
+        row = anchor.find_parent("tr")
+        table = anchor.find_parent("table")
+        if row is not None and table is not None:
+            cells = row.find_all(["td", "th"], recursive=False)
+            for index, header in enumerate(table.select("thead th")):
+                if header.get_text(strip=True) == "등록일":
+                    # Gosi rows also contain a posting period; it is not the registration date.
+                    if index >= len(cells):
+                        return None
+                    return _extract_date_from_text(cells[index].get_text(" ", strip=True))
+    return _extract_date_from_text(context_text)
 
 
 def _extract_identifier(value: str, pattern: re.Pattern[str]) -> str:
@@ -583,6 +614,13 @@ def _build_date(*, year: int, month: int, day: int) -> date | None:
 
 
 def _is_probable_notice_url(url: str, *, engine_type: EngineType) -> bool:
+    parsed = urlparse(url)
+    if parsed.scheme in {"http", "https"} and re.fullmatch(
+        r"/site/[^/]+/board/[^/]+/[1-9][0-9]*", parsed.path,
+    ):
+        return True
+    if _is_select_gosi_detail_url(url):
+        return True
     lowered = url.lower()
     if any(marker in lowered for marker in NOTICE_URL_HINTS):
         return True
@@ -597,6 +635,16 @@ def _is_probable_notice_url(url: str, *, engine_type: EngineType) -> bool:
     if engine_type is EngineType.CITYNET_SAPGOSI and "sapgosi" in lowered:
         return True
     return engine_type is EngineType.INTEGRATED_SEARCH_GOSI and "gosi" in lowered
+
+
+def _is_select_gosi_detail_url(url: str) -> bool:
+    parsed = urlparse(url)
+    if parsed.scheme not in {"http", "https"}:
+        return False
+    if parsed.path.rsplit("/", 1)[-1].lower() != "selectgosidata.do":
+        return False
+    notice_ids = parse_qs(parsed.query, keep_blank_values=True).get("not_ancmt_mgt_no", [])
+    return len(notice_ids) == 1 and re.fullmatch(r"[1-9][0-9]*", notice_ids[0]) is not None
 
 
 def _looks_like_json_payload(payload: str) -> bool:

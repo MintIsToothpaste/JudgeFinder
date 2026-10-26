@@ -13,14 +13,6 @@ from judgefinder.domain.entities import SourceType
     ("slug", "municipality", "list_url", "fixture_name", "target_date", "expected_url"),
     [
         (
-            "hanam",
-            "하남시",
-            "https://www.hanam.go.kr/rssBbsNtt.do?bbsNo=31",
-            "hanam_rss.xml",
-            date(2015, 8, 27),
-            "https://www.hanam.go.kr/www/selectBbsNttView.do?bbsNo=31&nttNo=3101",
-        ),
-        (
             "pocheon",
             "포천시",
             "https://www.pocheon.go.kr/www/selectEminwonList.do?key=12563&notAncmtSeCode=01",

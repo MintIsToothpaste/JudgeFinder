@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import sys
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, fields
+from datetime import date
 from enum import Enum
 from pathlib import Path
 from typing import Any, TypeVar
@@ -16,6 +17,8 @@ from judgefinder.domain.source_profiles import (
     AccessProfile,
     EngineType,
     FallbackStrategy,
+    HtmlProfile,
+    JsonProfile,
     RequestStrategy,
 )
 
@@ -33,6 +36,11 @@ class SourceConfig:
     access_profile: AccessProfile = AccessProfile.UNKNOWN_ACCESS
     request_strategy: RequestStrategy = field(default_factory=RequestStrategy)
     fallback_strategy: FallbackStrategy = FallbackStrategy.NONE
+    recruitment_only: bool = False
+    html_profile: HtmlProfile | None = None
+    max_pages: int = 8
+    available_from: date | None = None
+    json_profile: JsonProfile | None = None
 
 
 @dataclass(slots=True)
@@ -89,6 +97,8 @@ def load_config(config_path: Path, base_dir: Path | None = None) -> AppConfig:
             FallbackStrategy,
             default=_default_fallback_strategy(access_profile),
         )
+        if value.get("html_profile") is not None and value.get("json_profile") is not None:
+            raise ValueError("A source cannot use both html_profile and json_profile")
         sources[slug] = SourceConfig(
             slug=slug,
             municipality=municipality,
@@ -99,6 +109,11 @@ def load_config(config_path: Path, base_dir: Path | None = None) -> AppConfig:
             access_profile=access_profile,
             request_strategy=request_strategy,
             fallback_strategy=fallback_strategy,
+            recruitment_only=_read_optional_bool(value, "recruitment_only", default=False),
+            html_profile=_read_html_profile(value.get("html_profile")),
+            max_pages=_read_page_limit(value),
+            available_from=_read_available_from(value),
+            json_profile=_read_json_profile(value.get("json_profile")),
         )
 
     return AppConfig(
@@ -114,6 +129,59 @@ def _read_required_str(data: dict[str, Any], key: str) -> str:
     if not isinstance(value, str) or not value.strip():
         raise ValueError(f"Missing or invalid string key: {key}")
     return value
+
+
+def _read_page_limit(data: dict[str, Any]) -> int:
+    value = data.get("max_pages", 8)
+    if type(value) is not int or not 1 <= value <= 1000:
+        raise ValueError("max_pages must be an integer between 1 and 1000")
+    return value
+
+
+def _read_available_from(data: dict[str, Any]) -> date | None:
+    value = data.get("available_from")
+    if value is None:
+        return None
+    if not isinstance(value, str):
+        raise ValueError("available_from must be an ISO date string")
+    try:
+        parsed = date.fromisoformat(value)
+    except ValueError as exc:
+        raise ValueError("available_from must be an ISO date string") from exc
+    if parsed.isoformat() != value:
+        raise ValueError("available_from must use YYYY-MM-DD")
+    return parsed
+
+
+def _read_html_profile(value: Any) -> HtmlProfile | None:
+    if value is None:
+        return None
+    if not isinstance(value, dict):
+        raise ValueError("html_profile must be a table")
+    allowed = {item.name for item in fields(HtmlProfile)}
+    if set(value) - allowed:
+        raise ValueError(f"Unknown html_profile fields: {sorted(set(value) - allowed)}")
+    for key in ("container_selector", "row_selector"):
+        _read_required_str(value, key)
+    if not all(isinstance(item, str) for key, item in value.items() if key != "page_size"):
+        raise ValueError("html_profile values other than page_size must be strings")
+    return HtmlProfile(**value)
+
+
+def _read_json_profile(value: Any) -> JsonProfile | None:
+    if value is None:
+        return None
+    if not isinstance(value, dict):
+        raise ValueError("json_profile must be a table")
+    allowed = {item.name for item in fields(JsonProfile)}
+    if set(value) - allowed:
+        raise ValueError(f"Unknown json_profile fields: {sorted(set(value) - allowed)}")
+    for key in ("rows_path", "title_key", "date_key", "id_key", "detail_url_template"):
+        _read_required_str(value, key)
+    if not all(isinstance(item, str) for key, item in value.items()
+               if key not in {"page_size", "offset_base"}):
+        raise ValueError("json_profile values other than page_size/offset_base must be strings")
+    return JsonProfile(**value)
 
 
 def _read_required_list(data: dict[str, Any], key: str) -> list[str]:

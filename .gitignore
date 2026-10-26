@@ -9,6 +9,7 @@ __pycache__/
 venv/
 env/
 ENV/
+.python310/
 
 # Packaging / build artifacts
 build/
@@ -58,6 +59,24 @@ secrets.*
 # Config files that may include API keys
 config/*.toml
 !config/config.example.toml
+!config/batch-seoul-five.example.toml
+!config/batch-seoul-ten.example.toml
+!config/batch-seoul-busan-ten.example.toml
+!config/batch-busan-ten.example.toml
+!config/batch-busan-daegu-ten.example.toml
+!config/batch-daegu-incheon-ten.example.toml
+!config/batch-incheon-jeonnam-ten.example.toml
+!config/batch-jeonnam-gwangju-ten.example.toml
+!config/batch-jeonnam-counties-ten.example.toml
+!config/batch-jeonnam-daejeon-ten.example.toml
+!config/batch-daejeon-ulsan-sejong-gyeonggi-ten.example.toml
+!config/batch-gyeonggi-cities-ten.example.toml
+!config/batch-gyeonggi-cities-next-ten.example.toml
+!config/batch-gyeonggi-gangwon-chungbuk-thirty.example.toml
+!config/batch-chungbuk-chungnam-jeonbuk-thirty.example.toml
+!config/batch-jeonbuk-gyeongbuk-gyeongnam-thirty.example.toml
+!config/batch-gyeongnam-jeju-final-twenty.example.toml
+!config/batch-held-eighteen.example.toml
 
 # IDE / editor
 .vscode/

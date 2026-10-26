@@ -1,0 +1,240 @@
+# Isolated live validation; production config/config.toml is unchanged.
+# Historical window: 2025-10-05 through 2026-10-04, not open recruitments.
+timezone = "Asia/Seoul"
+db_path = "data/live-tests/daegu-incheon-ten-2026-10-04/notices.db"
+enabled_sources = ["daegu_namgu", "daegu_bukgu", "suseong", "dalseo", "dalseong", "gunwi", "incheon", "jemulpo", "yeongjong", "michuhol"]
+
+[sources.daegu_namgu]
+municipality = "대구 남구"
+source_type = "html"
+engine_type = "eminwon_ofr"
+list_url = "https://eminwon.nam.daegu.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&method=selectListOfrNotAncmt&methodnm=selectListOfrNotAncmtHomepage&subCheck=Y&ofr_pageSize=10&not_ancmt_se_code=01,04&list_gubun=A&countYn=Y"
+recruitment_only = true
+max_pages = 40
+[sources.daegu_namgu.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.daegu_namgu.html_profile]
+container_selector = "table.readtype2"
+row_selector = "tbody tr:has(> td)"
+link_selector = "td[data-table-type='subject'] a"
+date_selector = "td[data-table-type='date']"
+detail_title_selector = "th:-soup-contains-own('제목') + td"
+detail_date_selector = "th:-soup-contains-own('등록일') + td"
+id_pattern = "searchDetail\\('([1-9][0-9]*)'\\)"
+detail_url_template = "/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&subCheck=Y&not_ancmt_mgt_no={id}"
+search_param = "not_ancmt_sj"
+
+[sources.daegu_bukgu]
+municipality = "대구 북구"
+source_type = "html"
+engine_type = "eminwon_ofr"
+list_url = "https://eminwon.buk.daegu.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&method=selectListOfrNotAncmt&methodnm=selectListOfrNotAncmtHomepage&subCheck=Y&ofr_pageSize=10&not_ancmt_se_code=01,04&list_gubun=A&countYn=Y&epcCheck=Y&Key=B_Subject"
+recruitment_only = true
+max_pages = 40
+[sources.daegu_bukgu.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.daegu_bukgu.html_profile]
+container_selector = "table.list"
+row_selector = "tbody tr:has(> td)"
+link_selector = "td:nth-of-type(3) a"
+link_attribute = "onclick"
+date_selector = "td:nth-of-type(5)"
+detail_title_selector = "th:-soup-contains-own('제목') + td"
+detail_date_selector = "th:-soup-contains-own('등록일') + td"
+id_pattern = "searchDetail\\('([1-9][0-9]*)'\\)"
+detail_url_template = "/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&subCheck=Y&not_ancmt_mgt_no={id}"
+search_param = "not_ancmt_sj"
+
+[sources.suseong]
+municipality = "수성구"
+source_type = "html"
+engine_type = "eminwon_ofr"
+list_url = "https://eminwon.suseong.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&method=selectListOfrNotAncmt&methodnm=selectListOfrNotAncmtHomepage&subCheck=N&ofr_pageSize=10&not_ancmt_se_code=01,04&list_gubun=A&countYn=Y&Key=B_Subject"
+recruitment_only = true
+max_pages = 40
+[sources.suseong.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.suseong.html_profile]
+container_selector = "table#bbsList"
+row_selector = "tbody tr:has(> td)"
+link_selector = "td[data-table-type='subject'] a"
+link_attribute = "onclick"
+date_selector = "td[data-table-type='date']"
+detail_title_selector = "th:-soup-contains-own('제목') + td"
+detail_date_selector = "th:-soup-contains-own('등록일') + td"
+id_pattern = "searchDetail\\('([1-9][0-9]*)'\\)"
+detail_url_template = "/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&subCheck=N&not_ancmt_mgt_no={id}"
+search_param = "not_ancmt_sj"
+
+[sources.dalseo]
+municipality = "달서구"
+source_type = "html"
+engine_type = "eminwon_ofr"
+list_url = "https://eminwon.dalseo.daegu.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&method=selectListOfrNotAncmt&methodnm=selectListOfrNotAncmtHomepage&subCheck=Y&ofr_pageSize=10&not_ancmt_se_code=01,04&list_gubun=A&countYn=Y"
+recruitment_only = true
+max_pages = 40
+[sources.dalseo.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.dalseo.html_profile]
+container_selector = "table#bbsList"
+row_selector = "tbody tr:has(> td)"
+link_selector = "td[data-table-type='subject'] a"
+link_attribute = "onclick"
+date_selector = "td[data-table-type='date']"
+detail_title_selector = "dt:-soup-contains-own('제목') + dd"
+detail_date_selector = "dt:-soup-contains-own('등록일') + dd"
+id_pattern = "searchDetail\\('([1-9][0-9]*)'\\)"
+detail_url_template = "/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&subCheck=Y&not_ancmt_mgt_no={id}"
+search_param = "not_ancmt_sj"
+
+[sources.dalseong]
+municipality = "달성군"
+source_type = "html"
+engine_type = "eminwon_ofr"
+list_url = "https://eminwon.dalseong.daegu.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&method=selectListOfrNotAncmt&methodnm=selectListOfrNotAncmtHomepage&subCheck=Y&ofr_pageSize=10&not_ancmt_se_code=01,04&list_gubun=A&countYn=Y&Key=B_Subject"
+recruitment_only = true
+max_pages = 40
+[sources.dalseong.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.dalseong.html_profile]
+container_selector = "table#bbsList"
+row_selector = "tbody tr:has(> td)"
+link_selector = "td[data-table-type='subject'] a"
+link_attribute = "onclick"
+date_selector = "td[data-table-type='date']"
+detail_title_selector = "th:-soup-contains-own('제목') + td"
+detail_date_selector = "th:-soup-contains-own('등록일') + td"
+id_pattern = "searchDetail\\('([1-9][0-9]*)'\\)"
+detail_url_template = "/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&subCheck=Y&not_ancmt_mgt_no={id}"
+search_param = "not_ancmt_sj"
+
+[sources.gunwi]
+municipality = "군위군"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.gunwi.go.kr/ko/page.do?mnu_uid=666&srchColumn=title"
+recruitment_only = true
+max_pages = 40
+[sources.gunwi.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.gunwi.html_profile]
+container_selector = "table.tbl_board"
+row_selector = "tbody tr:has(> td)"
+link_selector = "td.subject a"
+date_selector = "td.date"
+detail_title_selector = "div.boardView h4"
+detail_date_selector = "div.boardView dt:-soup-contains-own('등록일') + dd"
+id_pattern = "not_ancmt_mgt_no=([1-9][0-9]*)"
+detail_url_template = "/ko/page.do?mnu_uid=666&cmd=2&not_ancmt_mgt_no={id}"
+search_param = "srchKwd"
+page_param = "pageNo"
+
+[sources.incheon]
+municipality = "인천광역시"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://announce.incheon.go.kr/citynet/jsp/sap/SAPGosiBizProcess.do?command=searchList&flag=gosiGL&svp=Y&sido=ic&conGosiGbn=A"
+recruitment_only = true
+max_pages = 40
+[sources.incheon.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.incheon.html_profile]
+container_selector = "table.toolBoardList"
+row_selector = "tr[onclick]"
+link_selector = ""
+link_attribute = "onclick"
+date_selector = "td:nth-of-type(4)"
+detail_title_selector = "th:-soup-contains('제목') + td"
+detail_date_selector = "th:-soup-contains('게재 일자') + td"
+id_pattern = "viewData\\('([1-9][0-9]*)','A'\\)"
+detail_url_template = "/citynet/jsp/sap/SAPGosiBizProcess.do?command=searchDetail&flag=gosiGL&svp=Y&sido=ic&sno={id}&gosiGbn=A"
+search_param = "conTitle"
+page_param = "currPageNo"
+request_encoding = "euc-kr"
+
+[sources.jemulpo]
+municipality = "제물포구"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+# Search omits a known September announcement. Scan full visible listings instead.
+list_url = "https://www.jemulpo.go.kr/main/bbs/bbsMsgList.do?bcd=announce&listsz=50"
+recruitment_only = true
+available_from = "2026-07-01"
+max_pages = 100
+[sources.jemulpo.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.jemulpo.html_profile]
+container_selector = "div.board-list table"
+row_selector = "tbody tr:has(> td)"
+link_selector = "td.title a"
+date_selector = "td:nth-of-type(6)"
+id_pattern = "msg_seq=([1-9][0-9]*)"
+detail_url_template = "/main/bbs/bbsMsgDetail.do?bcd=announce&msg_seq={id}"
+page_param = "pgno"
+
+[sources.yeongjong]
+municipality = "영종구"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.yeongjong.go.kr/main/pst/list.do?pst_id=mn_pub_ntc"
+recruitment_only = true
+available_from = "2026-07-01"
+max_pages = 400
+[sources.yeongjong.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.yeongjong.html_profile]
+container_selector = "table#table-0"
+row_selector = "tbody tr:has(> td)"
+link_selector = "td.subject a"
+date_selector = "td[data-th='등록일']"
+id_pattern = "pst_sn=([1-9][0-9]*)"
+detail_url_template = "/main/pst/view.do?pst_id=mn_pub_ntc&pst_sn={id}"
+page_param = "page"
+
+[sources.michuhol]
+municipality = "미추홀구"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.michuhol.go.kr/main/board/list.do?board_code=board_13&maxRows=100"
+recruitment_only = true
+max_pages = 40
+[sources.michuhol.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.michuhol.html_profile]
+container_selector = "table.board-list-s1"
+row_selector = "tbody tr:has(> td)"
+link_selector = "td.subject a"
+date_selector = "td:nth-of-type(5)"
+id_pattern = "sq=([1-9][0-9]*)"
+detail_url_template = "/main/board/view.do?board_code=board_13&sq={id}"
+page_param = "page"

@@ -3,6 +3,7 @@ from __future__ import annotations
 from zoneinfo import ZoneInfo
 
 from judgefinder.adapters.config import AppConfig, SourceConfig
+from judgefinder.adapters.sources.generic_engine.mapo_search import MapoSearchSource
 from judgefinder.adapters.sources.generic_engine.source import GenericEngineSource
 from judgefinder.adapters.sources.municipal_rss.source import MunicipalRssSource
 from judgefinder.adapters.sources.noop.source import NoopSource
@@ -14,7 +15,6 @@ from judgefinder.domain.source_profiles import AccessProfile, EngineType, Fallba
 from judgefinder.infrastructure.http.client import HttpClient
 
 MUNICIPAL_RSS_SLUGS: set[str] = {
-    "hanam",
     "cheorwon",
     "jecheon",
     "okcheon",
@@ -168,7 +168,13 @@ class SourceRegistry:
 
     def _build_generic_engine_source(self, source_config: SourceConfig) -> GenericEngineSource:
         strategy = source_config.request_strategy
-        return GenericEngineSource(
+        source_class = (
+            MapoSearchSource
+            if source_config.engine_type is EngineType.JSON_LIST_API
+            and source_config.list_url == "https://www.mapo.go.kr/site/rest"
+            else GenericEngineSource
+        )
+        return source_class(
             slug=source_config.slug,
             municipality=source_config.municipality,
             source_type=source_config.source_type,
@@ -183,6 +189,11 @@ class SourceRegistry:
             include_referer=_should_include_referer(source_config),
             verify_tls=strategy.verify_tls,
             throttle_seconds=strategy.throttle_seconds,
+            recruitment_only=source_config.recruitment_only,
+            html_profile=source_config.html_profile,
+            json_profile=source_config.json_profile,
+            max_pages=source_config.max_pages,
+            available_from=source_config.available_from,
         )
 
 

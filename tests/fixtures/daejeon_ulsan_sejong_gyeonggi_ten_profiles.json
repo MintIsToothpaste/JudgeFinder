@@ -1,0 +1,131 @@
+{
+  "daedeok": {
+    "list_html": "<html> <body> <form method=\"post\" name=\"form\" onsubmit=\"return false;\"> <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" valign=\"top\" width=\"639\"> <tbody><tr valign=\"top\"> <td align=\"center\"> <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"1\" width=\"98%\"> <tbody> <tr> <td align=\"center\" height=\"22\" onclick=\"javaScript:searchDetail('34687')\" style=\"cursor:hand;\" width=\"40\"></td> <td align=\"left\" onclick=\"javaScript:searchDetail('34687')\" style=\"cursor:hand;\"></td> <td align=\"left\" onclick=\"javaScript:searchDetail('34687')\" style=\"cursor:hand;\"><p align=\"left\">대전0시축제 with 2026 대덕거리 페스티벌 행사대행 용역 제안서 평...</p></td> <td align=\"center\" onclick=\"javaScript:searchDetail('34687')\" style=\"cursor:hand;\"></td> <td align=\"center\" onclick=\"javaScript:searchDetail('34687')\" style=\"cursor:hand;\">2026-06-09</td> </tr> </tbody></table> </td> </tr> </tbody></table> </form> </body></html>",
+    "detail_html": "<html> <body leftmargin=\"0\" topmargin=\"0\"> <form method=\"post\" name=\"form\"> <table bgcolor=\"ffffff\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" height=\"390\" width=\"639\"> <tbody><tr> <td align=\"center\" valign=\"top\"> <table border=\"0\" cellpadding=\"0\" cellspacing=\"1\" width=\"98%\"> <tbody> <tr> <td align=\"center\" bgcolor=\"BAE6E7\" height=\"22\">등록일</td> <td bgcolor=\"#F5FAF5\">2026-06-09</td> </tr> <tr> <td align=\"center\" bgcolor=\"BAE6E7\" height=\"22\" width=\"90\">제목</td> <td bgcolor=\"#F5FAF5\" width=\"330\">대전0시축제 with 2026 대덕거리 페스티벌 행사대행 용역 제안서 평가위원(후보자) 공개모집 공고</td> </tr> </tbody></table> </td> </tr> </tbody></table> </form> </body></html>",
+    "title": "대전0시축제 with 2026 대덕거리 페스티벌 행사대행 용역 제안서 평가위원(후보자) 공개모집 공고",
+    "date": "2026-06-09",
+    "url": "https://eminwon.daedeok.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&subCheck=Y&not_ancmt_mgt_no=34687",
+    "category": "recruitment"
+  },
+  "ulsan": {
+    "list_html": "<!DOCTYPE html> <html lang=\"ko\"> <body class=\"blank\"> <div id=\"wrap\"> <div id=\"body_layout\"> <div class=\"body_inner\"> <div class=\"contents_inner\" id=\"contents_inner\"> <div class=\"content_box\"> <table class=\"tbl_bd_list txt_c valg_m\"> <thead> <tr> <th class=\"mobilehidden\" scope=\"col\">번호</th> <th scope=\"col\">제목</th> <th class=\"mobilehidden\" scope=\"col\">담당부서</th> <th class=\"mobilehidden\" scope=\"col\"></th> <th class=\"mobilehidden\" scope=\"col\">고시공고번호</th> <th class=\"mobilehidden\" scope=\"col\">게시일자</th> </tr> </thead> <tbody> <tr> <td class=\"mobilehidden\"></td> <td class=\"gosi\" style=\"text-align:left\"><a href=\"./47277.ulsan?mId=001004002000000000&amp;gosiGbn=A\">제안서 평가위원 후보자 모집공고(대곡리 반구대 암각화 정밀사진 및 초분광 데이터 구축 사업)</a></td> <td class=\"mobilehidden\"></td> <td class=\"mobilehidden\"></td> <td class=\"mobilehidden\"></td> <td class=\"mobilehidden\">2026-09-29</td> </tr> </tbody> </table> <div id=\"paginateDiv\"> <ul class=\"pagination\"><li class=\"active\"><a class=\"btn\" href=\"#none\" title=\"현재페이지\">1</a></li></ul> </div> </div> </div> </div> </div> </div> </body></html>",
+    "detail_html": "<!DOCTYPE html> <html lang=\"ko\"> <body class=\"blank\"> <div id=\"wrap\"> <div id=\"body_layout\"> <div class=\"body_inner\"> <div class=\"contents_inner\" id=\"contents_inner\"> <div class=\"content_box\"> <div class=\"margin-bottom-10\" id=\"from-mobile-sender-area\" style=\"overflow:hidden; \"> <div class=\"viw-board\"> <table class=\"tbl_bd_view txt_l valg_m\"> <tbody> <tr> <th scope=\"row\">제목</th> <td colspan=\"3\">제안서 평가위원 후보자 모집공고(대곡리 반구대 암각화 정밀사진 및 초분광 데이터 구축 사업)</td> </tr> <tr> <th scope=\"row\">게재 일자</th> <td colspan=\"3\">2026년 09월 29일</td> </tr> </tbody> </table> </div> </div> </div> </div> </div> </div> </div> </body></html>",
+    "title": "제안서 평가위원 후보자 모집공고(대곡리 반구대 암각화 정밀사진 및 초분광 데이터 구축 사업)",
+    "date": "2026-09-29",
+    "url": "https://www.ulsan.go.kr/u/rep/transfer/notice/47277.ulsan?mId=001004002000000000&gosiGbn=A",
+    "category": "recruitment"
+  },
+  "ulsan_junggu": {
+    "list_html": "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"> <html lang=\"ko\"> <body onload=\"javascript:init()\"> <form action=\"\" method=\"post\" name=\"form1\" onsubmit=\"return false;\"> <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"public_notice\"> <tbody><tr valign=\"top\"> <td align=\"center\"> <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"1\" summary=\"제목,담당부서,등록일 등을 포함한 고시공고 목록표입니다\"> <tbody> <tr class=\"public_detail\"> <td align=\"center\" height=\"22\" style=\"cursor:hand;\" width=\"40\"></td> <td align=\"left\" style=\"cursor:hand;\"></td> <td align=\"left\" style=\"cursor:hand;\"><p align=\"left\"><a href=\"#\" onclick=\"javaScript:searchDetail('36976')\">우리동네 범죄예방디자인공간조성 디자인설계용역 제안서평가위원 모집 공고</a></p></td> <td align=\"center\" style=\"cursor:hand;\"></td> <td align=\"center\" style=\"cursor:hand;\"><a href=\"#\" onclick=\"javaScript:searchDetail('36976')\">2026-09-21</a></td> <td align=\"center\" style=\"cursor:hand;\"></td> <td align=\"center\" class=\"R_tablelineno\" style=\"cursor:hand;\"></td> </tr> </tbody></table> </td> </tr> </tbody></table> </form> </body></html>",
+    "detail_html": "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"> <html lang=\"ko\"> <body leftmargin=\"0\" topmargin=\"0\"> <form method=\"post\" name=\"form1\"> <table bgcolor=\"ffffff\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\"> <tbody><tr> <td align=\"center\" valign=\"top\"> <table border=\"0\" cellpadding=\"0\" cellspacing=\"1\" class=\"public_view\" summary=\"고시공고번호,등록일,구분,제목,내용 등인 포함된 고시공고 상세조회표입니다\" width=\"98%\"> <tbody> <tr class=\"public_detail\"> <th align=\"center\" class=\"public_th_color\">등록일</th> <td class=\"R_tablelineno\">2026-09-21</td> </tr> <tr class=\"public_detail\"> <th align=\"center\" class=\"public_th_color\" height=\"22\">제목</th> <td class=\"noline\" colspan=\"3\">우리동네 범죄예방디자인공간조성 디자인설계용역 제안서평가위원 모집 공고</td> </tr> </tbody></table> </td> </tr> </tbody></table> </form> </body></html>",
+    "title": "우리동네 범죄예방디자인공간조성 디자인설계용역 제안서평가위원 모집 공고",
+    "date": "2026-09-21",
+    "url": "https://eminwon.junggu.ulsan.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&subCheck=Y&not_ancmt_mgt_no=36976",
+    "category": "recruitment"
+  },
+  "ulsan_namgu": {
+    "list_html": "<html lang=\"ko\" xml:lang=\"ko\" xmlns=\"http://www.w3.org/1999/xhtml\"><body onload=\"init();\">﻿ <form action=\"\" method=\"post\" name=\"form1\" onsubmit=\"return false;\"> <div> <table class=\"basic_table\"> <thead> <tr> <th scope=\"col\">번호</th> <th scope=\"col\">제목</th> <th scope=\"col\">작성자</th> <th scope=\"col\">작성일</th> <th scope=\"col\">조회수</th> </tr> </thead> <tbody> <tr> <td></td> <td class=\"left\"> <div class=\"list_subject\"> <div class=\"link\"> <a href=\"emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?not_ancmt_mgt_no=54432&amp;subCheck=Y&amp;not_ancmt_se_code=01,04&amp;method=selectOfrNotAncmt&amp;methodnm=selectOfrNotAncmtRegst&amp;jndinm=OfrNotAncmtEJB&amp;context=NTIS\" onclick=\"searchDetail('54432');return false;\" onkeypress=\"\">「신정상가시장 증발냉방장치 개선 사업」제안 선정 제안서 평가위원 모집 공...</a> </div> </div> </td> <td></td> <td>2026-09-14</td> <td></td> </tr> </tbody> </table> </div> </form> </body></html>",
+    "detail_html": "<html lang=\"ko\" xml:lang=\"ko\" xmlns=\"http://www.w3.org/1999/xhtml\"><body>﻿ <form action=\"\" method=\"post\" name=\"form1\"> <div class=\"bbs_detail bbs_detail_basic\"> <div class=\"bbs_detail_tit\"> <h2>「신정상가시장 증발냉방장치 개선 사업」제안 선정 제안서 평가위원 모집 공고</h2> <ul class=\"info\"> <li class=\"date\">등록일 : 2026-09-14</li> </ul> </div> </div> </form> </body></html>",
+    "title": "「신정상가시장 증발냉방장치 개선 사업」제안 선정 제안서 평가위원 모집 공고",
+    "date": "2026-09-14",
+    "url": "https://eminwon.ulsannamgu.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&subCheck=Y&not_ancmt_mgt_no=54432",
+    "category": "recruitment"
+  },
+  "ulsan_donggu": {
+    "list_html": "<html lang=\"ko\" xml:lang=\"ko\" xmlns=\"http://www.w3.org/1999/xhtml\"><body onload=\"init();\">﻿ <form action=\"\" method=\"post\" name=\"form1\" onsubmit=\"return false;\"> <div class=\"no-more-tables\"> <table class=\"bbs_list table table-default\"> <thead class=\"thead-light\"> <tr> <th scope=\"col\">번호</th> <th scope=\"col\">제목</th> <th scope=\"col\">담당부서</th> <th scope=\"col\">등록일</th> <th scope=\"col\">조회수</th> </tr> </thead> <tbody> <tr class=\"noticeList\"> <td class=\"atchFileId\" data-cell-header=\"번호\"></td> <td class=\"subject\" data-cell-header=\"제목\"> <a href=\"emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?not_ancmt_mgt_no=27480&amp;subCheck=Y&amp;not_ancmt_se_code=01,03,04,05&amp;method=selectOfrNotAncmt&amp;methodnm=selectOfrNotAncmtRegst&amp;jndinm=OfrNotAncmtEJB&amp;context=NTIS\" onclick=\"searchDetail('27480');return false;\" onkeypress=\"\">2026 일산 문화공연 운영 대행 용역 제안서 평가위원(후보자) 모집 공...</a> </td> <td class=\"writer txtEl\" data-cell-header=\"담당부서\"></td> <td class=\"regDate\" data-cell-header=\"등록일\">2026-03-31</td> <td class=\"hit\" data-cell-header=\"조회수\"></td> </tr> </tbody> </table> </div> </form> </body></html>",
+    "detail_html": "<html lang=\"ko\" xml:lang=\"ko\" xmlns=\"http://www.w3.org/1999/xhtml\"><body>﻿ <form action=\"\" method=\"post\" name=\"form1\"> <div id=\"viewTable1vw\"> <div class=\"bbs_detail bbs_detail_basic\"> <div class=\"bbs_detail_tit\"> <h2> 2026 일산 문화공연 운영 대행 용역 제안서 평가위원(후보자) 모집 공고 </h2> <ul class=\"info\"> <li><strong>등록일</strong>2026-03-31</li> </ul> </div> </div> </div> </form> </body></html>",
+    "title": "2026 일산 문화공연 운영 대행 용역 제안서 평가위원(후보자) 모집 공고",
+    "date": "2026-03-31",
+    "url": "https://eminwon.donggu.ulsan.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&subCheck=Y&not_ancmt_mgt_no=27480",
+    "category": "recruitment"
+  },
+  "ulsan_bukgu": {
+    "list_html": "<html lang=\"ko\"><body leftmargin=\"0\" onload=\"javascript:init()\" topmargin=\"0\">﻿ <form method=\"post\" name=\"form1\" onsubmit=\"return false;\"> <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" valign=\"top\" width=\"100%\"> <tbody><tr valign=\"top\"> <td align=\"center\"> <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"1\" class=\"cont_table\" summary=\"고시공고 목록\"> <thead> <tr> <td colspan=\"8\"> <font color=\"046D83\">전체게시물:108개 페이지:1/11</font></td> </tr> <tr> <th width=\"40\">번호</th> <th width=\"89\">고시공고번호</th> <th width=\"250\">제목</th> <th width=\"80\">담당부서</th> <th width=\"80\">등록일</th> <th width=\"50\">게재기간</th> <th width=\"50\">조회수</th> </tr> </thead> <tbody> <tr bgcolor=\"#FFFFFF\" onclick=\"javaScript:searchDetail('44239')\"> <td align=\"center\" height=\"22\" style=\"cursor:hand;\" width=\"40\"></td> <td align=\"left\" style=\"cursor:hand;\"></td> <td align=\"left\" style=\"cursor:hand;\"><p align=\"left\"><a href=\"#\" onclick=\"javaScript:searchDetail('44239')\">시지정유산 역사문화환경 보존지역 내 허용기준 신규고시 및 재조정 용역 제...</a></p></td> <td align=\"center\" style=\"cursor:hand;\"></td> <td align=\"center\" style=\"cursor:hand;\"><a href=\"#\" onclick=\"javaScript:searchDetail('44239')\">2026-05-26</a></td> <td align=\"center\" style=\"cursor:hand;\"></td> <td align=\"center\" style=\"cursor:hand;\"></td> </tr> </tbody> </table> </td> </tr> </tbody></table> </form> </body></html>",
+    "detail_html": "<html lang=\"ko\"><body leftmargin=\"0\" topmargin=\"0\">﻿ <form method=\"post\" name=\"form1\"> <table bgcolor=\"#ffffff\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"view_table\"> <tbody><tr> <td align=\"center\" valign=\"top\"> <table border=\"0\" cellpadding=\"0\" cellspacing=\"1\" class=\"cont_table\" summary=\"고시공고 상세조회\" width=\"100%\"> <thead> <tr> <th align=\"center\">등록일</th> <td>2026-05-26</td> </tr> <tr> <th align=\"center\">제목</th> <td colspan=\"3\">시지정유산 역사문화환경 보존지역 내 허용기준 신규고시 및 재조정 용역 제안서 평가위원(후보자) 모집 공고</td> </tr> </thead> </table> </td> </tr> </tbody></table> </form> </body></html>",
+    "title": "시지정유산 역사문화환경 보존지역 내 허용기준 신규고시 및 재조정 용역 제안서 평가위원(후보자) 모집 공고",
+    "date": "2026-05-26",
+    "url": "https://eminwon.bukgu.ulsan.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&subCheck=Y&not_ancmt_mgt_no=44239",
+    "category": "recruitment"
+  },
+  "ulju": {
+    "list_html": "<!DOCTYPE html> <html lang=\"ko\"> <body> <div id=\"wrap\"> <div class=\"clFix\" id=\"container\"> <section id=\"content\"> <div id=\"conts\"> <form action=\"/ulju/saeol/gosi/list.do?mId=0403020000\" id=\"list\" method=\"post\" name=\"list\"> <div class=\"bod_head\"> <p class=\"page_num\">현재 페이지 <em>1</em> / 전체 페이지 3</p> </div> <table class=\"bod_list taC gosi\"> <thead> <tr> <th class=\"list_num\" scope=\"col\">번호</th> <th class=\"list_notice_num\" scope=\"col\">일반공고번호</th> <th scope=\"col\">제목</th> <th class=\"list_dept\" scope=\"col\">담당부서</th> <th class=\"list_date\" scope=\"col\">등록일</th> </tr> </thead> <tbody> <tr> <td class=\"list_num\"></td> <td></td> <td class=\"taL list_tit\"> <a data-action=\"/ulju/saeol/gosi/view.do?notAncmtMgtNo=67368&amp;mId=0403020000\" href=\"#\" onclick=\"req.post(this); return false;\" title=\"「소나무재선충병 수종전환 방제 관리업무대행 용역」제안서 평가위원(후보자) 공개모집 연장 공고\"> 「소나무재선충병 수종전환 방제 관리업무대행 용역」제안서 평가위원(후보자) 공개모집 연장 공고 </a> </td> <td class=\"list_dept\"></td> <td class=\"list_date\"> 2026-08-20 </td> </tr> </tbody> </table> </form> </div> </section> </div> </div> </body></html>",
+    "detail_html": "<!DOCTYPE html> <html lang=\"ko\"> <body> <div id=\"wrap\"> <div class=\"clFix\" id=\"container\"> <section id=\"content\"> <div id=\"conts\"> <form action=\"/ulju/saeol/gosi/view.do?mId=0403020000\" id=\"detailForm\" method=\"post\" name=\"detailForm\"> <div class=\"bod_wrap\"> <div class=\"bod_view\"> <h4>「소나무재선충병 수종전환 방제 관리업무대행 용역」제안서 평가위원(후보자) 공개모집 연장 공고</h4> <div class=\"view_info\"> <ul> <li class=\"view_date\"><span>등록일</span> : 2026-08-20 </li> </ul> </div> </div> </div> </form> </div> </section> </div> </div> </body></html>",
+    "title": "「소나무재선충병 수종전환 방제 관리업무대행 용역」제안서 평가위원(후보자) 공개모집 연장 공고",
+    "date": "2026-08-20",
+    "url": "https://www.ulju.ulsan.kr/ulju/saeol/gosi/view.do?notAncmtMgtNo=67368&mId=0403020000",
+    "category": "recruitment"
+  },
+  "gyeonggi": {
+    "list_json": "{\"total\": 1, \"items\": [{\"B_IDX\": \"259906771\", \"WRITE_DATE2\": \"2026-08-31\", \"SUBJECT\": \"「경기도종자관리소 여주분소 정선시설 구축(기계) 물품제조」제안서 평가위원(후보자) 모집 공고\"}]}",
+    "detail_html": "<!DOCTYPE html> <html lang=\"ko\"> <body class=\"gg_1522\" id=\"sub\"> <main id=\"container\"> <div class=\"info_bf_wrap\"> <div id=\"content\"> <form id=\"otherform\" method=\"post\" name=\"otherform\"> <div class=\"s-v-board-default\"> <div class=\"header\"> <h3>「경기도종자관리소 여주분소 정선시설 구축(기계) 물품제조」제안서 평가위원(후보자) 모집 공고</h3> <dl> <dd><strong>등록일</strong> 2026-08-31 </dd> </dl> </div> </div> </form> </div> </div> </main> </body></html>",
+    "escaped_title_rows": [
+      {
+        "row": {
+          "B_IDX": "237809955",
+          "WRITE_DATE2": "2026-05-08",
+          "SUBJECT": "&apos;가축방역 질병검진장비(실시간 유전자 증폭기 등 8종 12대) 구입&apos; 제안서 평가위원(후보자) 모집공고"
+        },
+        "title": "'가축방역 질병검진장비(실시간 유전자 증폭기 등 8종 12대) 구입' 제안서 평가위원(후보자) 모집공고",
+        "date": "2026-05-08",
+        "url": "https://www.gg.go.kr/bbs/boardView.do?bIdx=237809955&bsIdx=469&menuId=1547"
+      },
+      {
+        "row": {
+          "B_IDX": "237579236",
+          "WRITE_DATE2": "2026-05-07",
+          "SUBJECT": "&apos;축산물 검사장비(미생물동정기 등 4종 5대) 구입&apos; 제안서 평가위원(후보자) 모집공고"
+        },
+        "title": "'축산물 검사장비(미생물동정기 등 4종 5대) 구입' 제안서 평가위원(후보자) 모집공고",
+        "date": "2026-05-07",
+        "url": "https://www.gg.go.kr/bbs/boardView.do?bIdx=237579236&bsIdx=469&menuId=1547"
+      },
+      {
+        "row": {
+          "B_IDX": "225916183",
+          "WRITE_DATE2": "2026-03-09",
+          "SUBJECT": "&quot;경기도 정원문화산업 종합계획 수립 용역&quot; 제안서 평가위원 후보자 모집 공고"
+        },
+        "title": "\"경기도 정원문화산업 종합계획 수립 용역\" 제안서 평가위원 후보자 모집 공고",
+        "date": "2026-03-09",
+        "url": "https://www.gg.go.kr/bbs/boardView.do?bIdx=225916183&bsIdx=469&menuId=1547"
+      },
+      {
+        "row": {
+          "B_IDX": "224784002",
+          "WRITE_DATE2": "2026-03-03",
+          "SUBJECT": "&quot;2026년 경기도 시내버스 도민서비스평가단 운영 및 조사용역&quot; 제안서 평가위원(후보자) 모집 공고"
+        },
+        "title": "\"2026년 경기도 시내버스 도민서비스평가단 운영 및 조사용역\" 제안서 평가위원(후보자) 모집 공고",
+        "date": "2026-03-03",
+        "url": "https://www.gg.go.kr/bbs/boardView.do?bIdx=224784002&bsIdx=469&menuId=1547"
+      },
+      {
+        "row": {
+          "B_IDX": "219371309",
+          "WRITE_DATE2": "2026-02-02",
+          "SUBJECT": "&apos;26~&apos;27년 경기도 교통정보센터 운영관리 용역 제안서 평가위원 모집 공고"
+        },
+        "title": "'26~'27년 경기도 교통정보센터 운영관리 용역 제안서 평가위원 모집 공고",
+        "date": "2026-02-02",
+        "url": "https://www.gg.go.kr/bbs/boardView.do?bIdx=219371309&bsIdx=469&menuId=1547"
+      }
+    ],
+    "title": "「경기도종자관리소 여주분소 정선시설 구축(기계) 물품제조」제안서 평가위원(후보자) 모집 공고",
+    "date": "2026-08-31",
+    "url": "https://www.gg.go.kr/bbs/boardView.do?bIdx=259906771&bsIdx=469&menuId=1547",
+    "category": "recruitment"
+  },
+  "suwon": {
+    "list_html": "<!DOCTYPE html> <html lang=\"ko\"> <body class=\"sub\" id=\"sub\"> <div id=\"wrapper\"> <div id=\"container\"> <div class=\"cont_wrap clearfix\"> <main class=\"colgroup\" id=\"colgroup\"> <article> <div class=\"template ctswww04-06\" id=\"contents\"> <div> <div class=\"p-wrap bbs bbs__list\"> <form action=\"BD_ofrList.do\" id=\"dataForm\" method=\"get\" name=\"dataForm\"> <fieldset> <div class=\"row\"> <div class=\"col-12 col-sm-24 margin_t_10 small\"> 총 건 [ <em class=\"em_b_black\">1</em>/1 페이지 ] </div> </div> </fieldset> </form> <div class=\"scroll_table\"> <table class=\"p-table default table_packed\"> <thead> <tr> <th class=\"first\" scope=\"col\">번호</th> <th scope=\"col\">고시공고번호</th> <th scope=\"col\">제목</th> <th class=\"p-table__hidden--mobile\" scope=\"col\">담당부서</th> <th class=\"p-table__hidden--mobile\" scope=\"col\">게재(공고)일자</th> <th class=\"p-table__hidden--mobile\" scope=\"col\">게재기간</th> <th class=\"p-table__hidden--mobile\" scope=\"col\">조회수</th> </tr> </thead> <tbody class=\"text_center\"> <tr> <td></td> <td class=\"text_left\"></td> <td class=\"p-subject\"> <a href=\"BD_ofrView.do?notAncmtMgtNo=157116&amp;q_currPage=1&amp;q_searchKey=SJ&amp;q_searchVal=%ED%8F%89%EA%B0%80%EC%9C%84%EC%9B%90\">실리콘밸리 첨단기업 대상 투자수요 발굴 및 투자유치 사업 지원 용역 제안서 평가위원(후보자) 모집</a> </td> <td class=\"p-table__hidden--mobile\"></td> <td class=\"p-table__hidden--mobile\"> 2026-10-01</td> <td class=\"p-table__hidden--mobile\"></td> <td class=\"p-table__hidden--mobile\"></td> </tr> </tbody> </table> </div> </div> </div> </div> </article> </main> </div> </div> </div> </body></html>",
+    "detail_html": "<!DOCTYPE html> <html lang=\"ko\"> <body class=\"sub\" id=\"sub\"> <div id=\"wrapper\"> <div id=\"container\"> <div class=\"cont_wrap clearfix\"> <main class=\"colgroup\" id=\"colgroup\"> <article> <div class=\"template ctswww04-06\" id=\"contents\"> <div> <div class=\"p-wrap bbs bbs__view\"> <table class=\"p-table default\"> <tbody class=\"p-table--th-left\"> <tr> <td class=\"p-table__subject\" colspan=\"2\"> <span class=\"p-table__subject_text\">실리콘밸리 첨단기업 대상 투자수요 발굴 및 투자유치 사업 지원 용역 제안서 평가위원(후보자) 모집</span> </td> </tr> <tr> <th scope=\"row\">게재(공고)일자</th> <td> 2026-10-01</td> </tr> </tbody> </table> </div> </div> </div> </article> </main> </div> </div> </div> </body></html>",
+    "title": "실리콘밸리 첨단기업 대상 투자수요 발굴 및 투자유치 사업 지원 용역 제안서 평가위원(후보자) 모집",
+    "date": "2026-10-01",
+    "url": "https://www.suwon.go.kr/web/saeallOfr/BD_ofrView.do?notAncmtMgtNo=157116",
+    "category": "recruitment"
+  },
+  "sejong": {
+    "held": true,
+    "list_html": "<!DOCTYPE html> <html lang=\"ko\"> <body> <div class=\"sub02_030301\" id=\"body_layout\"> <div class=\"body_wrap layout\"> <div class=\"contents_wrap\" id=\"contens\"> <div id=\"txt\"> <div class=\"table-responsive\"> <table class=\"table table-bordered text-center\"> <tbody> <tr> <td>71866</td> <td></td> <td class=\"text-left\"> <a href=\"/prog/publicNotice/kor/sub02_030301/C1_1/view.do?not_ancmt_mgt_no=71866&amp;pageIndex=1\"> 「장욱진 문화마을 안내사인물 디자인 및 제작설치 용역」 제안서 평가위원회 예비평가위원 공개모집 공고 </a> </td> <td></td> <td></td> </tr> </tbody> </table> </div> <div class=\"text-center\"> <div class=\"pagination\"> <ul> <li class=\"page-item active\"><a class=\"page-link\" onclick=\"return false;\">1</a></li> </ul> </div> </div> </div> </div> </div> </div> </body></html>",
+    "detail_html": "<!DOCTYPE html> <html lang=\"ko\"> <body> <div class=\"sub02_030301\" id=\"body_layout\"> <div class=\"body_wrap layout\"> <div class=\"contents_wrap\" id=\"contens\"> <div id=\"txt\"> <div class=\"table-responsive\"> <table class=\"table table-bordered\"> <tbody> <tr> <th scope=\"row\">제목</th> <td class=\"cell_left\" colspan=\"5\"> 「장욱진 문화마을 안내사인물 디자인 및 제작설치 용역」 제안서 평가위원회 예비평가위원 공개모집 공고 </td> </tr> <tr class=\"problem\"> <th scope=\"row\">게재(공고)기간</th> <td colspan=\"2\"> </td> </tr> </tbody> </table> </div> </div> </div> </div> </div> </body></html>"
+  }
+}

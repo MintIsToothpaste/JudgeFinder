@@ -16,9 +16,25 @@ list_url = "https://www.sb.go.kr/www/gosiToRss.do"
 
 [sources.hanam]
 municipality = "하남시"
-source_type = "api"
-list_url = "https://www.hanam.go.kr/rssBbsNtt.do?bbsNo=31"
-# fixture_path = "tests/fixtures/hanam_rss.xml"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.hanam.go.kr/www/selectGosiList.do?key=171&not_ancmt_se_code=01%2C04&pageIndex=1&searchCnd=SJ"
+# fixture_path = "tests/fixtures/hanam_gosi_list.html"
+
+[sources.hanam.request_strategy]
+throttle_seconds = 1.0
+
+[sources.gwanak]
+municipality = "관악구"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.gwanak.go.kr/site/gwanak/ex/bbsNew/List.do?typeCode=1&pageIndex=1&pageUnit=10"
+recruitment_only = true
+# Add "gwanak" to enabled_sources to collect from this board.
+# fixture_path = "tests/fixtures/gwanak_gosi_list.html"
+
+[sources.gwanak.request_strategy]
+throttle_seconds = 1.0
 
 [sources.pocheon]
 municipality = "포천시"
