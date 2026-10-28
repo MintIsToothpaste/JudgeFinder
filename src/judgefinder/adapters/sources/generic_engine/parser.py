@@ -61,6 +61,7 @@ NOTICE_URL_HINTS: tuple[str, ...] = (
 
 DATE_FRAGMENT_PATTERNS: tuple[re.Pattern[str], ...] = (
     re.compile(r"\d{4}[./-]\d{1,2}[./-]\d{1,2}"),
+    re.compile(r"\d{4}\s*[./-]\s*\d{1,2}\s*[./-]\s*\d{1,2}"),
     re.compile(r"\d{4}년\s*\d{1,2}월\s*\d{1,2}일"),
     re.compile(r"\b\d{8}\b"),
 )
@@ -568,6 +569,8 @@ def _parse_date_fragment(value: str) -> date | None:
     text = value.strip()
     if not text:
         return None
+    # Some explicit registration timestamps use spaced separators, e.g. 2026. 10. 23.
+    text = re.sub(r"\s*([./-])\s*", r"\1", text)
 
     format_candidates = (
         "%Y-%m-%d",

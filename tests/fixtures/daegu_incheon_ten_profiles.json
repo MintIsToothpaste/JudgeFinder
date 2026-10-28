@@ -60,7 +60,7 @@
     "date": "2026-09-28",
     "url": "https://www.jemulpo.go.kr/main/bbs/bbsMsgDetail.do?bcd=announce&msg_seq=14218",
     "list_html": "<div class=\"board-list mobile-thead\"><table><tbody><tr> \n\t\t\t\t\t\t<th scope=\"col\">no</th>\n\t\t\t\t\t\t<th scope=\"col\">고시공고번호</th>\t\t\t\n\t\t\t\t\t\t<th scope=\"col\">제목</th>\n\t\t\t\t\t\t<th scope=\"col\">첨부</th>\n\t\t\t\t\t\t<th scope=\"col\">담당부서</th>\n\t\t\t\t\t\t<th scope=\"col\">작성일</th>\n\t\t\t\t\t\t<th scope=\"col\">조회수</th>\n\t\t\t\t\t</tr><tr> \n\t\t\t\t\t\t\t<td>\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t[공지]\n\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t<td>인천광역시 제물포구 보건소 공고 제2026 – 31호</td>\n\t\t\t\t\t\t\t<td class=\"title\">\n\t\t\t\t\t\t\t\t<a href=\"/main/bbs/bbsMsgDetail.do?msg_seq=14218&amp;listsz=50&amp;bcd=announce&amp;pgno=1\"><p class=\"tit\">「제물포구 구립 치매전담형 주간보호센터」 민간위탁 수탁기관 모집공고</p></a>\n\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t<td>\t\t\n\t\t\t\t\t\t\t\t\t<a href=\"/main/bbs/bbsMsgFileDownCompress.do?bcd=announce&amp;msg_seq=14218\" target=\"_blank\" title=\"새창으로 수탁기관_모집_공고문.hwpx 다운받기\"><i class=\"svg-icon ico-document\"></i></a>\n\t\t\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t<td>치매정신건강과</td>\n\t\t\t\t\t\t\t<td>2026.09.28</td>\n\t\t\t\t\t\t\t<td>196</td>\n\t\t\t\t\t\t</tr></tbody></table></div>",
-    "detail_html": "",
+    "detail_html": "<dl><dt>작성일</dt><dd>2026-09-28</dd></dl>",
     "category": "unknown"
   },
   "yeongjong": {

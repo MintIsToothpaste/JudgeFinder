@@ -4,6 +4,7 @@ from zoneinfo import ZoneInfo
 
 from judgefinder.adapters.config import AppConfig, SourceConfig
 from judgefinder.adapters.sources.generic_engine.mapo_search import MapoSearchSource
+from judgefinder.adapters.sources.generic_engine.openworks_board import OpenworksBoardSource
 from judgefinder.adapters.sources.generic_engine.source import GenericEngineSource
 from judgefinder.adapters.sources.municipal_rss.source import MunicipalRssSource
 from judgefinder.adapters.sources.noop.source import NoopSource
@@ -172,6 +173,10 @@ class SourceRegistry:
             MapoSearchSource
             if source_config.engine_type is EngineType.JSON_LIST_API
             and source_config.list_url == "https://www.mapo.go.kr/site/rest"
+            else OpenworksBoardSource
+            if source_config.list_url.split("?")[0] in {
+                "https://www.gne.go.kr/user/bbs/BD_selectBbsList.do",
+            }
             else GenericEngineSource
         )
         return source_class(

@@ -1,0 +1,177 @@
+# Public collection channels for the seven missing notices from cafe 2026-10-24.
+# Registration dates come from explicit board metadata, not application periods.
+# KHS includes research-institute notices; KTP publication date/source are preserved.
+timezone = "Asia/Seoul"
+db_path = "data/public-institutions-seven.db"
+enabled_sources = ["national_heritage", "chungnam_state_university", "pyeongchang_heritage", "gangwon_ccei", "busan_cultural_foundation", "gyeongnam_future_education", "gyeongnam_technopark_ktp"]
+
+[sources.national_heritage]
+municipality = "국가유산청 (국립문화유산연구원 공고 포함)"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://khs.go.kr/multiBbz/selectMultiBbzList.do?bbzId=newpublic&mn=NS_01_01&strWhere=title"
+recruitment_only = false
+max_pages = 80
+[sources.national_heritage.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.national_heritage.html_profile]
+container_selector = "table.tbl.col.data"
+row_selector = "tbody > tr"
+link_selector = "a.b_tit"
+date_selector = "td[data-column='등록일']"
+search_param = "searchWrd"
+page_param = "pageIndex"
+detail_query_exclude = "pageIndex,pageUnit,strWhere,searchWrd,sdate,edate"
+
+[sources.chungnam_state_university]
+municipality = "충남도립대학교"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.cnsu.ac.kr/univ/unilife/notice.do?searchDiv=title"
+recruitment_only = false
+max_pages = 80
+[sources.chungnam_state_university.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.chungnam_state_university.html_profile]
+container_selector = "ul.board-list"
+row_selector = ":scope > li"
+link_selector = "a[href]"
+title_selector = ".board-title > p"
+detail_title_selector = "div.subtitle > h3"
+detail_date_selector = "div.subtitle > ul > li[title]"
+search_param = "searchData"
+page_param = "page"
+detail_query_exclude = "searchDiv,searchData,page"
+
+[sources.pyeongchang_heritage]
+municipality = "평창유산재단"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://pchf.or.kr/pchf/community/notice?searchCondition=TITLE"
+recruitment_only = false
+max_pages = 80
+[sources.pyeongchang_heritage.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.pyeongchang_heritage.html_profile]
+container_selector = "table.skinTb-data-resList"
+row_selector = "tbody > tr"
+link_selector = "td.skinTb-sbj > a"
+link_attribute = "onclick"
+date_selector = "td.skinTb-date"
+id_pattern = "goPage\\(([1-9][0-9]*)\\)"
+detail_url_template = "/pchf/community/notice?mode=read&articleSeq={id}"
+search_param = "searchKeyword"
+page_param = "pageIndex"
+
+[sources.gangwon_ccei]
+municipality = "강원창조경제혁신센터"
+source_type = "api"
+engine_type = "json_list_api"
+list_url = "https://ccei.creativekorea.or.kr/gangwon/custom/noticeList.json?kind=my&sPtime=now&pagePerContents=8"
+recruitment_only = false
+max_pages = 80
+[sources.gangwon_ccei.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.gangwon_ccei.json_profile]
+rows_path = "result.list"
+title_key = "TITLE"
+date_key = "REG_DATE"
+id_key = "SEQ"
+total_path = "result.size"
+detail_url_template = "/gangwon/custom/notice_view.do?no={id}"
+search_param = "title"
+page_param = "pn"
+page_size = 8
+request_method = "POST"
+
+[sources.busan_cultural_foundation]
+municipality = "부산문화재단"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://bscf.or.kr/view.do?no=1010&sv=title"
+recruitment_only = false
+max_pages = 80
+[sources.busan_cultural_foundation.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.busan_cultural_foundation.html_profile]
+container_selector = "ul.board-ul-list"
+row_selector = ":scope > li"
+link_selector = "a.cont"
+link_attribute = "onclick"
+title_selector = ".title > .txt"
+date_selector = ".desc .date"
+id_pattern = "show\\('([1-9][0-9]*)'\\)"
+detail_url_template = "/view.do?no=1010&pbancSn={id}&pgMode=show"
+search_param = "sw"
+page_param = "pageIndex"
+
+[sources.gyeongnam_future_education]
+municipality = "경남교육청 미래교육원 (수탁기관 공고 포함)"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://gnfe.gne.go.kr/gnfe/na/ntt/selectNttList.do?bbsId=4965&searchType=sj"
+recruitment_only = false
+max_pages = 80
+[sources.gyeongnam_future_education.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.gyeongnam_future_education.html_profile]
+container_selector = "table#nttTable"
+row_selector = "tbody > tr"
+link_selector = "td.al a"
+link_attribute = "onclick"
+date_selector = "td:nth-of-type(4)"
+detail_title_selector = "th.title"
+detail_date_selector = "th:-soup-contains-own('등록일') + td"
+id_pattern = "nttView\\('([1-9][0-9]*)'\\)"
+detail_url_template = "/gnfe/na/ntt/selectNttInfo.do?bbsId=4965&nttSn={id}"
+search_param = "searchValue"
+page_param = "currPage"
+
+[sources.gyeongnam_technopark_ktp]
+municipality = "경남테크노파크 (한국테크노파크진흥회)"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://technopark.or.kr/www/linkBoard/list.do?mid=1012&type=P&agencyCd=TP_GN&opt5=title"
+recruitment_only = false
+max_pages = 80
+[sources.gyeongnam_technopark_ktp.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.gyeongnam_technopark_ktp.html_profile]
+container_selector = "table.list-table"
+row_selector = "tbody > tr"
+link_selector = "td.tal a"
+date_selector = "td:nth-of-type(4)"
+id_pattern = "/biz/applyInfo/([1-9][0-9]*)(?:[?]|$)"
+detail_origin = "https://www.gntp.or.kr"
+detail_url_template = "https://www.gntp.or.kr/biz/applyInfo/{id}"
+search_param = "keyword"
+page_param = "pageNo"
+

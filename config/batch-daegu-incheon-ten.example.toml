@@ -195,6 +195,9 @@ date_selector = "td:nth-of-type(6)"
 id_pattern = "msg_seq=([1-9][0-9]*)"
 detail_url_template = "/main/bbs/bbsMsgDetail.do?bcd=announce&msg_seq={id}"
 page_param = "pgno"
+title_exclude_selector = ".new"
+detail_date_selector = "dt:-soup-contains-own('작성일') + dd"
+
 
 [sources.yeongjong]
 municipality = "영종구"

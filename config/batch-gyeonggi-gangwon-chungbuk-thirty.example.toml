@@ -275,8 +275,8 @@ detail_url_template = "/cityhall/administrative-info/notice-info/notice-announce
 municipality = "원주시"
 source_type = "html"
 engine_type = "generic_egov_bbs"
-list_url = "https://www.wonju.go.kr/www/selectBbsNttList.do?bbsNo=140&key=216&searchCnd=SJ"
-recruitment_only = true
+list_url = "https://www.wonju.go.kr/www/selectBbsNttList.do?bbsNo=140&key=216&searchCnd=SJ&searchKrwd=%ED%8F%89%EA%B0%80"
+recruitment_only = false
 max_pages = 80
 [sources.wonju.request_strategy]
 session = true
@@ -297,6 +297,8 @@ detail_url_template = "/www/selectBbsNttView.do?key=216&bbsNo=140&nttNo={id}"
 page_number_selector = ".p-pagination .active"
 detail_title_selector = "th:-soup-contains-own('제목') + td"
 detail_date_selector = ""
+detail_body_selector = "th:-soup-contains-own('내용') + td"
+
 
 [sources.gangneung]
 municipality = "강릉시"

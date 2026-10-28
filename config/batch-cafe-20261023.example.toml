@@ -1,0 +1,279 @@
+# Public supplementary boards identified from cafe evaluator notices dated 2026-10-23.
+# Keep registration dates and public reposting provenance; collect broadly for manual review.
+timezone = "Asia/Seoul"
+db_path = "data/cafe-20261023.db"
+enabled_sources = ["udik", "jemulpo_notice", "gwacheon_uc", "chungnam", "chungbuk_sido", "yulgok", "jeonju_cultural", "gyeongnam_education", "jeju_education", "seoul_education", "jemulpo_khu"]
+
+[sources.udik]
+municipality = "한국도시설계학회 (지자체 공고 재게시)"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.udik.or.kr/board/?ncode=a0003&sc_sec1=1"
+recruitment_only = false
+max_pages = 100
+[sources.udik.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.udik.html_profile]
+container_selector = "table.table-striped"
+row_selector = "tbody > tr"
+link_selector = "td:nth-of-type(2) a"
+date_selector = "td:nth-of-type(5)"
+id_pattern = "num=([1-9][0-9]*)(?:&|$)"
+detail_url_template = "/board/?_0000_method=view&ncode=a0003&num={id}"
+search_param = "sc_keyword"
+page_param = "page"
+request_method = "POST"
+detail_title_selector = "table.table-header td:nth-of-type(1)"
+detail_date_selector = "table.table-header td:nth-of-type(3)"
+
+[sources.jemulpo_notice]
+municipality = "제물포구"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.jemulpo.go.kr/main/bbs/bbsMsgList.do?bcd=notice&listsz=50"
+recruitment_only = false
+max_pages = 100
+available_from = "2026-07-01"
+[sources.jemulpo_notice.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 75.0
+throttle_seconds = 0.3
+[sources.jemulpo_notice.html_profile]
+container_selector = "div.board-list table"
+row_selector = "tbody tr:has(> td)"
+link_selector = "td.title a"
+date_selector = "td:nth-of-type(5)"
+id_pattern = "msg_seq=([1-9][0-9]*)"
+detail_url_template = "/main/bbs/bbsMsgDetail.do?bcd=notice&msg_seq={id}"
+page_param = "pgno"
+detail_date_selector = "dt:-soup-contains-own('작성일') + dd"
+title_exclude_selector = ".new"
+
+[sources.gwacheon_uc]
+municipality = "과천도시공사"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.gcuc.or.kr/fmcs/52?search_field=Ti"
+recruitment_only = false
+max_pages = 100
+[sources.gwacheon_uc.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.gwacheon_uc.html_profile]
+container_selector = "table"
+row_selector = "tbody tr"
+link_selector = "td.txtleft a"
+date_selector = "td:nth-of-type(4)"
+id_pattern = "action-value=([a-fA-F0-9]{32})(?:&|$)"
+id_format = "hex32"
+detail_url_template = "/fmcs/52?action=read&action-value={id}"
+page_param = "page"
+search_param = "search_word"
+detail_title_selector = ".view_bbs_title"
+detail_date_selector = ".view_bbs_info em"
+
+[sources.chungnam]
+municipality = "충청남도"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.chungnam.go.kr/cnportal/province/province/list.do?menuNo=500487&searchCnd=1"
+recruitment_only = false
+max_pages = 100
+[sources.chungnam.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.chungnam.html_profile]
+container_selector = ".txt-board table"
+row_selector = "tbody tr"
+link_selector = "td.td-subj a"
+date_selector = "td:nth-of-type(6)"
+id_pattern = "nttId=([1-9][0-9]*)(?:&|$)"
+detail_url_template = "/cnportal/province/province/view.do?nttId={id}&menuNo=500487"
+search_param = "searchWrd"
+page_param = "pageIndex"
+
+[sources.chungbuk_sido]
+municipality = "충청북도"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://sido.chungbuk.go.kr/citynet/jsp/sap/SAPGosiBizProcess.do?command=searchList&flag=gosiGL&svp=Y&sido=&conGosiGbn=A"
+recruitment_only = false
+max_pages = 100
+[sources.chungbuk_sido.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.chungbuk_sido.html_profile]
+container_selector = "table.toolBoardList"
+row_selector = "tr[onclick]"
+link_selector = ""
+date_selector = "td:nth-of-type(4)"
+link_attribute = "onclick"
+title_selector = "td:nth-of-type(2)"
+id_pattern = "viewData\\('([1-9][0-9]*)','A'\\)"
+detail_url_template = "/citynet/jsp/sap/SAPGosiBizProcess.do?command=searchDetail&flag=gosiGL&gosiGbn=A&sido=&sno={id}&svp=Y"
+page_param = "currPageNo"
+request_encoding = "euc-kr"
+
+[sources.yulgok]
+municipality = "율곡국학진흥원"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.yulgok.or.kr/pub/notice.do"
+recruitment_only = false
+max_pages = 100
+[sources.yulgok.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.yulgok.html_profile]
+container_selector = "table.bbsListTbl"
+row_selector = "tbody tr"
+link_selector = "td.cell_subject a"
+date_selector = "td:nth-of-type(3)"
+title_exclude_selector = ".cell_info"
+id_pattern = "/pub/notice/([1-9][0-9]*)\\.do"
+detail_url_template = "/pub/notice/{id}.do"
+page_param = "page"
+detail_title_selector = ".bbsTitleArea .subject"
+detail_date_selector = ".bbsTitleArea .writedate"
+
+[sources.jeonju_cultural]
+municipality = "전주문화재단"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://jjcf.or.kr/main/inner.php?sMenu=F1400&sf=subject"
+recruitment_only = false
+max_pages = 100
+[sources.jeonju_cultural.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.jeonju_cultural.html_profile]
+container_selector = "table[summary]"
+row_selector = "tbody tr"
+link_selector = "td.left a"
+date_selector = "td:nth-of-type(3)"
+id_pattern = "[?&]no=([1-9][0-9]*)(?:&|$)"
+detail_url_template = "/main/inner.php?sMenu=F1400&mode=view&no={id}"
+page_param = "pno"
+search_param = "sv"
+detail_title_selector = ".subject > span"
+detail_date_selector = ".datestat li:first-child"
+
+[sources.gyeongnam_education]
+municipality = "경상남도교육청"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.gne.go.kr/user/bbs/BD_selectBbsList.do?q_bbsSn=1250"
+recruitment_only = false
+max_pages = 100
+[sources.gyeongnam_education.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.gyeongnam_education.html_profile]
+container_selector = "table.bd-list__tbl"
+row_selector = "tbody tr"
+link_selector = "td.bbs_title a"
+date_selector = "td:nth-of-type(4)"
+id_pattern = "q_bbsDocNo=([1-9][0-9]*)(?:&|$)"
+detail_url_template = "/user/bbs/BD_selectBbs.do?q_bbsSn=1250&q_bbsDocNo={id}"
+page_param = "q_currPage"
+detail_title_selector = "h3.vtitle .tit"
+detail_date_selector = ".vinfo > li:has(> span.blind:-soup-contains-own('등록일시'))"
+
+[sources.jeju_education]
+municipality = "제주특별자치도교육청"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.jje.go.kr/board/list.jje?boardId=BBS_0000017&menuCd=DOM_000000103001001000&searchType=DATA_TITLE"
+recruitment_only = false
+max_pages = 100
+[sources.jeju_education.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.jeju_education.html_profile]
+container_selector = "table.list01"
+row_selector = "tbody tr"
+link_selector = "td.title a"
+date_selector = "td:nth-of-type(5)"
+id_pattern = "dataSid=([1-9][0-9]*)(?:&|$)"
+detail_url_template = "/board/view.jje?boardId=BBS_0000017&dataSid={id}&paging=ok"
+search_param = "keyword"
+page_param = "startPage"
+
+[sources.seoul_education]
+municipality = "서울특별시교육청 (교육연수원 공고 포함)"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.sen.go.kr/user/bbs/BD_selectBbsList.do?q_bbsSn=1100&q_rowPerPage=10"
+recruitment_only = false
+max_pages = 100
+[sources.seoul_education.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.seoul_education.html_profile]
+container_selector = "table.bd-list__tbl"
+row_selector = "tbody tr"
+link_selector = "td.bbs_title a"
+date_selector = "td:nth-of-type(5)"
+id_pattern = "q_bbsDocNo=([1-9][0-9]*)(?:&|$)"
+detail_url_template = "/user/bbs/BD_selectBbs.do?q_bbsSn=1100&q_bbsDocNo={id}"
+page_param = "q_currPage"
+detail_title_selector = "h3.vtitle .tit"
+detail_date_selector = ".vinfo > li:has(> span.blind:-soup-contains-own('작성일'))"
+
+# Backup for Jemulpo notices no longer available on the district board.
+# Preserve the university's registration date, not the district's original date.
+[sources.jemulpo_khu]
+municipality = "제물포구 (경희대학교 경영대학 재게시)"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://kbiz.khu.ac.kr/biz_kor/user/bbs/BMSR00040/list.do?menuNo=14500162&searchCondition=1&searchKeyword=%EC%A0%9C%EB%AC%BC%ED%8F%AC%EA%B5%AC"
+recruitment_only = false
+max_pages = 100
+available_from = "2026-07-01"
+[sources.jemulpo_khu.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.jemulpo_khu.html_profile]
+container_selector = "div.bbs_tbl-st1 table"
+row_selector = "tbody tr"
+link_selector = "td.tal a"
+date_selector = "td:nth-of-type(5)"
+id_pattern = "view\\('([1-9][0-9]*)'\\)"
+detail_url_template = "/biz_kor/user/bbs/BMSR00040/view.do?menuNo=14500162&boardId={id}"
+search_param = "searchKeyword"
+page_param = "pageIndex"
+detail_title_selector = "article.bbs-view > header.top > h2.t"
+detail_date_selector = "article.bbs-view .info > .item:has(> strong:-soup-contains-own('등록일'))"

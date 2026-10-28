@@ -31,8 +31,16 @@ class HtmlProfile:
     total_count_selector: str = ""
     total_count_pattern: str = ""
     detail_origin: str = ""
+    detail_query_exclude: str = ""
 
     def __post_init__(self) -> None:
+        if not isinstance(self.detail_query_exclude, str) or (
+            self.detail_query_exclude and any(
+                not re.fullmatch(r"[A-Za-z][A-Za-z0-9_]*", key)
+                for key in self.detail_query_exclude.split(",")
+            )
+        ):
+            raise ValueError("html_profile.detail_query_exclude must list query parameter names")
         if self.id_format not in {"numeric", "hex32"}:
             raise ValueError("html_profile.id_format must be numeric or hex32")
         if self.id_format != "numeric" and not self.id_pattern:

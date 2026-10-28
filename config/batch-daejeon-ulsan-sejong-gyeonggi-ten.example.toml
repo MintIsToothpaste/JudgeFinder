@@ -2,7 +2,7 @@
 # Window: 2025-10-05 through 2026-10-04. Do not infer missing dates.
 timezone = "Asia/Seoul"
 db_path = "data/live-tests/daejeon-ulsan-sejong-gyeonggi-ten-2026-10-04/notices.db"
-# Sejong is held: the recruitment has neither a listing nor a detail date.
+# Sejong portal remains held for undated rows; use sejong_eminwon in the supplementary batch.
 # Suwon remains diagnostic-only for archive coverage, even if current notices parse.
 enabled_sources = ["daedeok","ulsan","ulsan_junggu","ulsan_namgu","ulsan_donggu","ulsan_bukgu","ulju","gyeonggi","suwon"]
 
@@ -150,8 +150,6 @@ link_selector = "td.gosi a"
 date_selector = "td:nth-of-type(6)"
 detail_title_selector = "th:-soup-contains-own('제목') + td"
 detail_date_selector = "th:-soup-contains-own('게재 일자') + td"
-id_pattern = '/([1-9][0-9]*)[.]ulsan'
-detail_url_template = "/u/rep/transfer/notice/{id}.ulsan?mId=001004002000000000&gosiGbn=A"
 search_param = "srchWord"
 page_param = "curPage"
 page_number_selector = "ul.pagination li.active a"
@@ -186,7 +184,7 @@ page_number_selector = "p.page_num > em"
 municipality = "세종특별자치시"
 source_type = "html"
 engine_type = "generic_egov_bbs"
-list_url = "https://www.sejong.go.kr/prog/publicNotice/kor/sub02_030301/C1_1/list.do?searchCondition=not_ancmt_sj&searchStartDate=2025-10-05&searchEndDate=2026-10-04"
+list_url = "https://www.sejong.go.kr/prog/publicNotice/kor/sub02_030301/C1_1/list.do?searchCondition=not_ancmt_sj"
 recruitment_only = true
 max_pages = 40
 [sources.sejong.request_strategy]

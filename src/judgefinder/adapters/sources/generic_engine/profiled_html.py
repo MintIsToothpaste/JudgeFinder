@@ -4,7 +4,7 @@ import re
 from collections.abc import Callable
 from copy import deepcopy
 from datetime import date
-from urllib.parse import urljoin, urlparse, urlunparse
+from urllib.parse import parse_qsl, urlencode, urljoin, urlparse, urlunparse
 
 from bs4 import BeautifulSoup, Tag
 
@@ -123,7 +123,14 @@ def parse_profiled_html(
             raise ValueError(f"HTML row {index}: notice URL must stay on the configured host")
         if parsed.scheme != origin.scheme or parsed.username or parsed.password:
             raise ValueError(f"HTML row {index}: invalid notice URL origin")
-        url = urlunparse(parsed._replace(fragment="", params=""))
+        query = parsed.query
+        if profile.detail_query_exclude:
+            excluded = set(profile.detail_query_exclude.split(","))
+            query = urlencode([
+                (key, value) for key, value in parse_qsl(query, keep_blank_values=True)
+                if key not in excluded
+            ])
+        url = urlunparse(parsed._replace(fragment="", params="", query=query))
         if url == urlunparse(base._replace(fragment="", params="")):
             raise ValueError(f"HTML row {index}: detail URL resolves to listing")
         title_node = row.select_one(profile.title_selector) if profile.title_selector else anchor
@@ -165,7 +172,8 @@ def parse_profiled_html(
                 tag.decompose()
             body_text = " ".join(body_node.get_text(" ", strip=True).split())
         candidates.append(GenericNoticeCandidate(
-            title=title, url=url, published_date=published_date, searchable_text=title,
+            title=title, url=url, published_date=published_date,
+            searchable_text=f"{title} {body_text}".strip(),
             body_text=body_text,
         ))
     return candidates

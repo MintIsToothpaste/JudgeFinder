@@ -144,7 +144,7 @@ detail_date_selector = "ul.col > li:-soup-contains(\"작성일\")"
 municipality = "경상북도"
 source_type = "html"
 engine_type = "generic_egov_bbs"
-list_url = "https://www.gb.go.kr/page/10109/67.do?boardMngNo=71&searchCondition=1&searchStrtDt=2025-10-06&searchEndDt=2026-10-05"
+list_url = "https://www.gb.go.kr/page/10109/67.do?boardMngNo=71&searchCondition=1"
 recruitment_only = true
 max_pages = 80
 [sources.gyeongbuk.request_strategy]

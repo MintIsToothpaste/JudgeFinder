@@ -438,7 +438,9 @@ def _resolve_page_param(list_url: str, *, engine_type: EngineType) -> str:
 
 
 def _contains_keyword(text: str, keywords: tuple[str, ...]) -> bool:
-    return any(keyword in text for keyword in keywords)
+    # Korean notice titles may split a search term across spaces or line breaks.
+    compact_text = "".join(text.split())
+    return any("".join(keyword.split()) in compact_text for keyword in keywords)
 
 
 def _normalize_text(value: str) -> str:

@@ -77,6 +77,10 @@ config/*.toml
 !config/batch-jeonbuk-gyeongbuk-gyeongnam-thirty.example.toml
 !config/batch-gyeongnam-jeju-final-twenty.example.toml
 !config/batch-held-eighteen.example.toml
+!config/batch-cafe-additional-institutions.example.toml
+!config/batch-public-institutions-seven.example.toml
+!config/batch-cafe-20261023.example.toml
+!config/batch-cafe-20261028.example.toml
 
 # IDE / editor
 .vscode/

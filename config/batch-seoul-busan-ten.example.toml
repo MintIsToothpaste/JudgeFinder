@@ -1,9 +1,9 @@
 # Isolated live validation. Production config/config.toml is unchanged.
-# Historical window: 2025-10-01 through 2026-09-30; not currently open recruitment.
+# Historical fixtures remain as regression coverage; searches have no fixed cutoff.
 # Portal news boards below do not cover every notice board in each municipality.
 timezone = "Asia/Seoul"
 db_path = "data/live-tests/seoul-busan-ten-2026-09-30/notices.db"
-enabled_sources = ["seoul_gangseo","guro","geumcheon","yeongdeungpo","dongjak","seocho","gangnam","songpa","gangdong","busan"]
+enabled_sources = ["seoul_gangseo","guro","geumcheon","yeongdeungpo","dongjak","seocho","gangnam","songpa","gangdong","busan","seocho_katia","busan_gosi","gangnam_union6"]
 
 [sources.seoul_gangseo]
 municipality = "강서구"
@@ -204,11 +204,11 @@ detail_url_template = "/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=
 search_param = "not_ancmt_sj"
 
 [sources.busan]
-# Fixed portal date filters for this validation. Update them for another window.
+# Use the portal default date window instead of a fixed historical cutoff.
 municipality = "부산광역시"
 source_type = "html"
 engine_type = "generic_egov_bbs"
-list_url = "https://www.busan.go.kr/nbnews?srchKey=sj&srchBeginDt=2025-10-01&srchEndDt=2026-09-30"
+list_url = "https://www.busan.go.kr/nbnews?srchKey=sj"
 recruitment_only = true
 [sources.busan.request_strategy]
 session = true
@@ -225,3 +225,79 @@ id_pattern = "/nbnews/([1-9][0-9]*)(?:[?]|$)"
 detail_url_template = "/nbnews/{id}"
 search_param = "srchText"
 page_param = "curPage"
+
+# Additional public channels for notices absent from the original boards.
+# Association publication date/source are preserved; this is not a district gosi page.
+
+[sources.seocho_katia]
+municipality = "서초구 (교통영향평가협회)"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.katia.or.kr/work/notice.php?Dosearch=subject&search_order=%EC%84%9C%EC%B4%88"
+recruitment_only = true
+max_pages = 80
+[sources.seocho_katia.request_strategy]
+session = true
+referer = true
+timeout_seconds = 30.0
+throttle_seconds = 1.0
+[sources.seocho_katia.html_profile]
+container_selector = "table.common-tbl-list.notice"
+row_selector = "tbody > tr"
+link_selector = "td.subject a"
+date_selector = "td:nth-of-type(4)"
+detail_title_selector = "table.board-view thead tr:first-child td.board-tit"
+detail_date_selector = "table.board-view thead tr:first-child td:nth-of-type(2)"
+id_pattern = "sendPage_\\('v',\\s*'([1-9][0-9]*)',\\s*'[0-9]+'\\)"
+detail_url_template = "/work/notice.php?mode=v&idx={id}&code=notice"
+search_param = "search_order"
+page_param = "thisPageNum"
+
+[sources.busan_gosi]
+municipality = "부산광역시"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.busan.go.kr/nbgosi?conGosiGbn=A&schKeyType=A"
+recruitment_only = true
+max_pages = 80
+[sources.busan_gosi.request_strategy]
+session = true
+referer = true
+timeout_seconds = 30.0
+throttle_seconds = 1.0
+[sources.busan_gosi.html_profile]
+container_selector = "table.boardList"
+row_selector = "tbody tr"
+link_selector = "td.title a"
+date_selector = "td:nth-of-type(4)"
+detail_title_selector = "h4.form-data-subject"
+detail_date_selector = "dt:-soup-contains('공고일자') + dd"
+id_pattern = "[?&]sno=([1-9][0-9]*)(?:&|$)"
+detail_url_template = "/nbgosi/view?sno={id}&gosiGbn=A"
+search_param = "srchText"
+page_param = "curPage"
+
+# Public redevelopment notices are separate from the general notice board.
+[sources.gangnam_union6]
+municipality = "강남구"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.gangnam.go.kr/board/union6/list.do?mid=ID02_01130505&keyfield=bdm_main_title"
+recruitment_only = false
+max_pages = 80
+[sources.gangnam_union6.request_strategy]
+session = true
+referer = true
+timeout_seconds = 75.0
+throttle_seconds = 1.0
+[sources.gangnam_union6.html_profile]
+container_selector = "table.table-hover"
+row_selector = "tbody tr"
+link_selector = "td.tit a"
+date_selector = "td:nth-of-type(6)"
+detail_title_selector = ".post-title h4"
+detail_date_selector = ".post-info .text-right > span:first-child"
+id_pattern = "/union6/([1-9][0-9]*)/view.do"
+detail_url_template = "/board/union6/{id}/view.do?mid=ID02_01130505"
+search_param = "keyword"
+page_param = "pgno"

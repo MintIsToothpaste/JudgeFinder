@@ -151,12 +151,15 @@ def test_requests_http_client_preserves_verify_false_on_legacy_tls_retry(
 
 @pytest.mark.parametrize("use_session", [False, True])
 def test_missing_issuer_retries_with_verified_system_trust(
-    monkeypatch: pytest.MonkeyPatch, use_session: bool,
+    monkeypatch: pytest.MonkeyPatch,
+    use_session: bool,
 ) -> None:
     client = RequestsHttpClient()
-    primary = Mock(side_effect=requests.exceptions.SSLError(
-        "unable to get local issuer certificate",
-    ))
+    primary = Mock(
+        side_effect=requests.exceptions.SSLError(
+            "unable to get local issuer certificate",
+        )
+    )
     fallback = Mock(return_value=DummyResponse(text="verified"))
     monkeypatch.setattr(client._session if use_session else requests, "get", primary)
     monkeypatch.setattr(client._system_trust_session, "get", fallback)
@@ -165,7 +168,10 @@ def test_missing_issuer_retries_with_verified_system_trust(
     assert client.get_text("https://example.com", use_session=use_session) == "verified"
     assert primary.call_count == 1
     fallback.assert_called_once_with(
-        "https://example.com", timeout=10.0, headers=None, verify=True,
+        "https://example.com",
+        timeout=10.0,
+        headers=None,
+        verify=True,
     )
     if use_session:
         assert client._system_trust_session.cookies.get("test_cookie") == "public-session"
@@ -173,9 +179,15 @@ def test_missing_issuer_retries_with_verified_system_trust(
 
 def test_system_verification_failure_is_not_bypassed(monkeypatch: pytest.MonkeyPatch) -> None:
     client = RequestsHttpClient()
-    monkeypatch.setattr(requests, "get", Mock(side_effect=requests.exceptions.SSLError(
-        "unable to verify the first certificate",
-    )))
+    monkeypatch.setattr(
+        requests,
+        "get",
+        Mock(
+            side_effect=requests.exceptions.SSLError(
+                "unable to verify the first certificate",
+            )
+        ),
+    )
     fallback = Mock(side_effect=requests.exceptions.SSLError("certificate has expired"))
     insecure = Mock(side_effect=AssertionError("must not disable verification"))
     monkeypatch.setattr(client._system_trust_session, "get", fallback)
@@ -188,7 +200,8 @@ def test_system_verification_failure_is_not_bypassed(monkeypatch: pytest.MonkeyP
 
 @pytest.mark.parametrize("message", ["certificate has expired", "hostname mismatch"])
 def test_other_certificate_failures_do_not_use_system_fallback(
-    monkeypatch: pytest.MonkeyPatch, message: str,
+    monkeypatch: pytest.MonkeyPatch,
+    message: str,
 ) -> None:
     client = RequestsHttpClient()
     monkeypatch.setattr(requests, "get", Mock(side_effect=requests.exceptions.SSLError(message)))
@@ -199,12 +212,17 @@ def test_other_certificate_failures_do_not_use_system_fallback(
     fallback.assert_not_called()
 
 
-@pytest.mark.parametrize("error,session_name", [
-    ("unable to get local issuer certificate", "_system_trust_session"),
-    ("[SSL: SSLV3_ALERT_HANDSHAKE_FAILURE]", "_legacy_tls_session"),
-])
+@pytest.mark.parametrize(
+    "error,session_name",
+    [
+        ("unable to get local issuer certificate", "_system_trust_session"),
+        ("[SSL: SSLV3_ALERT_HANDSHAKE_FAILURE]", "_legacy_tls_session"),
+    ],
+)
 def test_post_preserves_method_body_and_tls_on_retry(
-    monkeypatch: pytest.MonkeyPatch, error: str, session_name: str,
+    monkeypatch: pytest.MonkeyPatch,
+    error: str,
+    session_name: str,
 ) -> None:
     client = RequestsHttpClient()
     primary = Mock(side_effect=requests.exceptions.SSLError(error))
@@ -225,5 +243,58 @@ def test_post_uses_session_and_raises_http_errors(monkeypatch: pytest.MonkeyPatc
     with pytest.raises(requests.HTTPError):
         client.post_text("https://example.com/search", data=b"page=1", use_session=True)
     requester.assert_called_once_with(
-        "https://example.com/search", data=b"page=1", timeout=10.0, headers=None, verify=True,
+        "https://example.com/search",
+        data=b"page=1",
+        timeout=10.0,
+        headers=None,
+        verify=True,
     )
+
+
+@pytest.mark.parametrize("operation", ["get_text", "get_response", "post_text"])
+@pytest.mark.parametrize(
+    ("content_type", "markup", "wire_encoding", "initial_encoding"),
+    [
+        ("text/html", '<meta charset="utf-8">경기도', "utf-8", "ISO-8859-1"),
+        ("text/html", '<meta charset="euc-kr">공고', "euc-kr", "ISO-8859-1"),
+        (
+            "text/html",
+            '<meta http-equiv="Content-Type" content="text/html; charset=cp949">공고',
+            "cp949",
+            "ISO-8859-1",
+        ),
+        ("text/html; charset=cp949", '<meta charset="utf-8">공고', "cp949", "cp949"),
+        ("application/json", '{"제목":"공고"}', "utf-8", "utf-8"),
+        (
+            "application/xml",
+            '<?xml version="1.0" encoding="euc-kr"?><rss>공고</rss>',
+            "euc-kr",
+            None,
+        ),
+        ("text/html", "공고", "utf-8", "ISO-8859-1"),
+        ("text/html; charset=not-an-encoding", "공고", "utf-8", "not-an-encoding"),
+    ],
+)
+def test_http_decodes_declared_charset_or_utf8_fallback(
+    monkeypatch: pytest.MonkeyPatch,
+    operation: str,
+    content_type: str,
+    markup: str,
+    wire_encoding: str,
+    initial_encoding: str | None,
+) -> None:
+    response = requests.Response()
+    response.status_code = 200
+    response.url = "https://example.com/list"
+    response.headers["Content-Type"] = content_type
+    response._content = markup.encode(wire_encoding)
+    response.encoding = initial_encoding
+    client = RequestsHttpClient()
+    monkeypatch.setattr(client, "_request", lambda **kwargs: response)
+    if operation == "post_text":
+        result = client.post_text(response.url, data=b"page=1")
+    elif operation == "get_response":
+        result = client.get_response(response.url).text
+    else:
+        result = client.get_text(response.url)
+    assert result == markup

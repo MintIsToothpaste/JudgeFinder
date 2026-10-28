@@ -1,0 +1,311 @@
+# Public boards for the seven institutions missing from the cafe comparison.
+# Keep existing municipality batches; this is an additional collection batch.
+# Broad title keyword collection: human review handles results and ambiguous notices.
+timezone = "Asia/Seoul"
+db_path = "data/cafe-additional-institutions.db"
+enabled_sources = ["hwaseong_talent", "changwon_lepopark", "busan_technopark", "busan_bistep", "daejeon_junggu", "uiseong", "busan_bepa_small_business", "busan_bepa_regional_business", "busan_bepa_youth", "busan_bepa_workforce", "busan_bepa_industry", "busan_bepa_notices"]
+
+# The official HSTree form also sends the UTF-8 search term as Base64.
+[sources.hwaseong_talent]
+municipality = "화성시인재육성재단"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.hstree.org/news/notice.do?brdSrchSel=1&search_Text=7Y%2BJ6rCA7JyE7JuQ"
+recruitment_only = false
+max_pages = 80
+[sources.hwaseong_talent.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.hwaseong_talent.html_profile]
+container_selector = "table.brd_list"
+row_selector = "tbody > tr"
+link_selector = "p.subject a"
+date_selector = "td:nth-of-type(4)"
+id_pattern = "[?&]seq=([1-9][0-9]*)(?:&|$)"
+detail_url_template = "/news/noticeView.do?seq={id}"
+search_param = "brdSrchStr"
+page_param = "pageIndex"
+page_number_selector = ".pagination li.active"
+detail_title_selector = ".view_header strong.subject"
+detail_date_selector = ".view_header span:-soup-contains-own('작성일') + span.data"
+
+[sources.changwon_lepopark]
+municipality = "창원레포츠파크"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.lepopark.or.kr/post/noticesp/?where=title"
+recruitment_only = false
+max_pages = 80
+[sources.changwon_lepopark.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.changwon_lepopark.html_profile]
+container_selector = "table.board.list"
+row_selector = "tbody > tr"
+link_selector = "td.title a"
+date_selector = "td.date"
+id_pattern = "^([1-9][0-9]*)$"
+detail_url_template = "/post/noticesp/{id}"
+search_param = "keyword"
+page_param = "page"
+# Out-of-range pages have an empty table and no active pager.
+
+[sources.busan_technopark]
+municipality = "부산테크노파크"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.btp.or.kr/kor/CMS/Board/Board.do?mCode=MN013&mode=list"
+recruitment_only = false
+max_pages = 80
+[sources.busan_technopark.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.busan_technopark.html_profile]
+container_selector = "table.bdListTbl"
+row_selector = "tbody > tr"
+link_selector = "td.subject a"
+date_selector = "td.date"
+id_pattern = "[?&]board_seq=([1-9][0-9]*)(?:&|$)"
+detail_url_template = "/kor/CMS/Board/Board.do?mCode=MN013&mode=view&mgr_seq=16&board_seq={id}"
+search_param = "searchKeyword"
+page_param = "page"
+page_number_selector = ".pagelist > strong"
+detail_title_selector = "h3.view-tit"
+
+[sources.busan_bistep]
+municipality = "부산과학기술고등교육진흥원"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.bistep.re.kr/kor/CMS/Board/Board.do?mCode=MN010&searchID=sch001"
+recruitment_only = false
+max_pages = 80
+[sources.busan_bistep.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.busan_bistep.html_profile]
+container_selector = "table.bdListTbl"
+row_selector = "tbody > tr"
+link_selector = "td.subject a"
+date_selector = "td.date"
+id_pattern = "[?&]board_seq=([1-9][0-9]*)(?:&|$)"
+detail_url_template = "/kor/CMS/Board/Board.do?mCode=MN010&mode=view&mgr_seq=23&board_seq={id}"
+search_param = "searchKeyword"
+page_param = "page"
+page_number_selector = ".pagelist > strong"
+detail_title_selector = "h3.viewTit"
+detail_date_selector = ".viewTitWinfo span.date"
+
+[sources.daejeon_junggu]
+municipality = "대전 중구"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.djjunggu.go.kr/prog/saeolGosi/GOSI_03/sub03_06/list.do?searchCondition=notAncmtSj"
+recruitment_only = false
+max_pages = 80
+[sources.daejeon_junggu.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.daejeon_junggu.html_profile]
+container_selector = "table.table-default"
+row_selector = "tbody > tr"
+link_selector = "td.subject a"
+link_attribute = "onclick"
+date_selector = "td[data-cell-header='등록일']"
+id_pattern = "fn_search_detail[(]'([1-9][0-9]*)'"
+detail_url_template = "/prog/saeolGosi/GOSI_03/sub03_06/view.do?notAncmtMgtNo={id}"
+search_param = "searchKeyword"
+page_param = "pageIndex"
+page_number_selector = ".pagination li.active"
+detail_title_selector = "h2.bbs--view--tit"
+
+[sources.uiseong]
+municipality = "의성군"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.usc.go.kr/ko/page.do?mnu_uid=157&srchColumn=title"
+recruitment_only = false
+max_pages = 80
+[sources.uiseong.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.uiseong.html_profile]
+container_selector = "table.tbl_board"
+row_selector = "tbody > tr"
+link_selector = "td.subject a"
+date_selector = "td.date"
+id_pattern = "[?&]not_ancmt_mgt_no=([1-9][0-9]*)(?:&|$)"
+detail_url_template = "/ko/page.do?mnu_uid=157&not_ancmt_mgt_no={id}&cmd=2"
+search_param = "srchKwd"
+page_param = "pageNo"
+page_number_selector = ".paging > strong"
+detail_title_selector = "dl.title > dt"
+detail_date_selector = "dl.data > dt:-soup-contains-own('등록일') + dd"
+
+[sources.busan_bepa_small_business]
+municipality = "부산경제진흥원"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.bepa.kr/kor/view.do?no=1502&sv=TITLE&periodState=all"
+recruitment_only = false
+max_pages = 80
+[sources.busan_bepa_small_business.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.busan_bepa_small_business.html_profile]
+container_selector = "table.skin_01"
+row_selector = "tbody > tr"
+link_selector = "td.title a"
+date_selector = "td.date"
+id_pattern = "[?&]idx=([1-9][0-9]*)(?:&|$)"
+detail_url_template = "/kor/view.do?no=1502&idx={id}&view=view"
+search_param = "sw"
+page_param = "pageIndex"
+detail_title_selector = "dl.view_01 > dt > strong"
+detail_date_selector = "dl.view_01 > dd.day"
+
+[sources.busan_bepa_regional_business]
+municipality = "부산경제진흥원"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.bepa.kr/kor/view.do?no=1505&sv=TITLE&periodState=all"
+recruitment_only = false
+max_pages = 80
+[sources.busan_bepa_regional_business.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.busan_bepa_regional_business.html_profile]
+container_selector = "table.skin_01"
+row_selector = "tbody > tr"
+link_selector = "td.title a"
+date_selector = "td.date"
+id_pattern = "[?&]idx=([1-9][0-9]*)(?:&|$)"
+detail_url_template = "/kor/view.do?no=1505&idx={id}&view=view"
+search_param = "sw"
+page_param = "pageIndex"
+detail_title_selector = "dl.view_01 > dt > strong"
+detail_date_selector = "dl.view_01 > dd.day"
+
+[sources.busan_bepa_youth]
+municipality = "부산경제진흥원"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.bepa.kr/kor/view.do?no=1670&sv=TITLE&periodState=all"
+recruitment_only = false
+max_pages = 80
+[sources.busan_bepa_youth.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.busan_bepa_youth.html_profile]
+container_selector = "table.skin_01"
+row_selector = "tbody > tr"
+link_selector = "td.title a"
+date_selector = "td.date"
+id_pattern = "[?&]idx=([1-9][0-9]*)(?:&|$)"
+detail_url_template = "/kor/view.do?no=1670&idx={id}&view=view"
+search_param = "sw"
+page_param = "pageIndex"
+detail_title_selector = "dl.view_01 > dt > strong"
+detail_date_selector = "dl.view_01 > dd.day"
+
+[sources.busan_bepa_workforce]
+municipality = "부산경제진흥원"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.bepa.kr/kor/view.do?no=1504&sv=TITLE&periodState=all"
+recruitment_only = false
+max_pages = 80
+[sources.busan_bepa_workforce.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.busan_bepa_workforce.html_profile]
+container_selector = "table.skin_01"
+row_selector = "tbody > tr"
+link_selector = "td.title a"
+date_selector = "td.date"
+id_pattern = "[?&]idx=([1-9][0-9]*)(?:&|$)"
+detail_url_template = "/kor/view.do?no=1504&idx={id}&view=view"
+search_param = "sw"
+page_param = "pageIndex"
+detail_title_selector = "dl.view_01 > dt > strong"
+detail_date_selector = "dl.view_01 > dd.day"
+
+[sources.busan_bepa_industry]
+municipality = "부산경제진흥원"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.bepa.kr/kor/view.do?no=1506&sv=TITLE&periodState=all"
+recruitment_only = false
+max_pages = 80
+[sources.busan_bepa_industry.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.busan_bepa_industry.html_profile]
+container_selector = "table.skin_01"
+row_selector = "tbody > tr"
+link_selector = "td.title a"
+date_selector = "td.date"
+id_pattern = "[?&]idx=([1-9][0-9]*)(?:&|$)"
+detail_url_template = "/kor/view.do?no=1506&idx={id}&view=view"
+search_param = "sw"
+page_param = "pageIndex"
+detail_title_selector = "dl.view_01 > dt > strong"
+detail_date_selector = "dl.view_01 > dd.day"
+
+[sources.busan_bepa_notices]
+municipality = "부산경제진흥원"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.bepa.kr/kor/view.do?no=1508&sv=TITLE&periodState=all"
+recruitment_only = false
+max_pages = 80
+[sources.busan_bepa_notices.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.busan_bepa_notices.html_profile]
+container_selector = "table.skin_01"
+row_selector = "tbody > tr"
+link_selector = "td.title a"
+date_selector = "td.date"
+id_pattern = "[?&]idx=([1-9][0-9]*)(?:&|$)"
+detail_url_template = "/kor/view.do?no=1508&idx={id}&view=view"
+search_param = "sw"
+page_param = "pageIndex"
+detail_title_selector = "dl.view_01 > dt > strong"
+detail_date_selector = "dl.view_01 > dd.day"
+
