@@ -1,0 +1,136 @@
+# Public boards verified against cafe evaluator notices dated 2026-10-22.
+# Keep publication metadata; collect broadly for manual review.
+
+timezone = "Asia/Seoul"
+db_path = "data/cafe-20261022.db"
+enabled_sources = ["jemulpo_eminwon", "cheonan_uc", "gimje_education", "geoje_gohyeon", "gimhae_cultural"]
+
+[sources.jemulpo_eminwon]
+municipality = "제물포구"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://eminwon.jemulpo.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&method=selectListOfrNotAncmt&methodnm=selectListOfrNotAncmtHomepage&homepage_pbs_yn=Y&subCheck=Y&ofr_pageSize=10&not_ancmt_se_code=01,04,05,06&list_gubun=A"
+available_from = "2026-07-01"
+recruitment_only = false
+max_pages = 100
+[sources.jemulpo_eminwon.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 75.0
+throttle_seconds = 0.3
+[sources.jemulpo_eminwon.html_profile]
+container_selector = "table.general_board"
+row_selector = "tbody > tr"
+link_selector = "td.left a"
+date_selector = "td.bbs_dt"
+id_pattern = "not_ancmt_mgt_no=([1-9][0-9]*)"
+detail_url_template = "/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&subCheck=Y&not_ancmt_mgt_no={id}"
+detail_title_selector = "table.general_board thead th"
+detail_date_selector = "th:-soup-contains-own('등록일') + td"
+search_param = "not_ancmt_sj"
+page_param = "pageIndex"
+
+[sources.cheonan_uc]
+municipality = "천안도시공사"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.cauc.or.kr/_kor/main.asp?no=34&tb_nm=tbl_notice&m_mode=list&sltOption=1"
+recruitment_only = false
+max_pages = 100
+[sources.cheonan_uc.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.cheonan_uc.html_profile]
+container_selector = "table.article_list"
+row_selector = "tbody > tr"
+link_selector = "td.m_title a"
+date_selector = "td.m_date"
+id_pattern = "pds_no=([1-9][0-9]*)"
+detail_url_template = "/_kor/main.asp?no=34&tb_nm=tbl_notice&m_mode=view&pds_no={id}"
+detail_title_selector = ".viewForm .m_view_title"
+detail_date_selector = ".viewForm dt:-soup-contains-own('등록일') + dd"
+search_param = "txtKeyword"
+page_param = "PageNo"
+
+[sources.gimje_education]
+municipality = "김제교육지원청"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://school.jbedu.kr/jbgje/M010501/list.do?s_field=title"
+recruitment_only = false
+max_pages = 100
+[sources.gimje_education.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.gimje_education.html_profile]
+container_selector = "table.usm-brd-lst"
+row_selector = "tbody > tr"
+link_selector = "td.tch-tit a"
+date_selector = "td.tch-dte"
+# This board explicitly displays registration dates as YY.MM.DD.
+two_digit_year_base = 2000
+id_pattern = "/view/([1-9][0-9]*)[.]do"
+detail_url_template = "/jbgje/M010501/view/{id}.do"
+detail_title_selector = "#m_mainView th.tch-tit"
+detail_date_selector = "#m_mainView td.tch-dte"
+search_param = "s_word"
+page_param = "s_idx"
+
+[sources.geoje_gohyeon]
+municipality = "거제고현자율상권조합"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.2102.or.kr/bbs/board.php?bo_table=notice&sfl=wr_subject%7C%7Cwr_content"
+recruitment_only = false
+max_pages = 100
+[sources.geoje_gohyeon.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.geoje_gohyeon.html_profile]
+container_selector = "#bo_list table"
+row_selector = "tbody > tr"
+link_selector = "td.td_subject .bo_tit a"
+date_selector = "td.td_datetime"
+id_pattern = "wr_id=([1-9][0-9]*)"
+detail_url_template = "/bbs/board.php?bo_table=notice&wr_id={id}"
+detail_title_selector = "#bo_v_title .bo_v_tit"
+detail_body_selector = "#bo_v_con"
+search_param = "stx"
+page_param = "page"
+
+[sources.gimhae_cultural]
+municipality = "김해문화관광재단"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.ghct.or.kr/board/board01?searchCategory=title"
+recruitment_only = false
+max_pages = 100
+[sources.gimhae_cultural.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.gimhae_cultural.html_profile]
+container_selector = "table.basic_table"
+row_selector = "tbody > tr"
+link_selector = ""
+link_attribute = "data-idx"
+title_selector = "button.board_title_btn"
+date_selector = "td.date"
+id_pattern = "^([1-9][0-9]*)$"
+detail_url_template = "/board/detail/board01/{id}"
+detail_title_selector = ".bbs_detail_type1 .view_titlearea > .title > p"
+detail_date_selector = ".bbs_detail_type1 .dinfo li:-soup-contains-own('작성일') > span"
+search_param = "searchText"
+page_param = "pageIndex"

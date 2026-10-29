@@ -653,7 +653,7 @@ detail_date_selector = "dt:-soup-contains-own('등록일') + dd"
 municipality = "경상남도"
 source_type = "html"
 engine_type = "generic_egov_bbs"
-list_url = "https://www.gyeongnam.go.kr/index.gyeong?menuCd=DOM_000000135003009000&conIfmStdt=2025-10-06&conIfmEnddt=2026-10-05&pageLine=10"
+list_url = "https://www.gyeongnam.go.kr/index.gyeong?menuCd=DOM_000000135003009000&pageLine=10"
 recruitment_only = true
 max_pages = 80
 [sources.gyeongnam.request_strategy]

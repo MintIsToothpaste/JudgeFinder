@@ -3,11 +3,14 @@ from __future__ import annotations
 import json
 import re
 from datetime import date
+from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
 import pytest
 from bs4 import BeautifulSoup, Comment
 from profile_cases import PROFILE_BATCHES
+
+from judgefinder.adapters.config import load_config
 
 
 def test_settings_do_not_enable_unverified_sources_or_fixtures() -> None:
@@ -284,7 +287,7 @@ def test_official_archive_and_search_parameters_cover_ten_municipalities() -> No
     assert haenam.html_profile is not None and haenam.html_profile.page_param == "nowPageNum"
     jangheung = parse_qs(urlparse(batch.settings.sources["jangheung"].list_url).query)
     assert jangheung["category_1"] == ["지난 고시공고"]
-    assert jangheung["start_date"] == ["2025-10-05"]
+    assert not {"start_date", "finish_date"} & jangheung.keys()
     current = parse_qs(urlparse(batch.settings.sources["jangheung_current"].list_url).query)
     assert "category_1" not in current
     assert "/old_gosi_new" in batch.settings.sources["gangjin"].list_url
@@ -317,7 +320,7 @@ def test_official_city_only_archive_and_search_scope() -> None:
     assert urlparse(city.list_url).path == "/drh/drhGosiList.do"
     query = parse_qs(urlparse(city.list_url).query)
     assert query["gosigbn"] == ["A"] and query["menuSeq"] == ["1908"]
-    assert query["conifmstdt"] == ["2025-10-05"] and query["conifmenddt"] == ["2026-10-04"]
+    assert "conifmstdt" not in query and "conifmenddt" not in query
 
 
 def test_jeonnam_daejeon_fixtures_are_sanitized() -> None:
@@ -356,3 +359,29 @@ def test_real_response_fixtures_exclude_scripts_comments_and_hidden_inputs() -> 
             soup = BeautifulSoup(case[key], "html.parser")
             assert not soup.select("script, style, input, iframe")
             assert not soup.find_all(string=lambda node: isinstance(node, Comment))
+
+
+@pytest.mark.parametrize(
+    "config_path", sorted((Path(__file__).parents[2] / "config").glob("*.example.toml")),
+    ids=lambda path: path.name,
+)
+def test_live_configs_do_not_pin_calendar_search_dates(config_path: Path) -> None:
+    settings = load_config(config_path)
+    # The integrated province intentionally excludes pre-merger announcements.
+    allowed = {
+        ("jeonnam_gwangju", "conifmstdt", "20260701"),
+        ("jeonnam_gwangju", "conifmenddt", "99991231"),
+    }
+    for slug, source in settings.sources.items():
+        for key, values in parse_qs(urlparse(source.list_url).query).items():
+            name = key.lower()
+            if not (any(part in name for part in ("date", "stdt", "enddt", "ymd"))
+                    or name.endswith("dt")):
+                continue
+            for value in values:
+                if not re.fullmatch(r"(?:[0-9]{4}-[0-9]{2}-[0-9]{2}|[0-9]{8})", value):
+                    continue
+                assert (slug, name, value.replace("-", "")) in allowed, (
+                    f"{config_path.name}: {slug} pins search parameter {key}={value}"
+                )
+                assert source.available_from == date(2026, 7, 1)

@@ -21,6 +21,20 @@ EMPTY_TEXT = re.compile(
 )
 
 
+def _registration_date(text: str, profile: HtmlProfile) -> date | None:
+    if profile.two_digit_year_base is not None:
+        # The board's explicitly configured century is independent of today's date.
+        match = re.fullmatch(r"\s*([0-9]{2})[./-]([0-9]{1,2})[./-]([0-9]{1,2})[.]?\s*", text)
+        if match:
+            try:
+                return date(
+                    profile.two_digit_year_base + int(match[1]), int(match[2]), int(match[3]),
+                )
+            except ValueError:
+                return None
+    return _extract_date_from_text(text)
+
+
 def _title_text(node: Tag, exclude_selector: str) -> str:
     if exclude_selector:
         # Exclude configured UI badges without changing the parsed document.
@@ -86,10 +100,14 @@ def parse_profiled_html(
     candidates: list[GenericNoticeCandidate] = []
     for index, row in enumerate(rows, start=1):
         date_node = row.select_one(profile.date_selector) if profile.date_selector else None
-        listing_date = (
-            _extract_date_from_text(date_node.get_text(" ", strip=True))
-            if date_node is not None else None
-        )
+        listing_date_text = ""
+        if date_node is not None:
+            value = (
+                date_node.get(profile.listing_date_attribute, "")
+                if profile.listing_date_attribute else date_node.get_text(" ", strip=True)
+            )
+            listing_date_text = value if isinstance(value, str) else ""
+        listing_date = _registration_date(listing_date_text, profile)
         before_window = (
             detail_not_before is not None and listing_date is not None
             and listing_date < detail_not_before
@@ -158,7 +176,13 @@ def parse_profiled_html(
             raise ValueError(f"HTML row {index}: title or registration-date element missing")
         # Search highlighting can split a word across inline tags.
         title = _title_text(title_node, profile.title_exclude_selector)
-        published_date = _extract_date_from_text(date_node.get_text(" ", strip=True))
+        published_date = listing_date
+        if detail is not None and profile.detail_date_selector:
+            value = (
+                date_node.get(profile.detail_date_attribute, "")
+                if profile.detail_date_attribute else date_node.get_text(" ", strip=True)
+            )
+            published_date = _registration_date(value if isinstance(value, str) else "", profile)
         if not title or published_date is None:
             raise ValueError(f"HTML row {index}: invalid title or registration date")
         body_text = ""

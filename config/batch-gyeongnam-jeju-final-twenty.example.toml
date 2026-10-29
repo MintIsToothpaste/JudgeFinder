@@ -530,7 +530,7 @@ detail_date_selector = "th:-soup-contains-own('등록일') + td"
 municipality = "제주특별자치도"
 source_type = "html"
 engine_type = "json_list_api"
-list_url = "https://www.jeju.go.kr/tool/sido/api.jsp?act=index&conIfmStdt=2025-10-06&conIfmEnddt=2026-10-05&conGosiGbn=A"
+list_url = "https://www.jeju.go.kr/tool/sido/api.jsp?act=index&conGosiGbn=A"
 recruitment_only = true
 max_pages = 80
 [sources.jeju.request_strategy]

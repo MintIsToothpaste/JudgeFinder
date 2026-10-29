@@ -360,3 +360,162 @@ def test_search_failure_is_not_accepted_as_an_empty_search(message: str) -> None
             list_url="https://www.mokpo.go.kr/",
             profile=EMPTY_PROFILE,
         )
+
+
+@pytest.mark.parametrize("text,expected", [
+    ("26.10.21", date(2026, 10, 21)),
+    ("00.2.29", date(2000, 2, 29)),
+    ("24-02-29", date(2024, 2, 29)),
+    ("99/12/31", date(2099, 12, 31)),
+])
+def test_two_digit_registration_year_requires_explicit_century(text: str, expected: date) -> None:
+    listing = HTML.replace("2026-09-21", text)
+    with pytest.raises(ValueError, match="invalid title or registration date"):
+        parse_profiled_html(listing, list_url="https://example.org/list", profile=PROFILE)
+    actual = parse_profiled_html(
+        listing, list_url="https://example.org/list",
+        profile=replace(PROFILE, two_digit_year_base=2000),
+    )
+    assert actual[0].published_date == expected
+
+
+@pytest.mark.parametrize("text", [
+    "26.02.30", "25.02.29", "26.13.01", "26.00.21", "26.10.21junk", "10:21:26",
+    "26.10.21 ~ 26.10.22",
+])
+def test_two_digit_registration_date_rejects_invalid_or_ambiguous_values(text: str) -> None:
+    with pytest.raises(ValueError, match="invalid title or registration date"):
+        parse_profiled_html(
+            HTML.replace("2026-09-21", text), list_url="https://example.org/list",
+            profile=replace(PROFILE, two_digit_year_base=2000),
+        )
+
+
+@pytest.mark.parametrize("base", [True, "2000", 0, 1901, 2026])
+def test_registration_century_rejects_invalid_configuration(base: object) -> None:
+    with pytest.raises(ValueError, match="two_digit_year_base"):
+        replace(PROFILE, two_digit_year_base=base)
+
+
+def test_explicit_century_applies_before_the_detail_date_boundary() -> None:
+    loader = Mock()
+    profile = replace(
+        PROFILE, two_digit_year_base=1900, detail_date_selector="time",
+    )
+    actual = parse_profiled_html(
+        HTML.replace("2026-09-21", "26.10.21"), list_url="https://example.org/list",
+        profile=profile, detail_loader=loader, detail_not_before=date(2000, 1, 1),
+    )
+    assert actual[0].published_date == date(1926, 10, 21)
+    loader.assert_not_called()
+
+
+@pytest.mark.parametrize("attribute", ["title", "datetime", "data-registered-at"])
+def test_absolute_registration_attribute_overrides_relative_display(attribute: str) -> None:
+    profile = replace(PROFILE, listing_date_attribute=attribute)
+    html = HTML.replace(
+        '<td class="date">2026-09-21</td>',
+        f'<td class="date" {attribute}="2026-10-26 20:07">2일 전</td>',
+    )
+    loader = Mock()
+    notice = parse_profiled_html(
+        html, list_url="https://example.org/list", profile=profile, detail_loader=loader,
+    )[0]
+    assert notice.published_date == date(2026, 10, 26)
+    loader.assert_not_called()
+
+
+@pytest.mark.parametrize("value", ["", "invalid", "2026-02-30", "2일 전"])
+def test_invalid_registration_attribute_does_not_fall_back_to_other_dates(value: str) -> None:
+    html = HTML.replace('class="date"', f'class="date" title="{value}"')
+    with pytest.raises(ValueError, match="invalid title or registration date"):
+        parse_profiled_html(
+            html, list_url="https://example.org/list",
+            profile=replace(PROFILE, listing_date_attribute="title"),
+        )
+
+
+def test_absolute_registration_attribute_supports_recent_detail_cutoff() -> None:
+    html = HTML.replace(
+        '<td class="date">2026-09-21</td>',
+        '<td class="date" title="2026-10-20 20:07">9일 전</td>',
+    )
+    loader = Mock(side_effect=AssertionError("Old detail must not be requested"))
+    candidate = parse_profiled_html(
+        html, list_url="https://example.org/list",
+        profile=replace(PROFILE, listing_date_attribute="title", detail_title_selector="h1"),
+        detail_loader=loader, detail_not_before=date(2026, 10, 23),
+    )[0]
+    assert candidate.published_date == date(2026, 10, 20)
+    loader.assert_not_called()
+
+
+@pytest.mark.parametrize("attribute", ["href", "onclick", "data-", "Title", "data-등록일"])
+def test_registration_attribute_requires_explicit_metadata_name(attribute: str) -> None:
+    with pytest.raises(ValueError, match="listing_date_attribute"):
+        replace(PROFILE, listing_date_attribute=attribute)
+
+
+def test_registration_attribute_requires_listing_selector() -> None:
+    with pytest.raises(ValueError, match="listing_date_attribute"):
+        replace(
+            PROFILE, date_selector="", detail_date_selector="time", listing_date_attribute="title",
+        )
+
+
+def test_missing_registration_attribute_does_not_use_display_date() -> None:
+    with pytest.raises(ValueError, match="invalid title or registration date"):
+        parse_profiled_html(
+            HTML, list_url="https://example.org/list",
+            profile=replace(PROFILE, listing_date_attribute="title"),
+        )
+
+
+@pytest.mark.parametrize("attribute", ["content", "datetime", "title", "data-published-at"])
+def test_detail_registration_attribute_uses_explicit_year(attribute: str) -> None:
+    profile = replace(
+        PROFILE, date_selector="", detail_title_selector="h1",
+        detail_date_selector='[itemprop="datePublished"]', detail_date_attribute=attribute,
+    )
+    detail = (
+        '<h1>2027년 평가위원 모집</h1>'
+        f'<span itemprop="datePublished" {attribute}="2026-10-28KST15:09:11">10.28</span>'
+        '<p>접수마감: 2026-11-03</p>'
+    )
+    candidate = parse_profiled_html(
+        HTML, list_url="https://example.org/list", profile=profile,
+        detail_loader=Mock(return_value=detail),
+    )[0]
+    assert candidate.published_date == date(2026, 10, 28)
+    assert candidate.title == "2027년 평가위원 모집"
+
+
+@pytest.mark.parametrize("value", [None, "", "invalid", "2026-02-30", "10.28"])
+def test_detail_registration_attribute_does_not_guess_from_display_or_deadline(
+    value: str | None,
+) -> None:
+    attribute = "" if value is None else f'content="{value}"'
+    detail = (
+        f'<span itemprop="datePublished" {attribute}>2026-10-28</span>'
+        '<p>접수기간: 2026-10-28 ~ 2026-11-03</p>'
+    )
+    with pytest.raises(ValueError, match="invalid title or registration date"):
+        parse_profiled_html(
+            HTML, list_url="https://example.org/list",
+            profile=replace(
+                PROFILE, detail_date_selector='[itemprop="datePublished"]',
+                detail_date_attribute="content",
+            ),
+            detail_loader=Mock(return_value=detail),
+        )
+
+
+@pytest.mark.parametrize("attribute", ["href", "onclick", "data-", "Content", "data-등록일"])
+def test_detail_registration_attribute_rejects_unsupported_names(attribute: str) -> None:
+    with pytest.raises(ValueError, match="detail_date_attribute"):
+        replace(PROFILE, detail_date_selector="time", detail_date_attribute=attribute)
+
+
+def test_detail_registration_attribute_requires_detail_selector() -> None:
+    with pytest.raises(ValueError, match="detail_date_attribute"):
+        replace(PROFILE, detail_date_attribute="content")

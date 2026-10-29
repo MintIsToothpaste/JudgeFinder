@@ -178,7 +178,7 @@ page_param = "pgno"
 municipality = "강화군"
 source_type = "html"
 engine_type = "generic_egov_bbs"
-list_url = "https://www.ganghwa.go.kr/open_content/main/eminwon/announce/eminwonList.do?keyfield=title&symd=2025-10-05"
+list_url = "https://www.ganghwa.go.kr/open_content/main/eminwon/announce/eminwonList.do?keyfield=title"
 recruitment_only = true
 max_pages = 40
 [sources.ganghwa.request_strategy]

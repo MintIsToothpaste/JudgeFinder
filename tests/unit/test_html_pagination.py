@@ -240,3 +240,45 @@ def test_legacy_profile_keeps_existing_page_validation() -> None:
     client.get_text.return_value = listing()
     with pytest.raises(ValueError, match="page does not match"):
         source(client, profile).fetch(date(2026, 10, 5))
+
+
+
+@pytest.mark.parametrize("template", [
+    "https://other.example/list/{page}", "//other.example/{page}",
+    "list/{page}", "/list/{id}", "/list/{page}/{page}",
+    "/list/{page}?q=1", "/list/{page}#x", "/list/{page};x=1",
+    "/list/\\{page}", "/list/\n{page}",
+])
+def test_path_pagination_rejects_nonlocal_or_ambiguous_templates(template: str) -> None:
+    with pytest.raises(ValueError, match="page_path_template"):
+        replace(PAGE_PROFILE, page_path_template=template)
+
+
+def test_path_pagination_fetches_second_page_preserving_search_and_origin() -> None:
+    from urllib.parse import parse_qs, urlparse
+
+    profile = replace(
+        PAGE_PROFILE, page_param="", page_path_template="/plaza/notice/lists/{page}",
+        search_param="query",
+    )
+    client = Mock()
+    client.get_text.side_effect = [
+        ROW.replace("/notice/1", "/notice/11") + PAGE.format(page=1),
+        ROW.replace("/notice/1", "/notice/22") + PAGE.format(page=2),
+        '<table><tr><td>등록된 게시물이 없습니다.</td></tr></table>',
+    ]
+    source = GenericEngineSource(
+        slug="path_board", municipality="관광재단", source_type=SourceType.HTML,
+        list_url="https://city.example/plaza/notice/lists?searchType=title",
+        engine_type=EngineType.GENERIC_EGOV_BBS, timezone=ZoneInfo("Asia/Seoul"),
+        http_client=client, html_profile=profile,
+    )
+    assert {n.url for n in source.fetch(date(2026, 9, 22))} == {
+        "https://city.example/notice/11", "https://city.example/notice/22",
+    }
+    for page, call in enumerate(client.get_text.call_args_list, start=1):
+        parsed = urlparse(call.args[0])
+        assert parsed.scheme == "https" and parsed.netloc == "city.example"
+        assert parsed.path == f"/plaza/notice/lists/{page}"
+        assert parse_qs(parsed.query) == {"searchType": ["title"], "query": ["평가위원"]}
+    assert client.get_text.call_count == 3

@@ -465,3 +465,87 @@ def test_public_institutions_cli_collect_store_deduplicate_and_list_offline(
     assert listed.exit_code == 0
     assert set(listed.stdout.splitlines()) == {n[3] for n in expected}
     assert len(calls) == count
+
+
+def test_recovered_board_cli_collects_deduplicates_and_lists_offline(
+    recovered_board_case: dict[str, str], recovered_board_http: list[str],
+    tmp_path: Path, caplog: pytest.LogCaptureFixture,
+) -> None:
+    case = recovered_board_case
+    text = (ROOT / case["config_path"]).read_text(encoding="utf-8")
+    text = re.sub(r"^enabled_sources = .+$",
+                  "enabled_sources = " + json.dumps([case["slug"]]), text, flags=re.MULTILINE)
+    db, config = tmp_path / "notices.db", tmp_path / "config.toml"
+    text = re.sub(r"^db_path = .+$", "db_path = " + json.dumps(db.as_posix()),
+                  text, flags=re.MULTILINE)
+    text = re.sub(r"throttle_seconds = [0-9.]+", "throttle_seconds = 0.0", text)
+    config.write_text(text, encoding="utf-8")
+    assert load_config(config).db_path == db
+    runner = CliRunner()
+    args = ["--config-path", str(config)]
+    window = ["--date", case.get("window_end", "2026-10-22"), "--days", "7"]
+    municipality = load_config(config).sources[case["slug"]].municipality
+    expected = [(municipality, case["title"], case["date"], case["url"])]
+    with caplog.at_level(logging.WARNING):
+        for _ in range(2):
+            result = runner.invoke(app, [*args, "collect", *window])
+            assert result.exit_code == 0, result.output
+            assert result.stdout.splitlines() == [case["url"]]
+            assert "Skipping source" not in caplog.text
+            with sqlite3.connect(db) as connection:
+                assert connection.execute(
+                    "select municipality,title,published_date,url from notices",
+                ).fetchall() == expected
+    before = len(recovered_board_http)
+    listed = runner.invoke(app, [*args, "list", *window])
+    assert listed.exit_code == 0 and listed.stdout.splitlines() == [case["url"]]
+    assert len(recovered_board_http) == before == 6
+
+
+
+def test_jeju_after_october_5_collects_with_original_date_and_deduplicates(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    case = json.loads((ROOT / "tests/fixtures/cafe_20261021_jeju.json").read_text(encoding="utf-8"))
+    text = (ROOT / "config/batch-gyeongnam-jeju-final-twenty.example.toml").read_text(
+        encoding="utf-8",
+    )
+    text = re.sub(r"^enabled_sources = .+$", 'enabled_sources = ["jeju"]', text, flags=re.MULTILINE)
+    db, config = tmp_path / "notices.db", tmp_path / "config.toml"
+    text = re.sub(r"^db_path = .+$", "db_path = " + json.dumps(db.as_posix()),
+                  text, flags=re.MULTILINE)
+    text = re.sub(r"throttle_seconds = [0-9.]+", "throttle_seconds = 0.0", text)
+    config.write_text(text, encoding="utf-8")
+    calls: list[str] = []
+
+    def response(self: RequestsHttpClient, url: str, **kwargs: object) -> str:
+        calls.append(url)
+        query = parse_qs(urlparse(url).query)
+        assert "conIfmStdt" not in query and "conIfmEnddt" not in query
+        assert query["conTitle"] == ["평가위원"]
+        assert kwargs["verify_tls"] and kwargs["use_session"]
+        data = json.loads(case["list_json"])
+        page = int(query["page"][0])
+        assert page in {1, 2}
+        data["query"]["page"] = page
+        if page == 2:
+            data["gosis"] = []
+        return json.dumps(data, ensure_ascii=False)
+
+    monkeypatch.setattr(RequestsHttpClient, "get_text", response)
+    runner = CliRunner()
+    args = ["--config-path", str(config)]
+    window = ["--date", "2026-10-21", "--days", "7"]
+    for _ in range(2):
+        result = runner.invoke(app, [*args, "collect", *window])
+        assert result.exit_code == 0, result.output
+        assert result.stdout.splitlines() == [case["url"]]
+        with sqlite3.connect(db) as connection:
+            rows = connection.execute("select title,published_date,url from notices").fetchall()
+            assert rows == [
+                (case["title"], case["date"], case["url"]),
+            ]
+    assert len(calls) == 4
+    listed = runner.invoke(app, [*args, "list", *window])
+    assert listed.exit_code == 0 and listed.stdout.splitlines() == [case["url"]]
+    assert len(calls) == 4

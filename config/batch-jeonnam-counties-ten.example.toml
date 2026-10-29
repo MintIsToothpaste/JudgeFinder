@@ -134,7 +134,7 @@ page_param = "pageIndex"
 municipality = "장흥군"
 source_type = "html"
 engine_type = "generic_egov_bbs"
-list_url = "https://www.jangheung.go.kr/www/organization/news/notification?category_1=%EC%A7%80%EB%82%9C%20%EA%B3%A0%EC%8B%9C%EA%B3%B5%EA%B3%A0&search_type=title&start_date=2025-10-05&finish_date=2026-10-04"
+list_url = "https://www.jangheung.go.kr/www/organization/news/notification?category_1=%EC%A7%80%EB%82%9C%20%EA%B3%A0%EC%8B%9C%EA%B3%B5%EA%B3%A0&search_type=title"
 recruitment_only = true
 max_pages = 40
 [sources.jangheung.request_strategy]
@@ -158,7 +158,7 @@ page_param = "page"
 municipality = "장흥군"
 source_type = "html"
 engine_type = "generic_egov_bbs"
-list_url = "https://www.jangheung.go.kr/www/organization/news/notification?search_type=title&start_date=2025-10-05&finish_date=2026-10-04"
+list_url = "https://www.jangheung.go.kr/www/organization/news/notification?search_type=title"
 recruitment_only = true
 max_pages = 40
 [sources.jangheung_current.request_strategy]

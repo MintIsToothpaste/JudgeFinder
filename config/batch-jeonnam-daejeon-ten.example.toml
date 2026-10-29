@@ -159,7 +159,7 @@ page_number_selector = "div.pagenum > strong"
 municipality = "대전광역시"
 source_type = "html"
 engine_type = "generic_egov_bbs"
-list_url = "https://www.daejeon.go.kr/drh/drhGosiList.do?gosigbn=A&menuSeq=1908&conifmstdt=2025-10-05&conifmenddt=2026-10-04"
+list_url = "https://www.daejeon.go.kr/drh/drhGosiList.do?gosigbn=A&menuSeq=1908"
 recruitment_only = true
 max_pages = 40
 [sources.daejeon.request_strategy]

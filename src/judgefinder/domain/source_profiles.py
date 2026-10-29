@@ -32,8 +32,46 @@ class HtmlProfile:
     total_count_pattern: str = ""
     detail_origin: str = ""
     detail_query_exclude: str = ""
+    two_digit_year_base: int | None = None
+    page_path_template: str = ""
+    listing_date_attribute: str = ""
+    detail_date_attribute: str = ""
 
     def __post_init__(self) -> None:
+        if self.listing_date_attribute and (not self.date_selector or not (
+            self.listing_date_attribute in {"title", "datetime"}
+            or re.fullmatch(r"data-[a-z][a-z0-9]*(?:-[a-z0-9]+)*", self.listing_date_attribute)
+        )):
+            raise ValueError(
+                "html_profile.listing_date_attribute requires a date selector "
+                "and metadata attribute",
+            )
+        if self.detail_date_attribute and (not self.detail_date_selector or not (
+            self.detail_date_attribute in {"title", "datetime", "content"}
+            or re.fullmatch(r"data-[a-z][a-z0-9]*(?:-[a-z0-9]+)*", self.detail_date_attribute)
+        )):
+            raise ValueError(
+                "html_profile.detail_date_attribute requires a detail date selector "
+                "and metadata attribute",
+            )
+        if self.page_path_template:
+            path = urlparse(self.page_path_template)
+            if (
+                self.page_path_template.count("{page}") != 1
+                or any(char in self.page_path_template.replace("{page}", "") for char in "{}")
+                or not self.page_path_template.startswith("/")
+                or self.page_path_template.startswith("//")
+                or any(char in self.page_path_template for char in "\\\r\n")
+                or path.scheme or path.netloc or path.params or path.query or path.fragment
+            ):
+                raise ValueError(
+                    "html_profile.page_path_template requires a local path with {page}",
+                )
+        if self.two_digit_year_base is not None and (
+            type(self.two_digit_year_base) is not int
+            or self.two_digit_year_base not in {1900, 2000}
+        ):
+            raise ValueError("html_profile.two_digit_year_base must be 1900 or 2000")
         if not isinstance(self.detail_query_exclude, str) or (
             self.detail_query_exclude and any(
                 not re.fullmatch(r"[A-Za-z][A-Za-z0-9_]*", key)

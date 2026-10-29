@@ -357,3 +357,147 @@ def test_public_fixtures_omit_contacts_and_session_fields() -> None:
             soup = BeautifulSoup(case[key], "html5lib")
             assert not soup.select("script,style,input,iframe")
             assert all(word not in soup.get_text() for word in ["연락처", "전화번호", "담당자"])
+
+
+def test_recovered_board_preserves_registration_paginates_and_caches(
+    recovered_board_case: dict[str, str], recovered_board_http: list[str],
+) -> None:
+    case = recovered_board_case
+    settings = load_config(ROOT / case["config_path"])
+    settings.enabled_sources = [case["slug"]]
+    source = SourceRegistry(
+        settings, RequestsHttpClient(), ZoneInfo(settings.timezone),
+    ).build_enabled_sources()[0]
+    assert isinstance(source, GenericEngineSource)
+    source.throttle_seconds = 0
+    for _ in range(2):
+        window_end = date.fromisoformat(case.get("window_end", "2026-10-22"))
+        notices = [notice for offset in range(7)
+                   for notice in source.fetch(window_end - timedelta(days=6 - offset))]
+        assert [(n.title, str(n.published_date), n.url) for n in notices] == [
+            (case["title"], case["date"], case["url"]),
+        ]
+    assert len(recovered_board_http) == 3
+    assert recovered_board_http.count(case["url"]) == 1
+
+
+def test_recovered_board_rejects_invalid_metadata_despite_application_dates(
+    recovered_board_case: dict[str, str],
+) -> None:
+    case = recovered_board_case
+    source = load_config(ROOT / case["config_path"]).sources[case["slug"]]
+    profile = source.html_profile
+    assert profile is not None
+    listing = BeautifulSoup(case["list_html"], "html5lib")
+    for node in listing.select(profile.date_selector) if profile.date_selector else []:
+        if profile.listing_date_attribute:
+            node[profile.listing_date_attribute] = "invalid"
+        else:
+            node.string = "invalid"
+    detail = BeautifulSoup(case["detail_html"], "html5lib")
+    if profile.detail_date_selector:
+        node = detail.select_one(profile.detail_date_selector)
+        assert node is not None
+        if profile.detail_date_attribute:
+            node[profile.detail_date_attribute] = "2026-02-30"
+        else:
+            # Preserve label descendants used by metadata selectors such as :has().
+            for value in list(node.find_all(string=True)):
+                if any(character.isdigit() for character in value):
+                    value.replace_with("2026-02-30")
+    detail_html = str(detail) + "<p>접수기간: 2026-10-21 ~ 2026-10-29</p>"
+    with pytest.raises(ValueError, match="invalid title or registration date"):
+        parse_profiled_html(
+            str(listing), list_url=source.list_url, profile=profile,
+            detail_loader=Mock(return_value=detail_html),
+        )
+
+
+def test_recovered_board_error_document_is_not_accepted(
+    recovered_board_case: dict[str, str],
+) -> None:
+    case = recovered_board_case
+    source = load_config(ROOT / case["config_path"]).sources[case["slug"]]
+    assert source.html_profile is not None
+    with pytest.raises(ValueError, match="title or registration-date element missing"):
+        parse_profiled_html(
+            case["list_html"], list_url=source.list_url, profile=source.html_profile,
+            detail_loader=Mock(return_value="<h1>Page Not Found</h1>"),
+        )
+
+
+def test_recovered_board_fixtures_are_sanitized(recovered_board_case: dict[str, str]) -> None:
+    case = recovered_board_case
+    for key in ("list_html", "detail_html"):
+        soup = BeautifulSoup(case[key], "html5lib")
+        assert not soup.select("script,style,input,iframe")
+        assert not any(label in soup.get_text() for label in ("담당자", "연락처", "전화번호"))
+
+
+def test_october_22_boards_are_enabled_without_historical_search_cutoffs() -> None:
+    settings = load_config(ROOT / "config/batch-cafe-20261022.example.toml")
+    assert set(settings.enabled_sources) == {
+        "jemulpo_eminwon", "cheonan_uc", "gimje_education", "geoje_gohyeon", "gimhae_cultural",
+    }
+    for source in settings.sources.values():
+        assert source.fixture_path is None and not source.recruitment_only
+        assert source.request_strategy.verify_tls and source.max_pages == 100
+    assert settings.sources["jemulpo_eminwon"].available_from == date(2026, 7, 1)
+    assert settings.sources["gimje_education"].html_profile.two_digit_year_base == 2000
+    source = load_config(ROOT / "config/batch-jeonnam-daejeon-ten.example.toml").sources["daejeon"]
+    query = parse_qs(urlparse(source.list_url).query)
+    assert "conifmstdt" not in query and "conifmenddt" not in query
+
+
+def test_geoje_recovers_body_keyword_without_importing_navigation_text() -> None:
+    cases = json.loads(
+        (ROOT / "tests/fixtures/cafe_20261022_profiles.json").read_text(encoding="utf-8"),
+    )
+    case = cases["geoje_gohyeon"]
+    source = load_config(ROOT / case["config_path"]).sources["geoje_gohyeon"]
+    assert source.html_profile is not None
+    assert "평가위원" not in case["title"]
+    candidate = parse_profiled_html(
+        case["list_html"], list_url=source.list_url, profile=source.html_profile,
+        detail_loader=Mock(return_value=case["detail_html"]),
+    )[0]
+    assert "평가위원" in candidate.body_text
+    assert candidate.title == case["title"]
+    detail = BeautifulSoup(case["detail_html"], "html5lib")
+    body = detail.select_one("#bo_v_con")
+    assert body is not None
+    body.string = "축제 행사 운영 안내"
+    unrelated = parse_profiled_html(
+        case["list_html"], list_url=source.list_url, profile=source.html_profile,
+        detail_loader=Mock(return_value=str(detail) + "<nav>평가위원 모집</nav>"),
+    )[0]
+    assert "평가위원" not in unrelated.searchable_text
+
+
+
+def test_october_21_boards_and_jeju_have_no_fixed_search_dates() -> None:
+    settings = load_config(ROOT / "config/batch-cafe-20261021.example.toml")
+    assert set(settings.enabled_sources) == {
+        "seoul_women", "incheon_seohae_culture", "jeonnam_tourism",
+        "jeju_international_university",
+    }
+    for config in settings.sources.values():
+        assert config.fixture_path is None and not config.recruitment_only
+        assert config.request_strategy.verify_tls and config.max_pages == 100
+    profile = settings.sources["jeonnam_tourism"].html_profile
+    assert profile.page_path_template == "/plaza/notice/lists/{page}"
+    assert profile.page_number_selector and not profile.page_param
+    source = load_config(
+        ROOT / "config/batch-gyeongnam-jeju-final-twenty.example.toml",
+    ).sources["jeju"]
+    query = parse_qs(urlparse(source.list_url).query)
+    assert "conIfmStdt" not in query and "conIfmEnddt" not in query
+
+
+def test_seohae_uses_registration_date_instead_of_date_in_title() -> None:
+    cases = json.loads(
+        (ROOT / "tests/fixtures/cafe_20261021_profiles.json").read_text(encoding="utf-8"),
+    )
+    case = cases["incheon_seohae_culture"]
+    assert "2026-05-18" in case["title"]
+    assert case["date"] == "2026-10-20"

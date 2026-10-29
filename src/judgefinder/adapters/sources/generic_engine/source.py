@@ -240,7 +240,9 @@ class GenericEngineSource:
                 break
             if self.fixture_path is not None:
                 break
-            if self.profile is not None and not self.page_param:
+            if self.profile is not None and not self.page_param and not (
+                self.html_profile is not None and self.html_profile.page_path_template
+            ):
                 break
         else:
             if self.profile is not None:
@@ -318,6 +320,10 @@ class GenericEngineSource:
 
     def _build_request_url(self, *, page_index: int) -> str:
         parsed = urlparse(self.list_url)
+        if self.html_profile is not None and self.html_profile.page_path_template:
+            parsed = parsed._replace(
+                path=self.html_profile.page_path_template.replace("{page}", str(page_index)),
+            )
         query_params = parse_qs(parsed.query, keep_blank_values=True)
         if self.page_param:
             query_params[self.page_param] = [str(page_index)]

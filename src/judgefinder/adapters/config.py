@@ -163,8 +163,9 @@ def _read_html_profile(value: Any) -> HtmlProfile | None:
         raise ValueError(f"Unknown html_profile fields: {sorted(set(value) - allowed)}")
     for key in ("container_selector", "row_selector"):
         _read_required_str(value, key)
-    if not all(isinstance(item, str) for key, item in value.items() if key != "page_size"):
-        raise ValueError("html_profile values other than page_size must be strings")
+    numeric_fields = {"page_size", "two_digit_year_base"}
+    if not all(isinstance(item, str) for key, item in value.items() if key not in numeric_fields):
+        raise ValueError("html_profile nonnumeric fields must be strings")
     return HtmlProfile(**value)
 
 

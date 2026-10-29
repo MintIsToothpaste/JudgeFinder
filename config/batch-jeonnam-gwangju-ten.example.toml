@@ -81,7 +81,7 @@ page_number_selector = "a.on[title='현재페이지']"
 municipality = "나주시"
 source_type = "html"
 engine_type = "generic_egov_bbs"
-list_url = "https://www.naju.go.kr/www/administration/notice/old_gosi_new?search_type=title&start_date=2025-10-05&finish_date=2026-10-04"
+list_url = "https://www.naju.go.kr/www/administration/notice/old_gosi_new?search_type=title"
 recruitment_only = true
 max_pages = 40
 [sources.naju.request_strategy]
@@ -105,7 +105,7 @@ page_param = "page"
 municipality = "나주시"
 source_type = "html"
 engine_type = "generic_egov_bbs"
-list_url = "https://www.naju.go.kr/www/administration/notice/gosi_new?search_type=title&start_date=2025-10-05&finish_date=2026-10-04"
+list_url = "https://www.naju.go.kr/www/administration/notice/gosi_new?search_type=title"
 recruitment_only = true
 max_pages = 40
 [sources.naju_current.request_strategy]

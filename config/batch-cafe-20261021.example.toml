@@ -1,0 +1,107 @@
+# Public boards verified against evaluator notices posted to the cafe on 2026-10-21.
+timezone = "Asia/Seoul"
+db_path = "data/cafe-20261021.db"
+enabled_sources = ["seoul_women", "incheon_seohae_culture", "jeonnam_tourism", "jeju_international_university"]
+
+[sources.seoul_women]
+municipality = "서울시여성가족재단"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.seoulwomen.or.kr/sfwf/contents/sfwf-notice.do?schFld=1"
+recruitment_only = false
+max_pages = 100
+[sources.seoul_women.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.seoul_women.html_profile]
+container_selector = "table.board-list"
+row_selector = "tbody > tr"
+link_selector = "td.subject a"
+link_attribute = "onclick"
+date_selector = "td.data"
+id_pattern = "fn_goView[(]'([1-9][0-9]*)'"
+detail_url_template = "/sfwf/contents/sfwf-notice.do?schM=view&id={id}"
+detail_title_selector = ".view-info > strong.title"
+detail_date_selector = ".view-info .other-info li:-soup-contains('작성일') strong"
+search_param = "schStr"
+page_param = "page"
+
+[sources.incheon_seohae_culture]
+municipality = "인천서해구문화원"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.inscc.kr/user/board/list.php?board_code=notice&srchKey=A"
+recruitment_only = false
+max_pages = 100
+[sources.incheon_seohae_culture.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.incheon_seohae_culture.html_profile]
+container_selector = ".cm_board_list1 table"
+row_selector = "tbody > tr"
+link_selector = "a[href*='view.php']"
+date_selector = "td:nth-of-type(5)"
+id_pattern = "sq=([1-9][0-9]*)"
+detail_url_template = "/user/board/view.php?board_code=notice&sq={id}"
+detail_title_selector = ".board_item_title"
+detail_date_selector = ".board_item_info li.date"
+search_param = "srchValue"
+page_param = "page"
+
+[sources.jeonnam_tourism]
+municipality = "전남관광재단"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://ijnto.or.kr/plaza/notice/lists?searchType=title"
+recruitment_only = false
+max_pages = 100
+[sources.jeonnam_tourism.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.jeonnam_tourism.html_profile]
+container_selector = "table.data-table"
+row_selector = "tbody > tr"
+link_selector = "td:nth-of-type(2) a"
+date_selector = "td:nth-of-type(5)"
+id_pattern = "/read/([1-9][0-9]*)"
+detail_url_template = "/plaza/notice/read/{id}"
+detail_title_selector = ".editor-make .board-title"
+detail_date_selector = ".editor-make span.date"
+search_param = "query"
+page_param = ""
+page_path_template = "/plaza/notice/lists/{page}"
+page_number_selector = ".pagination li.active a"
+
+# Official university reposts; preserve the university publication date.
+[sources.jeju_international_university]
+municipality = "제주국제대학교(타기관 공고)"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.jeju.ac.kr/square/professor.htm?qType=title"
+recruitment_only = false
+max_pages = 100
+[sources.jeju_international_university.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.jeju_international_university.html_profile]
+container_selector = ".board-professornotice table.list"
+row_selector = "tbody > tr"
+link_selector = "td.field-title a"
+date_selector = "td.field-wdate"
+id_pattern = "seq=([1-9][0-9]*)"
+detail_url_template = "/square/professor.htm?act=view&seq={id}"
+detail_title_selector = "table.view thead th strong"
+search_param = "q"
+page_param = "page"
