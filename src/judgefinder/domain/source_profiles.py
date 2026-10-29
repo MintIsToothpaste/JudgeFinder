@@ -4,6 +4,7 @@ import re
 from dataclasses import dataclass
 from enum import Enum
 from urllib.parse import urlparse
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 
 @dataclass(slots=True)
@@ -104,14 +105,12 @@ class HtmlProfile:
             raise ValueError("html_profile identifier attributes require an identifier pattern")
         if type(self.page_size) is not int or not 1 <= self.page_size <= 1000:
             raise ValueError("html_profile.page_size must be an integer between 1 and 1000")
-        if self.offset_param and not self.page_param:
-            raise ValueError("html_profile offset pagination requires a page parameter")
         if self.offset_param and self.offset_param == self.page_param:
             raise ValueError("html_profile offset and page parameters must differ")
         if bool(self.total_count_selector) != bool(self.total_count_pattern):
             raise ValueError("html_profile total-count selector and pattern must be paired")
         if self.total_count_selector:
-            if not self.page_number_selector or not self.page_param:
+            if not self.page_number_selector or not (self.page_param or self.offset_param):
                 raise ValueError("html_profile total count requires page-number validation")
             if re.compile(self.total_count_pattern).groups != 1:
                 raise ValueError("html_profile.total_count_pattern requires one capture group")
@@ -158,8 +157,19 @@ class JsonProfile:
     page_size: int = 10
     request_method: str = "GET"
     request_encoding: str = "utf-8"
+    date_format: str = "text"
+    date_timezone: str = "UTC"
+    date_fallback_key: str = ""
 
     def __post_init__(self) -> None:
+        if self.date_format not in {"text", "unix_ms"}:
+            raise ValueError("json_profile.date_format must be text or unix_ms")
+        try:
+            ZoneInfo(self.date_timezone)
+        except (ZoneInfoNotFoundError, ValueError) as exc:
+            raise ValueError("json_profile.date_timezone must be an IANA timezone") from exc
+        if self.date_fallback_key and self.date_fallback_key == self.date_key:
+            raise ValueError("json_profile date fields must differ")
         for path in (self.rows_path, self.status_path, self.total_path, self.page_path):
             if path and any(not part.strip() for part in path.split(".")):
                 raise ValueError("json_profile paths require nonempty object keys")

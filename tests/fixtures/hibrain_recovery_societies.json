@@ -1,0 +1,126 @@
+{
+  "kigas_notices": {
+    "config_path": "config/batch-hibrain-recovery.example.toml",
+    "capture_date": "2026-10-29",
+    "description": "Minimal public title/date/link excerpts; contacts, scripts and tokens removed.",
+    "responses": [
+      {
+        "url": "https://kigas.or.kr/board/notice/article.json?length=15&draw=1&search%5Bvalue%5D=%ED%8F%89%EA%B0%80%EC%9C%84%EC%9B%90&start=0",
+        "body": "{\"draw\": 1, \"recordsTotal\": 1, \"recordsFiltered\": 1, \"data\": [{\"articleId\": 285467, \"subject\": \"'26년도 공공기관 「 안전활동 수준평가 위촉직 」 평가위원 공모 안내\", \"startDate\": null, \"regDatetime\": 1790841687000}]}"
+      },
+      {
+        "url": "https://kigas.or.kr/board/notice/article.json?length=15&draw=2&search%5Bvalue%5D=%ED%8F%89%EA%B0%80%EC%9C%84%EC%9B%90&start=15",
+        "body": "{\"draw\": 2, \"recordsTotal\": 1, \"recordsFiltered\": 1, \"data\": []}"
+      }
+    ],
+    "notices": [
+      {
+        "municipality": "한국가스학회",
+        "title": "'26년도 공공기관 「 안전활동 수준평가 위촉직 」 평가위원 공모 안내",
+        "url": "https://kigas.or.kr/board/notice/article/285467",
+        "published_date": "2026-10-01",
+        "source_type": "api"
+      }
+    ]
+  },
+  "kila_news": {
+    "config_path": "config/batch-hibrain-recovery.example.toml",
+    "capture_date": "2026-10-29",
+    "description": "Minimal public title/date/link excerpts; contacts, scripts and tokens removed.",
+    "responses": [
+      {
+        "url": "https://www.kila.or.kr/board/lists?b_name=bo_news&s_opt0=bo_title&s_text0=%ED%8F%89%EA%B0%80%EC%9C%84%EC%9B%90&per_page=0",
+        "body": "<table class=\"table_board\"><tbody><tr><td></td><td><a href=\"/board/view?b_name=bo_news&amp;bo_id=100605&amp;per_page=0\">[~10/20] 2027 서울국제정원박람회 제안서 평가위원 ...</a></td><td></td><td><time>2026-10-14</time></td><td></td></tr><tr><td></td><td><a href=\"/board/view?b_name=bo_news&amp;bo_id=100596&amp;per_page=0\">[~10/12] 서울특별시 제안서 평가위원(후보자) 등록 ...</a></td><td></td><td><time>2026-10-08</time></td><td></td></tr><tr><td></td><td><a href=\"/board/view?b_name=bo_news&amp;bo_id=100586&amp;per_page=0\">[~10/15] 안동 백운정 및 개호송숲 산불피해 복원 종...</a></td><td></td><td><time>2026-09-22</time></td><td></td></tr><tr><td></td><td><a href=\"/board/view?b_name=bo_news&amp;bo_id=100580&amp;per_page=0\">[09/16~] 국립문화유산연구원 국가유산분야 연구개발...</a></td><td></td><td><time>2026-09-21</time></td><td></td></tr><tr><td></td><td><a href=\"/board/view?b_name=bo_news&amp;bo_id=100567&amp;per_page=0\">[09/04~] 한국콘텐츠진흥원 2026년 문화체육관광 연...</a></td><td></td><td><time>2026-09-04</time></td><td></td></tr><tr><td></td><td><a href=\"/board/view?b_name=bo_news&amp;bo_id=100560&amp;per_page=0\">[~09/30] 경기주택도시공사 제6기 제안서 평가위원 ...</a></td><td></td><td><time>2026-08-31</time></td><td></td></tr><tr><td></td><td><a href=\"/board/view?b_name=bo_news&amp;bo_id=100543&amp;per_page=0\">[~07/31] 안동 만휴정 원림 산불 피해 복원 종합정비...</a></td><td></td><td><time>2026-07-24</time></td><td></td></tr><tr><td></td><td><a href=\"/board/view?b_name=bo_news&amp;bo_id=100513&amp;per_page=0\">[~05/04] 「관악산 자연휴양림 조성(산림) 실시설계 ...</a></td><td></td><td><time>2026-04-28</time></td><td></td></tr><tr><td></td><td><a href=\"/board/view?b_name=bo_news&amp;bo_id=100499&amp;per_page=0\">[~04/13] 「인천광역시 공공디자인 진흥계획 재정비 ...</a></td><td></td><td><time>2026-04-06</time></td><td></td></tr><tr><td></td><td><a href=\"/board/view?b_name=bo_news&amp;bo_id=100496&amp;per_page=0\">[~04/10] 「인천 창의디자인 사회실험 사업」제안서 ...</a></td><td></td><td><time>2026-04-06</time></td><td></td></tr><tr><td></td><td><a href=\"/board/view?b_name=bo_news&amp;bo_id=100488&amp;per_page=0\">[~04/10] 「G밸리일대 가로숲 조성 실시설계 용역」...</a></td><td></td><td><time>2026-03-30</time></td><td></td></tr><tr><td></td><td><a href=\"/board/view?b_name=bo_news&amp;bo_id=100486&amp;per_page=0\">[~03/31] 서울 정원문화힐링센터 운영 대행 용역 제...</a></td><td></td><td><time>2026-03-30</time></td><td></td></tr><tr><td></td><td><a href=\"/board/view?b_name=bo_news&amp;bo_id=100475&amp;per_page=0\">[~03/09] 2026년 서울 가드닝 크루 운영 제안서 평가...</a></td><td></td><td><time>2026-02-26</time></td><td></td></tr><tr><td></td><td><a href=\"/board/view?b_name=bo_news&amp;bo_id=100471&amp;per_page=0\">[~03/13] 이천시 경관계획 재정비 용역 제안서 평가...</a></td><td></td><td><time>2026-02-26</time></td><td></td></tr><tr><td></td><td><a href=\"/board/view?b_name=bo_news&amp;bo_id=100461&amp;per_page=0\">[~02/18] 서울특별시 정원진흥 실시계획 수립 연구용...</a></td><td></td><td><time>2026-02-09</time></td><td></td></tr></tbody></table><ul class=\"tsc_pagination\"><li><a class=\"current\">1</a></li></ul>"
+      },
+      {
+        "url": "https://www.kila.or.kr/board/view?b_name=bo_news&bo_id=100605",
+        "body": "<div class=\"board_view\"><h3 class=\"board_view_title\">[~10/20] 2027 서울국제정원박람회 제안서 평가위원 모집 안내</h3><div class=\"td_name\"><span>한국조경학회</span><span>2026-10-14 15:53</span></div></div>"
+      },
+      {
+        "url": "https://www.kila.or.kr/board/view?b_name=bo_news&bo_id=100596",
+        "body": "<div class=\"board_view\"><h3 class=\"board_view_title\">[~10/12] 서울특별시 제안서 평가위원(후보자) 등록 안내</h3><div class=\"td_name\"><span>한국조경학회</span><span>2026-10-08 09:52</span></div></div>"
+      },
+      {
+        "url": "https://www.kila.or.kr/board/view?b_name=bo_news&bo_id=100586",
+        "body": "<div class=\"board_view\"><h3 class=\"board_view_title\">[~10/15] 안동 백운정 및 개호송숲 산불피해 복원 종합 정비 계획 수립 용역 제안서 평가위원(후보자) 공개모집 안내</h3><div class=\"td_name\"><span>한국조경학회</span><span>2026-09-22 17:48</span></div></div>"
+      },
+      {
+        "url": "https://www.kila.or.kr/board/lists?b_name=bo_news&s_opt0=bo_title&s_text0=%ED%8F%89%EA%B0%80%EC%9C%84%EC%9B%90&per_page=15",
+        "body": "<table class=\"table_board\"><tbody><tr><td></td><td><a href=\"/board/view?b_name=bo_news&amp;bo_id=100458&amp;per_page=15\">[01/26~] 국가유산분야 연구개발과제평가위원 후보단...</a></td><td></td><td><time>2026-01-27</time></td><td></td></tr><tr><td></td><td><a href=\"/board/view?b_name=bo_news&amp;bo_id=100439&amp;per_page=15\">[~12/19] 도봉산 캠핑수목원 조성사업 기본구상 용역...</a></td><td></td><td><time>2025-12-08</time></td><td></td></tr><tr><td></td><td><a href=\"/board/view?b_name=bo_news&amp;bo_id=100438&amp;per_page=15\">[~12/26] 「제2기 중소기업기술마켓(SOC) 혁신제품 ...</a></td><td></td><td><time>2025-12-03</time></td><td></td></tr><tr><td></td><td><a href=\"/board/view?b_name=bo_news&amp;bo_id=100424&amp;per_page=15\">[~11/25] 서울특별시 도봉산 캠핑수목원 조성사업 기...</a></td><td></td><td><time>2025-11-17</time></td><td></td></tr><tr><td></td><td><a href=\"/board/view?b_name=bo_news&amp;bo_id=100417&amp;per_page=15\">[~11/14] 서울특별시 광장동 체육부지 정원 조성사업...</a></td><td></td><td><time>2025-11-10</time></td><td></td></tr><tr><td></td><td><a href=\"/board/view?b_name=bo_news&amp;bo_id=100394&amp;per_page=15\">[~10/16] 서울특별시 서울국제정원박람회 제안서 평...</a></td><td></td><td><time>2025-10-02</time></td><td></td></tr><tr><td></td><td><a href=\"/board/view?b_name=bo_news&amp;bo_id=100389&amp;per_page=15\">[~09/30] 청주시 복대동 복합개발 민관협력사업 우선...</a></td><td></td><td><time>2025-09-24</time></td><td></td></tr><tr><td></td><td><a href=\"/board/view?b_name=bo_news&amp;bo_id=100388&amp;per_page=15\">[~09/28] 서울특별시 여의도공원 재조성 설계공모 관...</a></td><td></td><td><time>2025-09-24</time></td><td></td></tr><tr><td></td><td><a href=\"/board/view?b_name=bo_news&amp;bo_id=100385&amp;per_page=15\">[~09/22] 서울주택도시개발공사 SH공동주택 조경특화...</a></td><td></td><td><time>2025-09-16</time></td><td></td></tr><tr><td></td><td><a href=\"/board/view?b_name=bo_news&amp;bo_id=100375&amp;per_page=15\">[~08/29] 서초구 미래수요 맞춤형 공공시설 설치를 ...</a></td><td></td><td><time>2025-08-29</time></td><td></td></tr><tr><td></td><td><a href=\"/board/view?b_name=bo_news&amp;bo_id=100373&amp;per_page=15\">[~09/03] 용산국제업무지구 입체정원도시 가이드라인...</a></td><td></td><td><time>2025-08-25</time></td><td></td></tr><tr><td></td><td><a href=\"/board/view?b_name=bo_news&amp;bo_id=100350&amp;per_page=15\">[~07/17] 서울식물원 정원치유 음악회 행사 운영 대...</a></td><td></td><td><time>2025-07-16</time></td><td></td></tr><tr><td></td><td><a href=\"/board/view?b_name=bo_news&amp;bo_id=100347&amp;per_page=15\">[~07/16] 김포시 특정경관계획(야간경관) 수립 용역 ...</a></td><td></td><td><time>2025-07-15</time></td><td></td></tr><tr><td></td><td><a href=\"/board/view?b_name=bo_news&amp;bo_id=100344&amp;per_page=15\">[~07/14] 2040 울산광역시 경관계획 수립 용역 제안...</a></td><td></td><td><time>2025-07-08</time></td><td></td></tr><tr><td></td><td><a href=\"/board/view?b_name=bo_news&amp;bo_id=100342&amp;per_page=15\">[~07/15] 서울특별시「노들섬 보호종 포획 · 이주 및...</a></td><td></td><td><time>2025-07-08</time></td><td></td></tr></tbody></table><ul class=\"tsc_pagination\"><li><a class=\"current\">2</a></li></ul>"
+      }
+    ],
+    "notices": [
+      {
+        "municipality": "한국조경학회",
+        "title": "[~10/15] 안동 백운정 및 개호송숲 산불피해 복원 종합 정비 계획 수립 용역 제안서 평가위원(후보자) 공개모집 안내",
+        "url": "https://www.kila.or.kr/board/view?b_name=bo_news&bo_id=100586",
+        "published_date": "2026-09-22",
+        "source_type": "html"
+      },
+      {
+        "municipality": "한국조경학회",
+        "title": "[~10/12] 서울특별시 제안서 평가위원(후보자) 등록 안내",
+        "url": "https://www.kila.or.kr/board/view?b_name=bo_news&bo_id=100596",
+        "published_date": "2026-10-08",
+        "source_type": "html"
+      },
+      {
+        "municipality": "한국조경학회",
+        "title": "[~10/20] 2027 서울국제정원박람회 제안서 평가위원 모집 안내",
+        "url": "https://www.kila.or.kr/board/view?b_name=bo_news&bo_id=100605",
+        "published_date": "2026-10-14",
+        "source_type": "html"
+      }
+    ]
+  },
+  "railway_notices": {
+    "config_path": "config/batch-hibrain-recovery.example.toml",
+    "capture_date": "2026-10-29",
+    "description": "Minimal public title/date/link excerpts; contacts, scripts and tokens removed.",
+    "responses": [
+      {
+        "url": "https://railway.or.kr/Board/board.asp?B_CATE=BBS1&Action=search&search_kind=b_title&date_area=all&gotoPage=1&search_name=%C6%F2%B0%A1%C0%A7%BF%F8",
+        "body": "<div class=\"centents\"><table><tbody><tr><td></td><td><a href=\"./board.asp?b_code=5711&amp;Action=content&amp;GotoPage=1&amp;B_CATE=BBS1&amp;ForumSetting_IDX=\">[파주시] ⌜지하철 3호선 사업화방안 전략수립 연구용역⌟ 제안서 평가위원 공개모집 안내</a></td><td></td><td>2026-10-15</td><td></td></tr><tr><td></td><td><a href=\"./board.asp?b_code=5707&amp;Action=content&amp;GotoPage=1&amp;B_CATE=BBS1&amp;ForumSetting_IDX=\">[서울시메트로9호선(주)] 제안서 평가위원 인력 POOL  2차 모집 안내</a></td><td></td><td>2026-10-13</td><td></td></tr><tr><td></td><td><a href=\"./board.asp?b_code=5697&amp;Action=content&amp;GotoPage=1&amp;B_CATE=BBS1&amp;ForumSetting_IDX=\">[김포골드라인에스알에스(주)] 김포골드라인 전동차 증차 및 유치선 증설 사업관련, ⌜경영정보시스템 가상화 구축사업⌟ 입찰제안서 평가위원(후보자) 모집</a></td><td></td><td>2026-10-01</td><td></td></tr><tr><td></td><td><a href=\"./board.asp?b_code=5683&amp;Action=content&amp;GotoPage=1&amp;B_CATE=BBS1&amp;ForumSetting_IDX=\">[우이신설도시철도 주식회사] 우이신설도시철도 교통약자 배리어프리 키오스크 구매 설치 제안서 평가위원(후보자) 모집 안내</a></td><td></td><td>2026-09-15</td><td></td></tr><tr><td></td><td><a href=\"./board.asp?b_code=5655&amp;Action=content&amp;GotoPage=1&amp;B_CATE=BBS1&amp;ForumSetting_IDX=\">[동두천시] ⌜GTX-C 동두천 연장 타당성 및 운영비 협상 방안 마련 용역⌟ 제안서 평가위원(후보자) 공개 모집 안내</a></td><td></td><td>2026-08-10</td><td></td></tr><tr><td></td><td><a href=\"./board.asp?b_code=5623&amp;Action=content&amp;GotoPage=1&amp;B_CATE=BBS1&amp;ForumSetting_IDX=\">[한국도로공사] 한국도로공사 고속도로 기술평가위원회 모집 안내</a></td><td></td><td>2026-06-12</td><td></td></tr><tr><td></td><td><a href=\"./board.asp?b_code=5617&amp;Action=content&amp;GotoPage=1&amp;B_CATE=BBS1&amp;ForumSetting_IDX=\">[서울교통공사] 『3, 4호선 ATC시스템 개량 물품 제작, 구매 설치』 제안서 평가위원(후보자) 모집 공고</a></td><td></td><td>2026-06-04</td><td></td></tr><tr><td></td><td><a href=\"./board.asp?b_code=5602&amp;Action=content&amp;GotoPage=1&amp;B_CATE=BBS1&amp;ForumSetting_IDX=\">[안양시] 안양시 도시교통정비 중기계획 등 종합교통계획 수립용역 제안서 평가위원 후보자 공개모집 안내</a></td><td></td><td>2026-05-11</td><td></td></tr><tr><td></td><td><a href=\"./board.asp?b_code=5589&amp;Action=content&amp;GotoPage=1&amp;B_CATE=BBS1&amp;ForumSetting_IDX=\">[국토안전관리원] 「정밀진단·성능평가 평가위원회」제2기 평가위원 공개 모집 안내</a></td><td></td><td>2026-04-28</td><td></td></tr><tr><td></td><td><a href=\"./board.asp?b_code=5569&amp;Action=content&amp;GotoPage=1&amp;B_CATE=BBS1&amp;ForumSetting_IDX=\">[서울특별시도시기반시설본부] 제안서 평가위원(후보자) 등록 안내문</a></td><td></td><td>2026-04-02</td><td></td></tr><tr><td colspan=\"4\"><div><b>1</b></div></td></tr></tbody></table></div>"
+      },
+      {
+        "url": "https://railway.or.kr/Board/board.asp?B_CATE=BBS1&Action=content&b_code=5711",
+        "body": "<table><tr><td class=\"table_title01\" width=\"85%\"><strong>[파주시] ⌜지하철 3호선 사업화방안 전략수립 연구용역⌟ 제안서 평가위원 공개모집 안내</strong></td></tr><tr><td class=\"table_title01\"><strong>등록일</strong></td><td></td><td>2026-10-15</td></tr></table>"
+      },
+      {
+        "url": "https://railway.or.kr/Board/board.asp?B_CATE=BBS1&Action=content&b_code=5707",
+        "body": "<table><tr><td class=\"table_title01\" width=\"85%\"><strong>[서울시메트로9호선(주)] 제안서 평가위원 인력 POOL  2차 모집 안내</strong></td></tr><tr><td class=\"table_title01\"><strong>등록일</strong></td><td></td><td>2026-10-13</td></tr></table>"
+      },
+      {
+        "url": "https://railway.or.kr/Board/board.asp?B_CATE=BBS1&Action=content&b_code=5697",
+        "body": "<table><tr><td class=\"table_title01\" width=\"85%\"><strong>[김포골드라인에스알에스(주)] 김포골드라인 전동차 증차 및 유치선 증설 사업관련, ⌜경영정보시스템 가상화 구축사업⌟ 입찰제안서 평가위원(후보자) 모집</strong></td></tr><tr><td class=\"table_title01\"><strong>등록일</strong></td><td></td><td>2026-10-01</td></tr></table>"
+      },
+      {
+        "url": "https://railway.or.kr/Board/board.asp?B_CATE=BBS1&Action=search&search_kind=b_title&date_area=all&gotoPage=2&search_name=%C6%F2%B0%A1%C0%A7%BF%F8",
+        "body": "<div class=\"centents\"><table><tbody><tr><td></td><td><a href=\"./board.asp?b_code=5566&amp;Action=content&amp;GotoPage=2&amp;B_CATE=BBS1&amp;ForumSetting_IDX=\">[서울특별시] 제안서 평가위원(후보자) 모집 안내</a></td><td></td><td>2026-03-31</td><td></td></tr><tr><td></td><td><a href=\"./board.asp?b_code=5560&amp;Action=content&amp;GotoPage=2&amp;B_CATE=BBS1&amp;ForumSetting_IDX=\">[한국철도학회] 제안서 평가위원(후보자) 모집 공고</a></td><td></td><td>2026-03-23</td><td></td></tr><tr><td></td><td><a href=\"./board.asp?b_code=5558&amp;Action=content&amp;GotoPage=2&amp;B_CATE=BBS1&amp;ForumSetting_IDX=\">[경기도] 경기도 신기술ˑ특허공법 선정관련 평가위원회 (후보)위원 모집 공고</a></td><td></td><td>2026-03-20</td><td></td></tr><tr><td></td><td><a href=\"./board.asp?b_code=5549&amp;Action=content&amp;GotoPage=2&amp;B_CATE=BBS1&amp;ForumSetting_IDX=\">[인천광역시] 제안서 평가위원(후보자) 모집 안내(용현서창선 사업화 방안 수립용역)</a></td><td></td><td>2026-03-12</td><td></td></tr><tr><td></td><td><a href=\"./board.asp?b_code=5540&amp;Action=content&amp;GotoPage=2&amp;B_CATE=BBS1&amp;ForumSetting_IDX=\">[국토교통과학기술진흥원] 국토교통 기업지원사업 평가위원 모집 공고</a></td><td></td><td>2026-03-04</td><td></td></tr><tr><td></td><td><a href=\"./board.asp?b_code=5529&amp;Action=content&amp;GotoPage=2&amp;B_CATE=BBS1&amp;ForumSetting_IDX=\">[인천광역시] 제안서 평가위원(후보자) 모집 안내(송도트램 사업 재기획 용역)</a></td><td></td><td>2026-02-13</td><td></td></tr><tr><td></td><td><a href=\"./board.asp?b_code=5523&amp;Action=content&amp;GotoPage=2&amp;B_CATE=BBS1&amp;ForumSetting_IDX=\">[경상남도] 『제2차 경상남도 도시철도망 구축계획 수립 용역』 제안서 평가위원(후보자) 모집 공고</a></td><td></td><td>2026-02-06</td><td></td></tr><tr><td></td><td><a href=\"./board.asp?b_code=5515&amp;Action=content&amp;GotoPage=2&amp;B_CATE=BBS1&amp;ForumSetting_IDX=\">[경기도] ⌜경기도 철도안전 시행계획(~2028) 수립 연구⌟ 제안서 평가위원 추천 모집기간 변경 안내</a></td><td></td><td>2026-01-26</td><td></td></tr><tr><td></td><td><a href=\"./board.asp?b_code=5512&amp;Action=content&amp;GotoPage=2&amp;B_CATE=BBS1&amp;ForumSetting_IDX=\">[인천광역시] 제안서 평가위원(후보자) 모집 안내(인천1호선 송도8공구 연장사업 예비타당성 조사 대응 연구 용역)</a></td><td></td><td>2026-01-26</td><td></td></tr><tr><td></td><td><a href=\"./board.asp?b_code=5509&amp;Action=content&amp;GotoPage=2&amp;B_CATE=BBS1&amp;ForumSetting_IDX=\">[경기도] 「경기도 철도안전 시행계획(~2028) 수립 연구」 제안서 평가위원회 평가위원(후보자) 모집 공고</a></td><td></td><td>2026-01-21</td><td></td></tr><tr><td colspan=\"4\"><div><b>2</b></div></td></tr></tbody></table></div>"
+      }
+    ],
+    "notices": [
+      {
+        "municipality": "한국철도학회",
+        "title": "[김포골드라인에스알에스(주)] 김포골드라인 전동차 증차 및 유치선 증설 사업관련, ⌜경영정보시스템 가상화 구축사업⌟ 입찰제안서 평가위원(후보자) 모집",
+        "url": "https://railway.or.kr/Board/board.asp?B_CATE=BBS1&Action=content&b_code=5697",
+        "published_date": "2026-10-01",
+        "source_type": "html"
+      },
+      {
+        "municipality": "한국철도학회",
+        "title": "[서울시메트로9호선(주)] 제안서 평가위원 인력 POOL 2차 모집 안내",
+        "url": "https://railway.or.kr/Board/board.asp?B_CATE=BBS1&Action=content&b_code=5707",
+        "published_date": "2026-10-13",
+        "source_type": "html"
+      },
+      {
+        "municipality": "한국철도학회",
+        "title": "[파주시] ⌜지하철 3호선 사업화방안 전략수립 연구용역⌟ 제안서 평가위원 공개모집 안내",
+        "url": "https://railway.or.kr/Board/board.asp?B_CATE=BBS1&Action=content&b_code=5711",
+        "published_date": "2026-10-15",
+        "source_type": "html"
+      }
+    ]
+  }
+}

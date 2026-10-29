@@ -241,7 +241,9 @@ class GenericEngineSource:
             if self.fixture_path is not None:
                 break
             if self.profile is not None and not self.page_param and not (
-                self.html_profile is not None and self.html_profile.page_path_template
+                self.html_profile is not None and (
+                    self.html_profile.page_path_template or self.html_profile.offset_param
+                )
             ):
                 break
         else:

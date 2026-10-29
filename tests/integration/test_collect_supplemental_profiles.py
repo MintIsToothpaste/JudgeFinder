@@ -165,6 +165,10 @@ def test_recovered_boards_collect_store_deduplicate_and_list(
         seen.add(slug)
         profile = settings.sources[slug].html_profile
         assert profile is not None
+        if profile.request_method == "POST":
+            data = kwargs["data"]
+            assert isinstance(data, bytes)
+            url += "?" + data.decode("ascii")
         page = int(parse_qs(urlparse(url).query).get(profile.page_param, ["1"])[0])
         assert page in {1, 2}
         soup = BeautifulSoup(cases[slug]["list_html"], "html5lib")
@@ -179,6 +183,7 @@ def test_recovered_boards_collect_store_deduplicate_and_list(
         return str(soup)
 
     monkeypatch.setattr(RequestsHttpClient, "get_text", response)
+    monkeypatch.setattr(RequestsHttpClient, "post_text", response)
     expected = {
         (settings.sources[slug].municipality, c["title"], c["date"], c["url"])
         for slug, c in cases.items()

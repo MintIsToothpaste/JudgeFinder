@@ -94,6 +94,10 @@ class RequestsHttpClient(HttpClient):
         )
         self._system_trust_session = requests.Session()
         self._system_trust_session.mount("https://", _SystemTrustHttpAdapter())
+        self._system_trust_legacy_session = requests.Session()
+        self._system_trust_legacy_session.mount(
+            "https://", _SystemTrustHttpAdapter(legacy_tls=True),
+        )
 
     def get_text(
         self,
@@ -174,16 +178,12 @@ class RequestsHttpClient(HttpClient):
         except requests.exceptions.SSLError as exc:
             if verify_tls and _is_missing_issuer_error(url, exc):
                 LOGGER.debug("Retrying %s with system certificate verification.", url)
-                if use_session:
-                    self._system_trust_session.cookies.update(self._session.cookies)
-                response = _perform_request(
-                    getattr(self._system_trust_session, method), url=url,
-                    timeout_seconds=timeout_seconds, headers=headers, verify_tls=True,
-                    data=data,
+                return self._retry_with_session(
+                    self._system_trust_session, url=url, method=method,
+                    timeout_seconds=timeout_seconds, headers=headers,
+                    use_session=use_session, verify_tls=True, data=data,
+                    combine_on="handshake",
                 )
-                if use_session:
-                    self._session.cookies.update(self._system_trust_session.cookies)
-                return response
             if not _should_retry_with_legacy_tls(url=url, exc=exc):
                 raise
 
@@ -193,14 +193,47 @@ class RequestsHttpClient(HttpClient):
                 if verify_tls
                 else self._legacy_tls_insecure_session
             )
-            return _perform_request(
-                getattr(legacy_session, method),
-                url=url,
-                timeout_seconds=timeout_seconds,
-                headers=headers,
-                verify_tls=verify_tls,
-                data=data,
+            return self._retry_with_session(
+                legacy_session, url=url, method=method, timeout_seconds=timeout_seconds,
+                headers=headers, use_session=use_session, verify_tls=verify_tls,
+                data=data, combine_on="issuer_or_handshake" if verify_tls else "",
             )
+
+    def _retry_with_session(
+        self, session: requests.Session, *, url: str, method: str,
+        timeout_seconds: float, headers: Mapping[str, str] | None,
+        use_session: bool, verify_tls: bool, data: bytes | None, combine_on: str,
+    ) -> requests.Response:
+        if use_session:
+            session.cookies.update(self._session.cookies)
+        try:
+            response = _perform_request(
+                getattr(session, method), url=url, timeout_seconds=timeout_seconds,
+                headers=headers, verify_tls=verify_tls, data=data,
+            )
+        except requests.exceptions.SSLError as exc:
+            combine = verify_tls and (
+                (combine_on == "issuer_or_handshake" and (
+                    _is_missing_issuer_error(url, exc)
+                    or _should_retry_with_legacy_tls(url=url, exc=exc)
+                ))
+                or (combine_on == "handshake" and _should_retry_with_legacy_tls(url=url, exc=exc))
+            )
+            if not combine:
+                raise
+            # Some servers need both existing compatibility measures, in either order.
+            LOGGER.debug("Retrying %s with verified system trust and legacy TLS.", url)
+            combined = self._system_trust_legacy_session
+            if use_session:
+                combined.cookies.update(session.cookies)
+            session = combined
+            response = _perform_request(
+                getattr(session, method), url=url, timeout_seconds=timeout_seconds,
+                headers=headers, verify_tls=True, data=data,
+            )
+        if use_session:
+            self._session.cookies.update(session.cookies)
+        return response
 
 
 def _set_response_encoding(response: requests.Response) -> None:
@@ -226,22 +259,35 @@ def _set_response_encoding(response: requests.Response) -> None:
 
 
 class _SystemTrustHttpAdapter(HTTPAdapter):
+    def __init__(self, *, legacy_tls: bool = False) -> None:
+        self._legacy_tls = legacy_tls
+        super().__init__()
+
     def init_poolmanager(
         self, connections: int, maxsize: int, block: bool = False, **pool_kwargs: Any,
     ) -> None:
-        pool_kwargs["ssl_context"] = truststore.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+        context = truststore.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+        if self._legacy_tls:
+            context.set_ciphers("DEFAULT:@SECLEVEL=1")
+        pool_kwargs["ssl_context"] = context
         self.poolmanager = PoolManager(
             num_pools=connections, maxsize=maxsize, block=block, **pool_kwargs,
         )
 
 
 def _is_missing_issuer_error(url: str, exc: requests.exceptions.SSLError) -> bool:
-    return url.lower().startswith("https://") and any(
+    return _is_https_failure(url, exc) and any(
         marker in str(exc).lower()
         for marker in (
             "unable to get local issuer certificate", "unable to verify the first certificate",
         )
     )
+
+
+def _is_https_failure(url: str, exc: requests.exceptions.SSLError) -> bool:
+    # Requests attaches the failing HTTPS request after an HTTP redirect.
+    failed_url = getattr(getattr(exc, "request", None), "url", "") or ""
+    return url.lower().startswith("https://") or failed_url.lower().startswith("https://")
 
 
 def _perform_request(
@@ -263,7 +309,7 @@ def _perform_request(
 
 
 def _should_retry_with_legacy_tls(*, url: str, exc: requests.exceptions.SSLError) -> bool:
-    if not url.lower().startswith("https://"):
+    if not _is_https_failure(url, exc):
         return False
     message = str(exc).lower()
     return (

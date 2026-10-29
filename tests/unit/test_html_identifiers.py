@@ -155,9 +155,8 @@ def test_invalid_html_page_size_is_rejected(size: object) -> None:
         replace(DATA_PROFILE, page_size=cast(int, size))
 
 
-def test_offset_requires_distinct_page_parameter() -> None:
-    with pytest.raises(ValueError, match="page parameter"):
-        replace(DATA_PROFILE, offset_param="offset", page_param="")
+def test_offset_may_be_the_only_pagination_parameter_but_cannot_overlap() -> None:
+    assert replace(DATA_PROFILE, offset_param="offset", page_param="").offset_param == "offset"
     with pytest.raises(ValueError, match="must differ"):
         replace(DATA_PROFILE, offset_param="pageIndex")
 

@@ -198,7 +198,7 @@ detail_date_selector = "th:-soup-contains-own(\"공고기간\") + td"
 municipality = "속초시"
 source_type = "html"
 engine_type = "generic_egov_bbs"
-list_url = "https://www.sokcho.go.kr/sc/portal/sokchonews/notification?searchCondition=notAncmtSj"
+list_url = "https://www.sokcho.go.kr/sc/portal/sokchonews/notification?searchCondition=TITLE"
 recruitment_only = false
 max_pages = 100
 [sources.sokcho.request_strategy]
@@ -208,6 +208,7 @@ retries = 2
 timeout_seconds = 30.0
 throttle_seconds = 0.3
 [sources.sokcho.html_profile]
+request_method = "POST"
 container_selector = "table.skinTb-data-resList"
 row_selector = "tbody > tr"
 link_selector = "a.notification-view-btn"

@@ -1,0 +1,119 @@
+# Additional public boards discovered while reviewing monthly Hibrain omissions.
+# Society reposts retain their publisher and their own publication date.
+timezone = "Asia/Seoul"
+db_path = "data/hibrain-recovery.db"
+enabled_sources = ["andong_related", "kigas_notices", "kila_news", "railway_notices"]
+
+[sources.andong_related]
+municipality = "안동시"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.andong.go.kr/portal/bbs/list.do?ptIdx=76&mId=0401070000&searchType=b_title"
+recruitment_only = true
+max_pages = 100
+[sources.andong_related.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.andong_related.html_profile]
+request_method = "POST"
+container_selector = "table.bod_list"
+row_selector = "tbody > tr"
+link_selector = "td.list_tit a[data-action]"
+link_attribute = "data-action"
+date_selector = "td.list_date"
+id_pattern = "bIdx=([1-9][0-9]*)"
+detail_url_template = "/portal/bbs/view.do?bIdx={id}&ptIdx=76&mId=0401070000"
+detail_title_selector = "div.bod_view > h4"
+detail_date_selector = "div.bod_view li.view_date"
+detail_body_selector = "div.bod_view div.view_cont"
+page_param = "page"
+search_param = "searchTxt"
+page_number_selector = "p.page_num > span"
+
+[sources.kigas_notices]
+municipality = "한국가스학회"
+source_type = "api"
+engine_type = "json_list_api"
+list_url = "https://kigas.or.kr/board/notice/article.json?length=15"
+recruitment_only = true
+max_pages = 100
+[sources.kigas_notices.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.kigas_notices.json_profile]
+rows_path = "data"
+title_key = "subject"
+date_key = "startDate"
+date_fallback_key = "regDatetime"
+date_format = "unix_ms"
+date_timezone = "Asia/Seoul"
+id_key = "articleId"
+detail_url_template = "/board/notice/article/{id}"
+total_path = "recordsFiltered"
+page_path = "draw"
+search_param = "search[value]"
+page_param = "draw"
+offset_param = "start"
+offset_base = 0
+page_size = 15
+
+[sources.kila_news]
+municipality = "한국조경학회"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.kila.or.kr/board/lists?b_name=bo_news&s_opt0=bo_title"
+recruitment_only = true
+max_pages = 100
+[sources.kila_news.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.kila_news.html_profile]
+container_selector = "table.table_board"
+row_selector = "tbody > tr"
+link_selector = "td:nth-of-type(2) a"
+date_selector = "td > time"
+id_pattern = "bo_id=([1-9][0-9]*)(?:&|$)"
+detail_url_template = "/board/view?b_name=bo_news&bo_id={id}"
+detail_title_selector = "h3.board_view_title"
+detail_date_selector = ".board_view > .td_name > span:nth-of-type(2)"
+page_param = ""
+offset_param = "per_page"
+page_size = 15
+search_param = "s_text0"
+page_number_selector = ".tsc_pagination a.current"
+
+[sources.railway_notices]
+municipality = "한국철도학회"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://railway.or.kr/Board/board.asp?B_CATE=BBS1&Action=search&search_kind=b_title&date_area=all"
+recruitment_only = true
+max_pages = 100
+[sources.railway_notices.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.railway_notices.html_profile]
+container_selector = ".centents"
+row_selector = "tr:has(> td > a[href*='b_code='][href*='Action=content'])"
+link_selector = "td:nth-of-type(2) a"
+date_selector = "td:nth-of-type(4)"
+id_pattern = "b_code=([1-9][0-9]*)(?:&|$)"
+detail_url_template = "/Board/board.asp?B_CATE=BBS1&Action=content&b_code={id}"
+detail_title_selector = "td.table_title01[width='85%'] > strong"
+detail_date_selector = "td.table_title01:has(> strong:-soup-contains-own('등록일')) ~ td:nth-of-type(3)"
+page_param = "gotoPage"
+search_param = "search_name"
+request_encoding = "euc-kr"
+page_number_selector = ".centents td[colspan='4'] > div > b"

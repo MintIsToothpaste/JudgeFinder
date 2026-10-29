@@ -21,7 +21,7 @@ def classify_notice_title(title: str) -> NoticeCategory:
     # Candidate registration announcements are recruitment even without "모집".
     registration = re.search(
         r"평가위원(?:\((?:후보자|예비위원)\)|후보자|예비위원)?"
-        r"등록신청(?:공고|안내(?:공고)?)$", compact,
+        r"등록(?:신청)?(?:공고|안내(?:공고)?)$", compact,
     )
     # Explicit requests for evaluator nominations also accept candidate registrations.
     nomination = re.search(
@@ -29,7 +29,8 @@ def classify_notice_title(title: str) -> NoticeCategory:
         r"(?:\((?![^()]*(?:결과|명단|현황))[^()]+\))?$", compact,
     )
     reannouncement = re.search(r"평가위원\((?:후보자|예비위원)\)재공고$", compact)
-    if ("모집" in compact or registration or nomination or reannouncement) and not any(
+    open_call = re.search(r"평가위원(?:\(후보자\)|후보자)?공모(?:공고|알림|안내)?$", compact)
+    if ("모집" in compact or registration or nomination or reannouncement or open_call) and not any(
         marker in compact for marker in ("취소", "철회", "마감")
     ):
         return NoticeCategory.RECRUITMENT

@@ -114,7 +114,7 @@ def test_load_config_raises_for_invalid_engine_type(tmp_path: Path) -> None:
     'unexpected = "typo"', 'date_selector = 5',
     'date_selector = ""', 'id_pattern = "id=([0-9]+)"',
     'page_size = true', 'page_size = "10"',
-    'offset_param = "offset"\npage_param = ""', 'link_attribute = "data-key-no"',
+    'offset_param = "pageIndex"', 'link_attribute = "data-key-no"',
 ])
 def test_load_config_rejects_invalid_html_profiles(tmp_path: Path, extra: str) -> None:
     config = tmp_path / "profile.toml"

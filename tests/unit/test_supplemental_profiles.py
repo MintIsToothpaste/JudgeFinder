@@ -242,6 +242,10 @@ def test_recovered_boards_fetch_real_dates_paginate_and_cache(slug: str) -> None
         assert kwargs["verify_tls"] and kwargs["use_session"]
         if url == case["url"]:
             return str(case["detail_html"])
+        if profile.request_method == "POST":
+            data = kwargs["data"]
+            assert isinstance(data, bytes)
+            url += "?" + data.decode("ascii")
         query = parse_qs(urlparse(url).query)
         page = int(query.get(profile.page_param, ["1"])[0])
         assert page in {1, 2}
@@ -258,6 +262,7 @@ def test_recovered_boards_fetch_real_dates_paginate_and_cache(slug: str) -> None
         return str(soup)
 
     client.get_text.side_effect = response
+    client.post_text.side_effect = response
     source = SourceRegistry(
         settings,
         client,

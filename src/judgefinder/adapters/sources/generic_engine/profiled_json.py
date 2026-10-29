@@ -2,9 +2,11 @@ from __future__ import annotations
 
 import json
 import re
+from datetime import date, datetime
 from html import unescape
 from typing import Any
 from urllib.parse import urljoin, urlparse, urlunparse
+from zoneinfo import ZoneInfo
 
 from judgefinder.adapters.sources.generic_engine.parser import (
     GenericNoticeCandidate,
@@ -25,6 +27,26 @@ def _integer(value: Any, label: str) -> int:
     if isinstance(value, bool) or not re.fullmatch(r"[0-9]+", str(value)):
         raise ValueError(f"JSON {label} must be a nonnegative integer")
     return int(value)
+
+
+def _publication_date(row: dict[str, Any], profile: JsonProfile, index: int) -> date:
+    if profile.date_key not in row:
+        raise ValueError(f"JSON row {index}: registration date field missing")
+    raw = row[profile.date_key]
+    # Only an explicitly null publication field may use the configured registration field.
+    if raw is None and profile.date_fallback_key:
+        raw = row.get(profile.date_fallback_key)
+    if profile.date_format == "unix_ms":
+        if type(raw) is not int or raw < 0:
+            raise ValueError(f"JSON row {index}: invalid millisecond registration date")
+        try:
+            return datetime.fromtimestamp(raw / 1000, tz=ZoneInfo(profile.date_timezone)).date()
+        except (OverflowError, OSError, ValueError) as exc:
+            raise ValueError(f"JSON row {index}: invalid millisecond registration date") from exc
+    published = _extract_date_from_text(raw) if isinstance(raw, str) else None
+    if published is None:
+        raise ValueError(f"JSON row {index}: invalid date in registration field")
+    return published
 
 
 def parse_profiled_json(
@@ -52,13 +74,13 @@ def parse_profiled_json(
     for index, row in enumerate(rows, start=1):
         if not isinstance(row, dict):
             raise ValueError(f"JSON row {index}: object required")
-        title, raw_date, identifier = (
-            row.get(profile.title_key), row.get(profile.date_key), row.get(profile.id_key),
+        title, identifier = (
+            row.get(profile.title_key), row.get(profile.id_key),
         )
-        if not isinstance(title, str) or not title.strip() or not isinstance(raw_date, str):
+        if not isinstance(title, str) or not title.strip():
             raise ValueError(f"JSON row {index}: title or registration date missing")
-        published = _extract_date_from_text(raw_date)
-        if published is None or not re.fullmatch(r"[1-9][0-9]*", str(identifier)):
+        published = _publication_date(row, profile, index)
+        if not re.fullmatch(r"[1-9][0-9]*", str(identifier)):
             raise ValueError(f"JSON row {index}: invalid date or numeric notice identifier")
         url = urljoin(list_url, profile.detail_url_template.replace("{id}", str(identifier)))
         parsed = urlparse(url)
