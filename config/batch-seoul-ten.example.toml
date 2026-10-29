@@ -1,7 +1,7 @@
 # Isolated live validation; production config/config.toml is unchanged.
 timezone = "Asia/Seoul"
 db_path = "data/live-tests/seoul-ten-2026-09-27/notices.db"
-enabled_sources = ["gwangjin", "dongdaemun", "jungnang", "gangbuk", "dobong", "nowon", "eunpyeong", "seodaemun", "mapo", "yangcheon", "yangcheon_gosi", "gangbuk_gosi", "seodaemun_gosi", "mapo_gosi"]
+enabled_sources = ["gwangjin", "dongdaemun", "jungnang", "gangbuk", "dobong", "nowon", "eunpyeong", "seodaemun", "mapo", "yangcheon", "yangcheon_gosi", "gangbuk_gosi", "seodaemun_gosi", "mapo_gosi", "nowon_gosi"]
 
 [sources.gwangjin]
 municipality = "광진구"
@@ -295,3 +295,28 @@ detail_date_selector = "td[height='22']:-soup-contains-own('등록일') + td"
 id_pattern = "(?i)searchDetail\\('([1-9][0-9]*)'\\)"
 detail_url_template = "/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&subCheck=Y&not_ancmt_mgt_no={id}"
 search_param = "not_ancmt_sj"
+
+[sources.nowon_gosi]
+municipality = "노원구"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.nowon.kr/www/user/bbs/BD_selectBbsList.do?q_bbsCode=1003&q_clCode=0&q_searchKeyTy=sj___1002"
+recruitment_only = false
+max_pages = 100
+[sources.nowon_gosi.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.nowon_gosi.html_profile]
+container_selector = "table.table-list"
+row_selector = "tbody > tr:has(> td)"
+link_selector = "td.cell-subject a"
+date_selector = "td.cell-date"
+id_pattern = "opView\\('([1-9][0-9]*)'"
+detail_url_template = "/www/user/bbs/BD_selectBbs.do?q_bbsCode=1003&q_bbscttSn={id}&q_clCode=0"
+detail_title_selector = "h1.article-subject"
+detail_date_selector = "th:-soup-contains-own('등록일') + td"
+search_param = "q_searchVal"
+page_param = "q_currPage"

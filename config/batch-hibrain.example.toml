@@ -1,0 +1,762 @@
+# Original institution boards discovered through Hibrain evaluator notices.
+timezone = "Asia/Seoul"
+db_path = "data/hibrain.db"
+enabled_sources = ["changwon", "khoa", "lccak", "island_biennale", "daeduk", "geri", "pief", "yeongcheon_scholarship", "busan_education", "keiti", "jeonbuk_development", "ulsan_facilities", "iksan_cultural", "daegu_civil_contest", "anseong", "chungju_cultural", "namyangju_uc", "chungcheong_universiade", "seongnam_youth", "pocheon_uc", "jeonnam_content", "incheon_uc", "busan_facilities", "jinju_commerce", "seoul_environment", "gyeonggi_education_notices", "bupyeong_gender", "geoje_related", "geoje_notice", "yangsan_portal"]
+
+[sources.changwon]
+municipality = "창원시"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.changwon.go.kr/cwportal/10310/10438/10439.web?section=gosi&stype=title"
+recruitment_only = false
+max_pages = 100
+[sources.changwon.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 35.0
+throttle_seconds = 0.3
+[sources.changwon.html_profile]
+container_selector = "div.list2table1 table"
+# Expired notices lose their detail links; collect public linked rows only.
+row_selector = "tbody > tr:has(> td.tal > a)"
+link_selector = "td.tal a"
+date_selector = "td:nth-of-type(5)"
+id_pattern = '[?&]not_ancmt_mgt_no=([1-9][0-9]*)(?:&|$)'
+detail_url_template = "/cwportal/10310/10438/10439.web?amode=view&section=gosi&not_ancmt_mgt_no={id}"
+detail_title_selector = ".bbs1view1 > h1.h1"
+detail_date_selector = ".bbs1view1 dt:-soup-contains-own('게재일자') + dd"
+search_param = "sstring"
+page_param = "cpage"
+page_number_selector = ".pagination .pages .on"
+
+[sources.khoa]
+municipality = "국립해양조사원"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.khoa.go.kr/user/bbs/selectBbsList.do?bbsMasterSeq=BOARD_MST_0000000001&searchCondition=title"
+recruitment_only = false
+max_pages = 100
+[sources.khoa.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 35.0
+throttle_seconds = 0.3
+[sources.khoa.html_profile]
+container_selector = "table:has(th.table-tit)"
+row_selector = "tbody > tr:has(> td)"
+link_selector = "td.table-tit a"
+link_attribute = "onclick"
+date_selector = "td:nth-of-type(4)"
+id_pattern = "fnBbsDetail\\('BBS_([0-9]+)'"
+id_format = "zero_padded_numeric"
+detail_url_template = "/user/bbs/detailBbsList.do?bbsMasterSeq=BOARD_MST_0000000001&bbsSeq=BBS_{id}"
+detail_title_selector = ".board .post-tit"
+detail_date_selector = "p > b:-soup-contains-own('작성일') + span"
+search_param = "searchKeyword"
+page_param = "pageIndex"
+page_number_selector = ".pagenation .page-number.active"
+
+[sources.lccak]
+municipality = "대한민국시군자치구의회의장협의회"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.lccak.or.kr/www/selectBbsNttList.do?key=14&bbsNo=4&searchCnd=SJ"
+recruitment_only = false
+max_pages = 100
+[sources.lccak.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 35.0
+throttle_seconds = 0.3
+[sources.lccak.html_profile]
+container_selector = "table.p-table.simple"
+row_selector = "tbody > tr:has(> td)"
+link_selector = "td.p-subject a"
+date_selector = "td:nth-of-type(5)"
+id_pattern = '[?&]nttNo=([1-9][0-9]*)(?:&|$)'
+detail_url_template = "/www/selectBbsNttView.do?key=14&bbsNo=4&nttNo={id}"
+detail_title_selector = ".p-table__subject_text"
+search_param = "searchKrwd"
+page_param = "pageIndex"
+page_number_selector = ".p-pagination strong.active"
+
+[sources.island_biennale]
+municipality = "섬비엔날레조직위원회"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.islandbiennale.or.kr/kor/article/ATCLf9e4f4488?searchCondition=1"
+recruitment_only = false
+max_pages = 100
+[sources.island_biennale.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 35.0
+throttle_seconds = 0.3
+[sources.island_biennale.html_profile]
+container_selector = "#txt"
+row_selector = ".notice_list > ul > li:not(.thead), .no_board_data"
+link_selector = "p.subject a"
+link_attribute = "onclick"
+date_selector = "p.date"
+id_pattern = "article\\.view\\('([1-9][0-9]*)'"
+detail_url_template = "/kor/article/ATCLf9e4f4488/{id}"
+detail_title_selector = ".board_view > .t > strong.subject"
+detail_date_selector = ".board_view .info > li:has(> em:-soup-contains-own('등록일'))"
+search_param = "searchKeyword"
+page_param = "pageIndex"
+page_number_selector = ".page a.on"
+
+[sources.daeduk]
+municipality = "대덕대학교"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.ddu.ac.kr/bbs/MN000000000112/list.htm?srchKey=title"
+recruitment_only = false
+max_pages = 100
+[sources.daeduk.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 35.0
+throttle_seconds = 0.2
+[sources.daeduk.html_profile]
+container_selector = "table:has(td.subject)"
+row_selector = "tbody > tr:has(> td)"
+link_selector = "td.subject a"
+date_selector = "td.date .td-txt"
+id_pattern = "bbscttSeq=([1-9][0-9]*)(?:&|$)"
+detail_url_template = "/bbs/MN000000000112/detail.htm?bbscttSeq={id}"
+detail_title_selector = ".bs-title dl.title h3"
+search_param = "srchText"
+page_param = "page"
+
+[sources.geri]
+municipality = "구미전자정보기술원"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://geri.re.kr/html/board_list.asp?board_id=business&search_name=B_TITLE"
+recruitment_only = false
+max_pages = 100
+[sources.geri.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 35.0
+throttle_seconds = 0.2
+[sources.geri.html_profile]
+container_selector = ".notice_box > ul"
+row_selector = ":scope > li"
+link_selector = "a"
+date_selector = ".t4"
+id_pattern = "board_idx=([1-9][0-9]*)(?:&|$)"
+detail_url_template = "/html/board_content.asp?board_id=business&board_idx={id}"
+detail_title_selector = ".notice_view p.tit strong"
+search_param = "search_str"
+page_param = "page"
+page_number_selector = ".paging strong"
+
+[sources.pief]
+municipality = "평택시국제교류재단"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.pief.or.kr/kor/board/list.do?bbsId=sub03_08&searchCnd=0"
+recruitment_only = false
+max_pages = 100
+[sources.pief.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 35.0
+throttle_seconds = 0.2
+[sources.pief.html_profile]
+container_selector = "ul.fz_list"
+row_selector = "li.fz_list_td"
+link_selector = ".fz_subject a"
+date_selector = ".fz_date"
+link_attribute = "onclick"
+id_pattern = "fn_view\\('([1-9][0-9]*)'"
+detail_url_template = "/kor/board/viewArticle.do?bbsId=sub03_08&nttId={id}"
+detail_title_selector = "#bo_v_title"
+search_param = "searchWrd"
+page_param = "pageIndex"
+page_number_selector = ".pg_wrap .pg_current"
+
+[sources.yeongcheon_scholarship]
+municipality = "영천시장학회"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.ycsf.or.kr/open/notice/list.html"
+recruitment_only = false
+max_pages = 100
+[sources.yeongcheon_scholarship.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 35.0
+throttle_seconds = 0.2
+[sources.yeongcheon_scholarship.html_profile]
+container_selector = "table.bList"
+row_selector = "tbody > tr:has(> td)"
+link_selector = "td.taL a"
+date_selector = "td:nth-of-type(7)"
+id_pattern = "idx=([1-9][0-9]*)(?:&|$)"
+detail_url_template = "/open/notice/read.html?idx={id}&step=A&dep=0"
+detail_title_selector = "table.bView thead tr:first-child th.taL"
+page_param = "page"
+
+[sources.busan_education]
+municipality = "부산광역시교육청"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.pen.go.kr/main/na/ntt/selectNttList.do?mi=30361&bbsId=2342&searchType=sj"
+recruitment_only = false
+max_pages = 100
+[sources.busan_education.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 35.0
+throttle_seconds = 0.2
+[sources.busan_education.html_profile]
+container_selector = ".bbs_ListA table"
+row_selector = "tbody > tr:has(> td)"
+link_selector = "td.bbs_tit a"
+link_attribute = "data-id"
+date_selector = "td:nth-of-type(4)"
+id_pattern = "^([1-9][0-9]*)$"
+detail_url_template = "/main/na/ntt/selectNttInfo.do?mi=30361&bbsId=2342&nttSn={id}"
+detail_title_selector = ".bbs_ViewA > h3"
+search_param = "searchValue"
+page_param = "currPage"
+
+[sources.keiti]
+municipality = "한국환경산업기술원"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.keiti.re.kr/site/keiti/ex/board/List.do?cbIdx=277&searchCondition=subCont"
+recruitment_only = false
+max_pages = 100
+[sources.keiti.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 35.0
+throttle_seconds = 0.2
+[sources.keiti.html_profile]
+container_selector = ".thumb ul.list"
+row_selector = ":scope > li"
+link_selector = "a"
+date_selector = ".date"
+id_pattern = "bcIdx=([1-9][0-9]*)(?:&|$)"
+detail_url_template = "/site/keiti/ex/board/View.do?cbIdx=277&bcIdx={id}"
+detail_title_selector = "dl.view > dt"
+search_param = "searchKeyword"
+page_param = "pageIndex"
+request_method = "POST"
+
+[sources.jeonbuk_development]
+municipality = "전북개발공사"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.jbdc.co.kr/notice/notice.do?bbsId=BBSMSTR_000000000011&searchCnd=0&mode=list"
+recruitment_only = false
+max_pages = 100
+[sources.jeonbuk_development.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 35.0
+throttle_seconds = 0.2
+[sources.jeonbuk_development.html_profile]
+container_selector = "table.list-1"
+row_selector = "tbody > tr:has(> td)"
+link_selector = "td.tdl a"
+date_selector = "td:nth-of-type(5)"
+id_pattern = "setView\\('([1-9][0-9]*)'"
+detail_url_template = "/notice/notice.do?bbsId=BBSMSTR_000000000011&mode=view&nttId={id}"
+detail_title_selector = "table.view-1 td.bbs_tit"
+search_param = "searchWrd"
+page_param = "pageIndex"
+page_number_selector = ".paging strong"
+title_exclude_selector = ".parsingTitle"
+
+[sources.ulsan_facilities]
+municipality = "울산시설공단"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.uic.or.kr/notify/noti01.do?searchCnd=0"
+recruitment_only = false
+max_pages = 100
+[sources.ulsan_facilities.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 35.0
+throttle_seconds = 0.2
+[sources.ulsan_facilities.html_profile]
+container_selector = "table.bbs_table"
+row_selector = "tbody > tr:has(> td)"
+link_selector = "td.subject a"
+link_attribute = "onclick"
+date_selector = "td:nth-of-type(4)"
+id_pattern = "subForm([1-9][0-9]*)"
+detail_url_template = "/uimc/notify/noti01/selectBoardArticle.do?noticeRange=A01&bbsId=BBSMSTR_000000000031&nttId={id}"
+detail_title_selector = ".bbs_view .view_title"
+search_param = "searchWrd"
+page_param = "pageIndex"
+page_number_selector = ".pagination a.active"
+
+[sources.iksan_cultural]
+municipality = "익산문화관광재단 (문화도시지원센터 포함)"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.ictf.or.kr/2022/inner.php?sMenu=E1000&sf=subject"
+recruitment_only = false
+max_pages = 100
+[sources.iksan_cultural.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 35.0
+throttle_seconds = 0.2
+[sources.iksan_cultural.html_profile]
+container_selector = "table.ta_bo"
+row_selector = "tbody > tr:has(> td)"
+link_selector = "td.left a"
+date_selector = "td.mview:nth-of-type(2)"
+id_pattern = "[?&]no=([1-9][0-9]*)(?:&|$)"
+detail_url_template = "/2022/inner.php?sMenu=E1000&mode=view&no={id}"
+detail_title_selector = ".page_view .titlebox p.subject"
+search_param = "sv"
+page_param = "pno"
+
+[sources.daegu_civil_contest]
+municipality = "대구광역시 민원공모 (세계사격선수권대회 포함)"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://minwon.daegu.go.kr/pssrp/list"
+recruitment_only = false
+max_pages = 100
+[sources.daegu_civil_contest.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 35.0
+throttle_seconds = 0.2
+[sources.daegu_civil_contest.html_profile]
+container_selector = "table.list_tbl"
+row_selector = "tbody > tr:has(> td)"
+link_selector = "td.left a"
+link_attribute = "onclick"
+date_selector = "td:nth-of-type(4)"
+id_pattern = "gn_goRead\\('([1-9][0-9]*)'"
+detail_url_template = "/pssrp/{id}/view"
+detail_title_selector = ".search_view h3.tit"
+search_param = "searchKeyword"
+page_param = "pageIndex"
+page_number_selector = ".page a.page_on"
+
+[sources.anseong]
+municipality = "안성시"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.anseong.go.kr/portal/saeol/gosiList.do?mId=0501040000&searchType=NOT_ANCMT_SJ"
+recruitment_only = false
+max_pages = 100
+[sources.anseong.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 35.0
+throttle_seconds = 0.2
+[sources.anseong.html_profile]
+container_selector = "table.tableSt_list"
+row_selector = "tbody > tr:has(> td)"
+link_selector = "td:nth-of-type(2) a"
+date_selector = "td:nth-of-type(4)"
+id_pattern = "boardView\\('[0-9]+',\\s*'([1-9][0-9]*)'"
+detail_url_template = "/portal/saeol/gosiView.do?mId=0501040000&notAncmtMgtNo={id}"
+detail_title_selector = ".bod_view > h4"
+search_param = "searchTxt"
+page_param = "page"
+link_attribute = "onclick"
+
+[sources.chungju_cultural]
+municipality = "충주문화관광재단"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://cjcf.or.kr/new/bbs/board.php?bo_table=notice&sfl=wr_subject"
+recruitment_only = false
+max_pages = 100
+[sources.chungju_cultural.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 35.0
+throttle_seconds = 0.2
+[sources.chungju_cultural.html_profile]
+container_selector = "table.board-table"
+row_selector = "tbody > tr:has(> td)"
+link_selector = "td.title-cell a.item-subject"
+id_pattern = "wr_id=([1-9][0-9]*)(?:&|$)"
+detail_url_template = "/new/bbs/board.php?bo_table=notice&wr_id={id}"
+detail_title_selector = "article h1"
+detail_date_selector = "[itemprop='datePublished']"
+detail_date_attribute = "content"
+search_param = "stx"
+page_param = "page"
+
+[sources.namyangju_uc]
+municipality = "남양주도시공사"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.ncuc.or.kr/main/32?search_field=Ti"
+recruitment_only = false
+max_pages = 100
+[sources.namyangju_uc.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 35.0
+throttle_seconds = 0.2
+[sources.namyangju_uc.html_profile]
+container_selector = "table.has_category"
+row_selector = "tbody > tr:has(> td)"
+link_selector = "td.txtleft a"
+date_selector = "td:nth-of-type(6)"
+id_pattern = "action-value=([a-fA-F0-9]{32})(?:&|$)"
+id_format = "hex32"
+detail_url_template = "/main/32?action=read&action-value={id}"
+detail_title_selector = ".proc_read .view_tt > i"
+search_param = "search_word"
+page_param = "page"
+page_number_selector = ".paging .target a"
+
+[sources.chungcheong_universiade]
+municipality = "2027충청권하계세계대학경기대회조직위원회"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.chungcheong2027.com/home/sub.do?menukey=7422&mode=list&searchKeywordType=1"
+recruitment_only = false
+max_pages = 100
+[sources.chungcheong_universiade.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 35.0
+throttle_seconds = 0.2
+[sources.chungcheong_universiade.html_profile]
+container_selector = "table.board.m_board"
+row_selector = "tbody > tr:has(> td)"
+link_selector = "td.b_title a"
+date_selector = "td.b_date"
+detail_title_selector = "table.board_insert th.b_title"
+detail_query_exclude = "page,searchKeyword,searchKeywordType,searchIs"
+search_param = "searchKeyword"
+page_param = "page"
+page_number_selector = ".paginate .currentno"
+
+[sources.seongnam_youth]
+municipality = "성남시청소년청년재단"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.snyouth.or.kr/fmcs/289?search_field=Ti"
+recruitment_only = false
+max_pages = 100
+[sources.seongnam_youth.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 35.0
+throttle_seconds = 0.2
+[sources.seongnam_youth.html_profile]
+container_selector = ".modules_board table"
+row_selector = "tbody > tr:has(> td)"
+link_selector = "td.text-left a"
+date_selector = "td:nth-of-type(5)"
+id_pattern = "action-value=([a-fA-F0-9]{32})(?:&|$)"
+id_format = "hex32"
+detail_url_template = "/fmcs/289?action=read&action-value={id}"
+detail_title_selector = ".board-view .head > h4"
+search_param = "search_word"
+page_param = "page"
+
+[sources.pocheon_uc]
+municipality = "포천도시공사"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.pcuc.kr/boardList/public?searchType=title"
+recruitment_only = false
+max_pages = 100
+[sources.pocheon_uc.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 35.0
+throttle_seconds = 0.2
+[sources.pocheon_uc.html_profile]
+container_selector = "table.board"
+row_selector = "tbody > tr:has(> td)"
+link_selector = "td.tit a.goDetail"
+link_attribute = "data-seq"
+date_selector = "td.b_date"
+id_pattern = "^([1-9][0-9]*)$"
+detail_url_template = "/boardDetail/public?bbsSeq={id}"
+detail_title_selector = ".detThead > p.tit"
+search_param = "searchText"
+page_param = "pageIndex"
+
+[sources.jeonnam_content]
+municipality = "전남정보문화산업진흥원"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://jcia.or.kr/cf/information/notice/business.do?searchCondition=title"
+recruitment_only = false
+max_pages = 100
+[sources.jeonnam_content.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 35.0
+throttle_seconds = 0.2
+[sources.jeonnam_content.html_profile]
+container_selector = "table.tbl_Board_01"
+row_selector = "tbody > tr:has(> td)"
+link_selector = "td.boardSubject a"
+link_attribute = "onclick"
+date_selector = "td.date"
+id_pattern = "pf_DetailMove\\('([1-9][0-9]*)'"
+detail_url_template = "/cf/Board/{id}/detailView.do"
+detail_title_selector = ".detail_titleBox h2"
+search_param = "searchKeyword"
+page_param = "PageIndex"
+
+[sources.incheon_uc]
+municipality = "인천도시공사"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.ih.co.kr/main/bbs/bbsMsgList.do?bcd=notice&keyfield=title"
+recruitment_only = false
+max_pages = 100
+[sources.incheon_uc.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 35.0
+throttle_seconds = 0.2
+[sources.incheon_uc.html_profile]
+container_selector = ".board_list"
+row_selector = "li:has(a[href*='bbsMsgDetail'])"
+link_selector = "a[href*='bbsMsgDetail']"
+date_selector = ".writer_info li[title='작성일']"
+id_pattern = "msg_seq=([1-9][0-9]*)(?:&|$)"
+detail_url_template = "/main/bbs/bbsMsgDetail.do?bcd=notice&msg_seq={id}"
+detail_title_selector = ".board_view > .title > p"
+search_param = "keyword"
+page_param = "pgno"
+
+[sources.busan_facilities]
+municipality = "부산시설공단"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.bisco.or.kr/news/news01/index.asp?bcIdx=125&MODE=L&searchId=Subject"
+recruitment_only = false
+max_pages = 100
+[sources.busan_facilities.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 35.0
+throttle_seconds = 0.2
+[sources.busan_facilities.html_profile]
+container_selector = "table.basic"
+row_selector = "tbody > tr:has(> td)"
+link_selector = "td.subjectNews a"
+date_selector = "td:nth-of-type(8)"
+id_pattern = "bidx=([1-9][0-9]*)(?:&|$)"
+detail_url_template = "/news/news01/index.asp?bcIdx=125&MODE=V&bidx={id}"
+detail_title_selector = "table.table_basic_board td.aleft strong"
+search_param = "searchKeyword"
+page_param = "P"
+
+[sources.jinju_commerce]
+municipality = "진주시상권활성화재단"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.jinjumr.or.kr/board/business/list/0?category=title"
+recruitment_only = false
+max_pages = 100
+[sources.jinju_commerce.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 35.0
+throttle_seconds = 0.2
+[sources.jinju_commerce.html_profile]
+container_selector = ".tableWrap table"
+row_selector = "tbody > tr:has(> td)"
+link_selector = "td.ta-l a"
+date_selector = "td:nth-of-type(4)"
+id_pattern = "/board/business/show/([1-9][0-9]*)(?:[?]|$)"
+detail_url_template = "/board/business/show/{id}"
+detail_title_selector = ".detailBox .tit h3"
+search_param = "value"
+page_param = ""
+page_path_template = "/board/business/list/{page}"
+
+[sources.seoul_environment]
+municipality = "서울특별시 환경 분야"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://news.seoul.go.kr/env/"
+recruitment_only = false
+max_pages = 100
+[sources.seoul_environment.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 35.0
+throttle_seconds = 0.2
+[sources.seoul_environment.html_profile]
+container_selector = "#sub_centent .post-lst"
+row_selector = ".child_policyDL"
+link_selector = "h3.tit a"
+date_selector = ".time"
+id_pattern = "/archives/([1-9][0-9]*)(?:[?]|$)"
+detail_url_template = "/env/archives/{id}"
+detail_date_selector = "meta[property='article:published_time']"
+detail_date_attribute = "content"
+search_param = "s"
+page_param = "paged"
+
+[sources.gyeonggi_education_notices]
+municipality = "경기도교육청 일반공지"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.goe.go.kr/goe/na/ntt/selectNttList.do?bbsId=2012&mi=10100&searchType=sj"
+recruitment_only = false
+max_pages = 100
+[sources.gyeonggi_education_notices.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 35.0
+throttle_seconds = 0.2
+[sources.gyeonggi_education_notices.html_profile]
+container_selector = ".bbs_List table"
+row_selector = "tbody > tr:has(> td)"
+link_selector = "a.nttInfoBtn"
+link_attribute = "data-id"
+date_selector = "td[data-table='date']"
+id_pattern = "^([1-9][0-9]*)$"
+detail_url_template = "/goe/na/ntt/selectNttInfo.do?bbsId=2012&mi=10100&nttSn={id}"
+detail_title_selector = ".bbs_ViewA > h3"
+detail_date_selector = ".bbsV_data li:has(> strong:-soup-contains-own('등록일'))"
+search_param = "searchValue"
+page_param = "currPage"
+
+[sources.bupyeong_gender]
+municipality = "부평구청소년성문화센터"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.icbp.go.kr/gender/bbs/bbsMsgList.do?bcd=gender_notice&keyfield=title"
+recruitment_only = false
+max_pages = 100
+[sources.bupyeong_gender.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 35.0
+throttle_seconds = 0.2
+[sources.bupyeong_gender.html_profile]
+container_selector = "ul.generalList"
+row_selector = ":scope > li"
+link_selector = ".title a"
+date_selector = ".writer_info li[title='작성일']"
+id_pattern = "msg_seq=([1-9][0-9]*)(?:&|$)"
+detail_url_template = "/gender/bbs/bbsMsgDetail.do?bcd=gender_notice&msg_seq={id}"
+detail_title_selector = ".board_view h5"
+search_param = "keyword"
+page_param = "pgno"
+page_number_selector = ".paging.dp_pc a.num.select"
+total_count_selector = ".search_array .written"
+total_count_pattern = "전체 ([0-9]+)건, 현재페이지 [0-9]+/[0-9]+"
+page_size = 10
+
+[sources.geoje_related]
+municipality = "거제시 타기관 고시공고"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.geoje.go.kr/board/list.geoje?boardId=BBS_0000011&menuCd=DOM_000008902001005000&searchType=DATA_TITLE"
+recruitment_only = false
+max_pages = 100
+[sources.geoje_related.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 35.0
+throttle_seconds = 0.2
+[sources.geoje_related.html_profile]
+container_selector = "table.board_list1"
+row_selector = "tbody > tr:has(> td)"
+link_selector = "td.title a"
+date_selector = "td:nth-of-type(4)"
+id_pattern = "dataSid=([1-9][0-9]*)(?:&|$)"
+detail_url_template = "/board/view.geoje?boardId=BBS_0000011&menuCd=DOM_000008902001005000&dataSid={id}"
+detail_title_selector = "th.th02.fulltxt"
+search_param = "keyword"
+page_param = "startPage"
+two_digit_year_base = 2000
+
+[sources.geoje_notice]
+municipality = "거제시 새소식"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.geoje.go.kr/board/list.geoje?boardId=BBS_0000008&menuCd=DOM_000008902001001000&searchType=DATA_TITLE"
+recruitment_only = false
+max_pages = 100
+[sources.geoje_notice.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 35.0
+throttle_seconds = 0.2
+[sources.geoje_notice.html_profile]
+container_selector = "table.list01"
+row_selector = "tbody > tr:has(> td)"
+link_selector = "td.title a"
+date_selector = "td.date"
+id_pattern = "dataSid=([1-9][0-9]*)(?:&|$)"
+detail_url_template = "/board/view.geoje?boardId=BBS_0000008&menuCd=DOM_000008902001001000&dataSid={id}"
+detail_title_selector = ".board-view .view01 > .title"
+search_param = "keyword"
+page_param = "startPage"
+
+[sources.yangsan_portal]
+municipality = "양산시 홈페이지 고시공고"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.yangsan.go.kr/portal/saeol/gosi/list.do?mid=0102010000&searchType=tit"
+recruitment_only = false
+max_pages = 100
+[sources.yangsan_portal.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 35.0
+throttle_seconds = 0.2
+[sources.yangsan_portal.html_profile]
+container_selector = "table.bod_list.gosi"
+row_selector = "tbody > tr:has(> td)"
+link_selector = "td.list_tit a"
+link_attribute = "data-action"
+date_selector = "td.list_date"
+id_pattern = "notAncmtMgtNo=([1-9][0-9]*)(?:&|$)"
+detail_url_template = "/portal/saeol/gosi/view.do?mid=0102010000&notAncmtMgtNo={id}"
+detail_title_selector = ".bod_view > .subject"
+search_param = "searchTxt"
+page_param = "page"

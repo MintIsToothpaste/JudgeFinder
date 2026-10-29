@@ -9,6 +9,7 @@ from zoneinfo import ZoneInfo
 
 import pytest
 from bs4 import BeautifulSoup
+from profile_cases import PROFILE_BATCHES
 
 from judgefinder.adapters.config import load_config
 from judgefinder.adapters.source_registry import SourceRegistry
@@ -377,7 +378,7 @@ def test_recovered_board_preserves_registration_paginates_and_caches(
         assert [(n.title, str(n.published_date), n.url) for n in notices] == [
             (case["title"], case["date"], case["url"]),
         ]
-    assert len(recovered_board_http) == 3
+    assert len(recovered_board_http) == int(case.get("requests_per_collect", "3"))
     assert recovered_board_http.count(case["url"]) == 1
 
 
@@ -501,3 +502,90 @@ def test_seohae_uses_registration_date_instead_of_date_in_title() -> None:
     case = cases["incheon_seohae_culture"]
     assert "2026-05-18" in case["title"]
     assert case["date"] == "2026-10-20"
+
+
+HIBRAIN_CASES = json.loads(
+    (ROOT / "tests/fixtures/hibrain_profiles.json").read_text(encoding="utf-8"),
+)
+
+
+@pytest.mark.parametrize("key", HIBRAIN_CASES)
+def test_hibrain_terminal_pages_are_explicitly_empty(key: str) -> None:
+    case = HIBRAIN_CASES[key]
+    source = load_config(ROOT / case["config_path"]).sources[case["slug"]]
+    assert source.html_profile is not None
+    assert parse_profiled_html(
+        case["empty_html"], list_url=source.list_url, profile=source.html_profile,
+        expected_page=2,
+    ) == []
+
+
+def test_hibrain_sources_and_nowon_original_board_remain_enabled() -> None:
+    seoul = load_config(ROOT / "config/batch-seoul-ten.example.toml")
+    assert {"nowon", "nowon_gosi"} <= set(seoul.enabled_sources)
+    assert "q_bbsCode=1004" in seoul.sources["nowon"].list_url
+    assert "q_bbsCode=1003" in seoul.sources["nowon_gosi"].list_url
+    config_path = "config/batch-hibrain.example.toml"
+    settings = load_config(ROOT / config_path)
+    assert len(settings.enabled_sources) == 30
+    assert set(settings.enabled_sources) == {
+        c["slug"] for c in HIBRAIN_CASES.values() if c["config_path"] == config_path
+    }
+    for config in [seoul.sources["nowon_gosi"], *settings.sources.values()]:
+        assert config.fixture_path is None and not config.recruitment_only
+        assert config.request_strategy.verify_tls and config.max_pages == 100
+        assert "hibrain.net" not in config.list_url
+        assert not any("date" in key.lower() for key in parse_qs(urlparse(config.list_url).query))
+    assert settings.sources["khoa"].html_profile.id_format == "zero_padded_numeric"
+    assert settings.sources["keiti"].html_profile.request_method == "POST"
+
+
+def test_changwon_expired_unlinked_notice_does_not_block_public_notice() -> None:
+    case = HIBRAIN_CASES["changwon"]
+    source = load_config(ROOT / case["config_path"]).sources["changwon"]
+    profile = source.html_profile
+    assert profile is not None
+    soup = BeautifulSoup(case["list_html"], "html5lib")
+    container = soup.select_one(profile.container_selector)
+    assert container is not None
+    row = BeautifulSoup(
+        '<tr><td>491</td><td>공고</td><td class="tal">접수가 끝난 평가위원 모집</td>'
+        '<td></td><td>2026-10-15</td><td>20261015 ~ 20261021</td></tr>',
+        "html.parser",
+    ).tr
+    container.select_one("tbody").append(row)
+    candidates = parse_profiled_html(
+        str(soup), list_url=source.list_url, profile=profile,
+        detail_loader=Mock(return_value=case["detail_html"]),
+    )
+    assert [candidate.url for candidate in candidates] == [case["url"]]
+
+
+def test_ansan_uses_listing_date_when_detail_has_no_registration_date() -> None:
+    batch = PROFILE_BATCHES["gyeonggi_cities_ten"]
+    case = batch.cases["ansan"]
+    source = batch.settings.sources["ansan"]
+    profile = source.html_profile
+    assert profile is not None and not profile.detail_date_selector
+    assert "2026-10-01" not in case["detail_html"]
+    candidates = parse_profiled_html(
+        case["list_html"], list_url=source.list_url, profile=profile,
+        detail_loader=Mock(return_value=case["detail_html"] + "<p>접수 마감: 2026-10-09</p>"),
+    )
+    assert [str(c.published_date) for c in candidates] == ["2026-10-01"]
+
+
+@pytest.mark.parametrize("message", ["등록된 내용이 없습니다.", "등록/검색된 정보가 없습니다."])
+def test_public_empty_messages_do_not_hide_valid_links(message: str) -> None:
+    case = HIBRAIN_CASES["seongnam_youth"]
+    source = load_config(ROOT / case["config_path"]).sources[case["slug"]]
+    profile = source.html_profile
+    assert profile is not None
+    empty = case["empty_html"].replace("검색 결과가 없습니다.", message)
+    assert parse_profiled_html(empty, list_url=source.list_url, profile=profile) == []
+    listing = case["list_html"].replace(case["title"], message)
+    candidates = parse_profiled_html(
+        listing, list_url=source.list_url, profile=profile,
+        detail_loader=Mock(return_value=case["detail_html"]),
+    )
+    assert [c.url for c in candidates] == [case["url"]]

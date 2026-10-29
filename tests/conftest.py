@@ -15,7 +15,7 @@ RECOVERED_BOARDS = {
     slug: case
     for filename in (
         "cafe_20261022_profiles.json", "cafe_20261021_profiles.json",
-        "cafe_20261029_profiles.json",
+        "cafe_20261029_profiles.json", "hibrain_profiles.json",
     )
     for slug, case in json.loads(
         (ROOT / "tests/fixtures" / filename).read_text(encoding="utf-8"),
@@ -42,6 +42,10 @@ def recovered_board_http(
 
     def response(self: RequestsHttpClient, url: str, **kwargs: object) -> str:
         assert kwargs["verify_tls"] and kwargs["use_session"]
+        data = kwargs.get("data")
+        if isinstance(data, bytes):
+            assert profile.request_method == "POST"
+            url += "?" + data.decode("ascii")
         calls.append(url)
         if url == case["url"]:
             return case["detail_html"]
@@ -55,6 +59,8 @@ def recovered_board_http(
         assert page in {1, 2}
         if page == 1:
             return case["list_html"]
+        if "empty_html" in case:
+            return case["empty_html"]
         soup = BeautifulSoup(case["list_html"], "html5lib")
         container = soup.select_one(profile.container_selector)
         assert container is not None
@@ -67,4 +73,5 @@ def recovered_board_http(
         return str(soup)
 
     monkeypatch.setattr(RequestsHttpClient, "get_text", response)
+    monkeypatch.setattr(RequestsHttpClient, "post_text", response)
     return calls

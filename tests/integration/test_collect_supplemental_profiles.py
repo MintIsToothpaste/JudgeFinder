@@ -499,7 +499,7 @@ def test_recovered_board_cli_collects_deduplicates_and_lists_offline(
     before = len(recovered_board_http)
     listed = runner.invoke(app, [*args, "list", *window])
     assert listed.exit_code == 0 and listed.stdout.splitlines() == [case["url"]]
-    assert len(recovered_board_http) == before == 6
+    assert len(recovered_board_http) == before == 2 * int(case.get("requests_per_collect", "3"))
 
 
 

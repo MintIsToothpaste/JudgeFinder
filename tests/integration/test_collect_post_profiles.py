@@ -464,6 +464,10 @@ def test_ten_sources_cli_dates_detail_enrichment_and_sqlite_dedup(
         (ROOT / "tests/fixtures/cafe_four_recovered_profiles.json").read_text(encoding="utf-8"),
     )
     cases.update({slug: extra[slug] for slug in ("seodaemun_gosi", "mapo_gosi")})
+    hibrain = json.loads(
+        (ROOT / "tests/fixtures/hibrain_profiles.json").read_text(encoding="utf-8"),
+    )
+    cases["nowon_gosi"] = hibrain["nowon_gosi"]
     example = ROOT / "config/batch-seoul-ten.example.toml"
     settings = load_config(example)
     db = tmp_path / "notices.db"
@@ -474,7 +478,10 @@ def test_ten_sources_cli_dates_detail_enrichment_and_sqlite_dedup(
         .replace("throttle_seconds = 1.0", "throttle_seconds = 0.0"),
         encoding="utf-8",
     )
-    by_host = {urlparse(s.list_url).netloc: s for s in settings.sources.values()}
+    by_host = {
+        urlparse(s.list_url).netloc: s
+        for s in settings.sources.values() if s.slug != "nowon_gosi"
+    }
     calls: list[tuple[str, str, int]] = []
 
     def listing(slug: str, page: int) -> str:
@@ -497,6 +504,9 @@ def test_ten_sources_cli_dates_detail_enrichment_and_sqlite_dedup(
         verify_tls: bool = True,
     ) -> str:
         source = by_host[urlparse(url).netloc]
+        # Nowon news and public notices share a host but have different board IDs.
+        if source.slug == "nowon" and parse_qs(urlparse(url).query).get("q_bbsCode") == ["1003"]:
+            source = settings.sources["nowon_gosi"]
         case = cases[source.slug]
         assert verify_tls
         if url == case["url"]:

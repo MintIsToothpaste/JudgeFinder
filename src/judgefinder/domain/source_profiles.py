@@ -79,8 +79,10 @@ class HtmlProfile:
             )
         ):
             raise ValueError("html_profile.detail_query_exclude must list query parameter names")
-        if self.id_format not in {"numeric", "hex32"}:
-            raise ValueError("html_profile.id_format must be numeric or hex32")
+        if self.id_format not in {"numeric", "hex32", "zero_padded_numeric"}:
+            raise ValueError(
+                "html_profile.id_format must be numeric, hex32 or zero_padded_numeric",
+            )
         if self.id_format != "numeric" and not self.id_pattern:
             raise ValueError("html_profile.id_format requires an identifier pattern")
         if not self.date_selector and not self.detail_date_selector:

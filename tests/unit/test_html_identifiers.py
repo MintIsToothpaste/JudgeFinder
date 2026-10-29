@@ -264,3 +264,27 @@ def test_invalid_identifier_is_not_sent_to_detail_host() -> None:
             list_url="https://archive.example.org/list",
             profile=ORIGIN_PROFILE,
         )
+
+
+@pytest.mark.parametrize("identifier", ["00000009153", "000123", "123"])
+def test_zero_padded_numeric_identifier_preserves_original_width(identifier: str) -> None:
+    profile = replace(HEX_PROFILE, id_format="zero_padded_numeric")
+    notice = parse_hex_notice(identifier, profile)[0]
+    assert notice.url == f"https://example.org/view?no={identifier}"
+
+
+@pytest.mark.parametrize("identifier", ["0", "000", "-001", "１２３", "../123", "00abc123"])
+def test_zero_padded_numeric_identifier_rejects_invalid_values(identifier: str) -> None:
+    with pytest.raises(ValueError, match="unsupported notice identifier"):
+        parse_hex_notice(identifier, replace(HEX_PROFILE, id_format="zero_padded_numeric"))
+
+
+def test_zero_padding_is_opt_in_and_keeps_origin_validation() -> None:
+    with pytest.raises(ValueError, match="unsupported notice identifier"):
+        parse_hex_notice("0009153", replace(HEX_PROFILE, id_format="numeric"))
+    with pytest.raises(ValueError, match="configured host"):
+        parse_hex_notice(
+            "0009153",
+            replace(HEX_PROFILE, id_format="zero_padded_numeric",
+                    detail_url_template="https://other.org/?no={id}"),
+        )

@@ -310,3 +310,22 @@ judgefinder --config-path config/batch-cafe-20261029.example.toml list --date to
 `itemprop="datePublished"`에 명시된 등록일을 읽습니다. 화면의 `10.28`이나 제목의 사업연도로
 등록 연도를 추정하지 않습니다. 이 선택 옵션은 상세 날짜 선택자가 필요하고,
 `content`, `title`, `datetime`, `data-*` 속성을 허용합니다.
+
+
+## 하이브레인에서 발견한 공식 수집 경로
+
+`config/batch-hibrain.example.toml`은 원기관 공식 게시판 30개를 모은 보완 배치입니다.
+기존 지자체 배치와 함께 운영하려면 `[sources.*]` 설정과 `enabled_sources`를 함께 합칩니다.
+하이브레인은 원기관 경로 발견에만 사용하며 운영 수집 소스로 등록하지 않습니다.
+
+```bash
+judgefinder --config-path config/batch-hibrain.example.toml sources
+judgefinder --config-path config/batch-hibrain.example.toml collect --date today --days 7
+judgefinder --config-path config/batch-hibrain.example.toml list --date today --days 7
+```
+
+기본 DB는 `data/hibrain.db`입니다. 기존 DB를 이어 쓰려면 설정의 `db_path`를 해당 파일로 지정합니다.
+`--days`는 원문 게시일 조회 범위이며 지원 가능 여부를 판정하지 않습니다.
+노원구 고시공고는 기존 서울 배치에, 안산 게시일 수정은 기존 경기 배치에 반영되어 있습니다.
+검수 결과와 성남 재단·안전보건공단 등의 남은 제약은
+[하이브레인 경로 검증 기록](docs/hibrain-month-20261029.md)에 정리했습니다.
