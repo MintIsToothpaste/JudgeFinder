@@ -554,3 +554,76 @@ def test_jeju_after_october_5_collects_with_original_date_and_deduplicates(
     listed = runner.invoke(app, [*args, "list", *window])
     assert listed.exit_code == 0 and listed.stdout.splitlines() == [case["url"]]
     assert len(calls) == 4
+
+
+@pytest.mark.parametrize("slug", ["dobong_gosi", "anseong_industry", "incheon_ccei"])
+def test_october_30_recovered_sources_collect_deduplicate_and_list_offline(
+    slug: str, tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    case = json.loads(
+        (ROOT / "tests/fixtures/cafe_20261030_profiles.json").read_text(encoding="utf-8"),
+    )[slug]
+    example = ROOT / case["config_path"]
+    settings = load_config(example)
+    source = settings.sources[slug]
+    profile = source.html_profile or source.json_profile
+    assert profile is not None
+    config, db = tmp_path / "config.toml", tmp_path / "notices.db"
+    text = re.sub(
+        r"^enabled_sources = .+$", "enabled_sources = " + json.dumps([slug]),
+        example.read_text(encoding="utf-8"), flags=re.MULTILINE,
+    )
+    text = re.sub(
+        r"^db_path = .+$", "db_path = " + json.dumps(db.as_posix()), text, flags=re.MULTILINE,
+    )
+    config.write_text(
+        re.sub(r"throttle_seconds = [0-9.]+", "throttle_seconds = 0.0", text),
+        encoding="utf-8",
+    )
+    calls: list[str] = []
+
+    def response(
+        self: RequestsHttpClient, url: str, *, data: bytes | None = None, **kwargs: object,
+    ) -> str:
+        assert kwargs["verify_tls"] and kwargs["use_session"]
+        calls.append(url)
+        if url == case["url"]:
+            return str(case["detail_html"])
+        assert (data is not None) == (slug == "incheon_ccei")
+        query = parse_qs(data.decode("ascii") if data is not None else urlparse(url).query)
+        assert query[profile.search_param] == ["평가위원"]
+        if slug == "incheon_ccei":
+            assert query["kind"] == ["my"] and query["pagePerContents"] == ["8"]
+        page = query[profile.page_param][0]
+        assert page in {"1", "2"}
+        if source.json_profile:
+            return str(case["list_json" if page == "1" else "page2_json"])
+        if page == "1":
+            return str(case["list_html"])
+        soup = BeautifulSoup(case["list_html"], "html5lib")
+        container = soup.select_one(profile.container_selector)
+        assert container is not None
+        for row in container.select(profile.row_selector):
+            row.decompose()
+        return str(soup)
+
+    monkeypatch.setattr(RequestsHttpClient, "get_text", response)
+    monkeypatch.setattr(RequestsHttpClient, "post_text", response)
+    runner, args = CliRunner(), ["--config-path", str(config)]
+    window = ["--date", "2026-10-30", "--days", "7"]
+    for _ in range(2):
+        with caplog.at_level(logging.WARNING):
+            result = runner.invoke(app, [*args, "collect", *window])
+        assert result.exit_code == 0, result.output
+        assert "Skipping source" not in caplog.text
+        assert result.stdout.splitlines() == [case["url"]]
+        with sqlite3.connect(db) as connection:
+            rows = connection.execute(
+                "select municipality,title,published_date,url from notices",
+            ).fetchall()
+        assert rows == [(source.municipality, case["title"], case["date"], case["url"])]
+    before = len(calls)
+    listed = runner.invoke(app, [*args, "list", *window])
+    assert listed.exit_code == 0 and listed.stdout.splitlines() == [case["url"]]
+    assert len(calls) == before

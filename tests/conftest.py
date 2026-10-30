@@ -15,11 +15,13 @@ RECOVERED_BOARDS = {
     slug: case
     for filename in (
         "cafe_20261022_profiles.json", "cafe_20261021_profiles.json",
-        "cafe_20261029_profiles.json", "hibrain_profiles.json",
+        "cafe_20261029_profiles.json", "hibrain_profiles.json", "cafe_20261030_profiles.json",
+        "hibrain_routes_profiles.json",
     )
     for slug, case in json.loads(
         (ROOT / "tests/fixtures" / filename).read_text(encoding="utf-8"),
     ).items()
+    if "list_html" in case
 }
 
 

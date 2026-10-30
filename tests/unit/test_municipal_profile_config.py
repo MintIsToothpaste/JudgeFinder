@@ -278,7 +278,7 @@ def test_official_archive_and_search_parameters_cover_ten_municipalities() -> No
         assert source.fixture_path is None and source.recruitment_only
         assert source.source_type == "html" and source.html_profile is not None
         assert source.request_strategy.verify_tls and source.max_pages == 40
-    for slug in [*["gokseong", "goheung", "yeongam", "muan"], "boseong", "hwasun", "gurye"]:
+    for slug in ["gokseong", "goheung", "yeongam", "boseong", "hwasun", "gurye"]:
         assert parse_qs(urlparse(batch.settings.sources[slug].list_url).query)["list_gubun"] == [
             "A"
         ]

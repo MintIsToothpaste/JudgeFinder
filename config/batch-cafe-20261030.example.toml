@@ -1,0 +1,57 @@
+# Official institution channels recovered from the cafe comparison on 2026-10-30.
+timezone = "Asia/Seoul"
+db_path = "data/cafe-20261030.db"
+enabled_sources = ["incheon_ccei", "anseong_industry"]
+
+[sources.incheon_ccei]
+municipality = "인천창조경제혁신센터"
+source_type = "api"
+engine_type = "json_list_api"
+list_url = "https://ccei.creativekorea.or.kr/incheon/custom/noticeList.json?kind=my&sPtime=now&pagePerContents=8"
+recruitment_only = false
+max_pages = 80
+[sources.incheon_ccei.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.incheon_ccei.json_profile]
+rows_path = "result.list"
+title_key = "TITLE"
+date_key = "REG_DATE"
+id_key = "SEQ"
+total_path = "result.size"
+detail_url_template = "/incheon/custom/notice_view.do?no={id}"
+search_param = "title"
+page_param = "pn"
+page_size = 8
+request_method = "POST"
+
+[sources.anseong_industry]
+municipality = "안성산업진흥원"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.asbiz.or.kr/bbs/BBSMSTR_000000000003/list.do?searchCondition=subject"
+recruitment_only = false
+max_pages = 80
+[sources.anseong_industry.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.anseong_industry.html_profile]
+container_selector = "table.program__board-table"
+row_selector = "tbody > tr"
+link_selector = "button.btn-view[data-ntt-id]"
+link_attribute = "data-ntt-id"
+title_selector = ".board__subject-text"
+date_selector = "td.board__table--date"
+detail_title_selector = ".board-view__title"
+detail_date_selector = ".board-view__info-item.info__date"
+id_format = "alphanumeric"
+id_pattern = "^(B[0-9]{12}[A-Za-z0-9]{6})$"
+detail_url_template = "/bbs/BBSMSTR_000000000003/view.do?nttId={id}"
+search_param = "searchKeyword"
+page_param = "pageIndex"

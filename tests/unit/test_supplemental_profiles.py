@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 from datetime import date, timedelta
 from pathlib import Path
 from unittest.mock import Mock
@@ -384,7 +385,10 @@ def test_recovered_board_preserves_registration_paginates_and_caches(
             (case["title"], case["date"], case["url"]),
         ]
     assert len(recovered_board_http) == int(case.get("requests_per_collect", "3"))
-    assert recovered_board_http.count(case["url"]) == 1
+    profile = settings.sources[case["slug"]].html_profile
+    assert profile is not None
+    needs_detail = bool(profile.detail_title_selector or profile.detail_date_selector)
+    assert recovered_board_http.count(case["url"]) == int(needs_detail)
 
 
 def test_recovered_board_rejects_invalid_metadata_despite_application_dates(
@@ -410,7 +414,9 @@ def test_recovered_board_rejects_invalid_metadata_despite_application_dates(
             # Preserve label descendants used by metadata selectors such as :has().
             for value in list(node.find_all(string=True)):
                 if any(character.isdigit() for character in value):
-                    value.replace_with("2026-02-30")
+                    value.replace_with(re.sub(
+                        r"[0-9].*", "2026-02-30", str(value), flags=re.DOTALL,
+                    ))
     detail_html = str(detail) + "<p>접수기간: 2026-10-21 ~ 2026-10-29</p>"
     with pytest.raises(ValueError, match="invalid title or registration date"):
         parse_profiled_html(
@@ -424,10 +430,14 @@ def test_recovered_board_error_document_is_not_accepted(
 ) -> None:
     case = recovered_board_case
     source = load_config(ROOT / case["config_path"]).sources[case["slug"]]
-    assert source.html_profile is not None
-    with pytest.raises(ValueError, match="title or registration-date element missing"):
+    profile = source.html_profile
+    assert profile is not None
+    needs_detail = bool(profile.detail_title_selector or profile.detail_date_selector)
+    error = "title or registration-date element missing" if needs_detail else "container missing"
+    with pytest.raises(ValueError, match=error):
         parse_profiled_html(
-            case["list_html"], list_url=source.list_url, profile=source.html_profile,
+            case["list_html"] if needs_detail else "<h1>Page Not Found</h1>",
+            list_url=source.list_url, profile=profile,
             detail_loader=Mock(return_value="<h1>Page Not Found</h1>"),
         )
 
@@ -580,7 +590,9 @@ def test_ansan_uses_listing_date_when_detail_has_no_registration_date() -> None:
     assert [str(c.published_date) for c in candidates] == ["2026-10-01"]
 
 
-@pytest.mark.parametrize("message", ["등록된 내용이 없습니다.", "등록/검색된 정보가 없습니다."])
+@pytest.mark.parametrize("message", [
+    "등록된 내용이 없습니다.", "등록/검색된 정보가 없습니다.", "고시공고 결과가 없습니다.",
+])
 def test_public_empty_messages_do_not_hide_valid_links(message: str) -> None:
     case = HIBRAIN_CASES["seongnam_youth"]
     source = load_config(ROOT / case["config_path"]).sources[case["slug"]]
@@ -594,3 +606,169 @@ def test_public_empty_messages_do_not_hide_valid_links(message: str) -> None:
         detail_loader=Mock(return_value=case["detail_html"]),
     )
     assert [c.url for c in candidates] == [case["url"]]
+
+
+def test_october_30_channels_remain_public_without_replacing_dobong_notices() -> None:
+    seoul = load_config(ROOT / "config/batch-seoul-ten.example.toml")
+    assert {"dobong", "dobong_gosi"} <= set(seoul.enabled_sources)
+    config = load_config(ROOT / "config/batch-cafe-20261030.example.toml")
+    assert set(config.enabled_sources) == {"incheon_ccei", "anseong_industry"}
+    for source in [seoul.sources["dobong_gosi"], *config.sources.values()]:
+        assert source.fixture_path is None and not source.recruitment_only
+        assert source.request_strategy.verify_tls and source.request_strategy.session
+    assert config.sources["anseong_industry"].html_profile.id_format == "alphanumeric"
+
+
+def test_asbiz_registration_date_does_not_use_earlier_body_signature() -> None:
+    case = json.loads(
+        (ROOT / "tests/fixtures/cafe_20261030_profiles.json").read_text(encoding="utf-8"),
+    )["anseong_industry"]
+    config = load_config(ROOT / case["config_path"]).sources["anseong_industry"]
+    assert "2026년 10월 27일" in case["detail_html"]
+    notices = parse_profiled_html(
+        case["list_html"], list_url=config.list_url, profile=config.html_profile,
+        detail_loader=Mock(return_value=case["detail_html"]),
+    )
+    assert [(n.title, str(n.published_date), n.url) for n in notices] == [
+        (case["title"], "2026-10-28", case["url"]),
+    ]
+
+
+def test_suwon_current_empty_search_has_a_valid_pager_outside_the_table() -> None:
+    config = load_config(
+        ROOT / "config/batch-daejeon-ulsan-sejong-gyeonggi-ten.example.toml",
+    ).sources["suwon"]
+    html = (
+        '<table class="p-table"><tbody></tbody></table>'
+        '<div class="p-empty">등록된 게시물이 없습니다.</div>'
+        '<div class="p-pagination"><strong class="p-page__link active">1</strong></div>'
+    )
+    assert parse_profiled_html(
+        html, list_url=config.list_url, profile=config.html_profile, expected_page=1,
+    ) == []
+    with pytest.raises(ValueError, match="page does not match"):
+        parse_profiled_html(
+            html, list_url=config.list_url, profile=config.html_profile, expected_page=2,
+        )
+
+
+def test_muan_public_portal_empty_search_does_not_accept_firewall_documents() -> None:
+    config = load_config(ROOT / "config/batch-jeonnam-counties-ten.example.toml").sources["muan"]
+    assert urlparse(config.list_url).hostname == "www.muan.go.kr"
+    assert parse_qs(urlparse(config.list_url).query)["search_type"] == ["title"]
+    html = (
+        '<table class="board_t1"><tbody><tr>'
+        '<td class="list_empty" colspan="5">검색내역이 없습니다.</td>'
+        '</tr></tbody></table>'
+    )
+    assert parse_profiled_html(
+        html, list_url=config.list_url, profile=config.html_profile,
+    ) == []
+    with pytest.raises(ValueError, match="listing container missing"):
+        parse_profiled_html(
+            "<h1>Web firewall security policies: blocked.</h1>",
+            list_url=config.list_url, profile=config.html_profile,
+        )
+
+
+def test_hibrain_route_additions_use_public_boards_without_pinned_notice_ids() -> None:
+    path = "config/batch-hibrain-recovery.example.toml"
+    settings = load_config(ROOT / path)
+    cases = json.loads(
+        (ROOT / "tests/fixtures/hibrain_routes_profiles.json").read_text(encoding="utf-8"),
+    )
+    additions = {slug: c for slug, c in cases.items() if c["config_path"] == path}
+    assert len(additions) == 14
+    assert set(settings.enabled_sources) == {
+        "andong_related", "kigas_notices", "kila_news", "railway_notices", *additions,
+    }
+    for slug in additions:
+        source = settings.sources[slug]
+        assert source.fixture_path is None and not source.recruitment_only
+        assert source.request_strategy.verify_tls and source.max_pages == 100
+        assert "hibrain.net" not in source.list_url
+        assert not {
+            "articleSeq", "list_no", "msg_seq", "wr_id", "boardNo", "bbsData",
+            "idx", "bbsSn", "board_seq", "not_ancmt_mgt_no",
+        } & parse_qs(urlparse(source.list_url).query).keys()
+    # 부산TP 목록은 만료일을 표시하므로 등록일의 대체값으로 사용하지 않는다.
+    profile = settings.sources["busan_tp_notice"].html_profile
+    assert profile is not None and not profile.date_selector
+    assert "작성일" in profile.detail_date_selector
+    for slug in ("gyeongbuk_rise", "gyeongnam_tourism"):
+        profile = settings.sources[slug].html_profile
+        assert profile is not None and profile.total_count_selector
+
+
+def test_rise_terminal_page_can_have_zero_pager_and_no_notice_container() -> None:
+    source = load_config(ROOT / "config/batch-hibrain-recovery.example.toml").sources[
+        "gyeongbuk_rise"
+    ]
+    html = (
+        '<div class="noticeBox"><div class="ntCont">'
+        '<div class="pageCount"><span class="allPost">6</span>'
+        '<span class="paging">0</span></div>'
+        '<div style="text-align: center;"><p>게시글이 없습니다.</p></div>'
+        '</div></div>'
+    )
+    assert parse_profiled_html(
+        html, list_url=source.list_url, profile=source.html_profile, expected_page=2,
+    ) == []
+
+
+def test_muan_current_empty_listing_does_not_synthesize_an_archived_notice() -> None:
+    source = load_config(ROOT / "config/batch-jeonnam-counties-ten.example.toml").sources[
+        "muan"
+    ]
+    detail = Mock()
+    html = (
+        '<table class="board_t1"><tbody><tr>'
+        '<td class="list_empty" colspan="5">검색내역이 없습니다.</td>'
+        '</tr></tbody></table>'
+    )
+    assert parse_profiled_html(
+        html, list_url=source.list_url, profile=source.html_profile, detail_loader=detail,
+    ) == []
+    detail.assert_not_called()
+
+
+def test_added_repost_boards_preserve_original_channels_and_search_contracts() -> None:
+    settings = load_config(ROOT / "config/batch-hibrain-recovery.example.toml")
+    assert {"dtmsa_bid", "esk_recruit"} <= set(settings.enabled_sources)
+    profile = settings.sources["dtmsa_bid"].html_profile
+    assert profile is not None and profile.request_method == "POST"
+    assert profile.search_param == "searchword"
+    assert parse_qs(urlparse(settings.sources["dtmsa_bid"].list_url).query) == {
+        "searchKey": ["ARTICLE_TITLE"],
+    }
+    assert settings.sources["esk_recruit"].municipality == "대한인간공학회"
+    for config_path, slug in (
+        ("config/batch-cafe-20261028.example.toml", "daegu_market"),
+        ("config/batch-cafe-20261029.example.toml", "daegu_market_announcement"),
+    ):
+        original = load_config(ROOT / config_path)
+        assert slug in original.enabled_sources
+    assert "kigas_notices" in settings.enabled_sources
+
+
+def test_esk_blank_terminal_cell_cannot_hide_a_real_notice_link() -> None:
+    cases = json.loads(
+        (ROOT / "tests/fixtures/hibrain_routes_profiles.json").read_text(encoding="utf-8"),
+    )
+    case = cases["esk_recruit"]
+    source = load_config(ROOT / case["config_path"]).sources["esk_recruit"]
+    assert parse_profiled_html(
+        case["empty_html"], list_url=source.list_url, profile=source.html_profile,
+        expected_page=2,
+    ) == []
+    html = BeautifulSoup(case["empty_html"], "html5lib")
+    cell = html.select_one("td.empty_table")
+    assert cell is not None
+    cell.append(BeautifulSoup(
+        '<a href="/recruit/999">평가위원 모집</a>', "html5lib",
+    ).a)
+    # A linked row with broken metadata must fail rather than become an empty result.
+    with pytest.raises(ValueError, match="notice link missing"):
+        parse_profiled_html(
+            str(html), list_url=source.list_url, profile=source.html_profile, expected_page=2,
+        )

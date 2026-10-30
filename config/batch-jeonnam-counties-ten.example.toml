@@ -277,11 +277,12 @@ detail_url_template = "/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=
 search_param = "not_ancmt_sj"
 page_param = "pageIndex"
 
+# Use the official public portal; the legacy Saeol host returns a firewall page.
 [sources.muan]
 municipality = "무안군"
 source_type = "html"
-engine_type = "eminwon_ofr"
-list_url = "https://eminwon.muan.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?not_ancmt_se_code=01,04,05&jndinm=OfrNotAncmtEJB&context=NTIS&method=selectListOfrNotAncmt&methodnm=selectListOfrNotAncmtHomepage&ofr_pageSize=10&homepage_pbs_yn=Y&subCheck=Y&list_gubun=A"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.muan.go.kr/www/openmuan/new/announcement?search_type=title"
 recruitment_only = true
 max_pages = 40
 [sources.muan.request_strategy]
@@ -290,14 +291,13 @@ referer = true
 timeout_seconds = 75.0
 throttle_seconds = 1.0
 [sources.muan.html_profile]
-container_selector = "table[width='98%'][cellspacing='1']"
-row_selector = "tbody > tr:has(> td[onclick])"
-link_selector = "td:nth-of-type(3)[onclick]"
-link_attribute = "onclick"
-date_selector = "td:nth-of-type(5)"
-detail_title_selector = "td:-soup-contains-own('제목') + td"
-detail_date_selector = "td:-soup-contains-own('등록일') + td"
-id_pattern = "searchDetail[(]'([1-9][0-9]*)'"
-detail_url_template = "/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&subCheck=Y&not_ancmt_mgt_no={id}"
-search_param = "not_ancmt_sj"
-page_param = "pageIndex"
+container_selector = "table.board_t1"
+row_selector = "tbody > tr"
+link_selector = "td.title > a"
+date_selector = "td:nth-of-type(4)"
+detail_title_selector = ".news_tit > h3"
+detail_date_selector = ".news_tit dt:-soup-contains-own('작성일') + dd"
+id_pattern = '[?&]idx=([1-9][0-9]*)(?:&|$)'
+detail_url_template = "/www/openmuan/new/announcement?idx={id}&mode=view"
+search_param = "search_word"
+page_param = "page"

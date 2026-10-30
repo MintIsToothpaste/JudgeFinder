@@ -2,7 +2,7 @@
 # Society reposts retain their publisher and their own publication date.
 timezone = "Asia/Seoul"
 db_path = "data/hibrain-recovery.db"
-enabled_sources = ["andong_related", "kigas_notices", "kila_news", "railway_notices"]
+enabled_sources = ["andong_related", "kigas_notices", "kila_news", "railway_notices", "gangwon_design", "kict", "incheon_tourism", "jeongseon_market", "jeonnam_tp", "gyeongnam_tourism", "gyeongbuk_rise", "gangwon_education", "busan_tourism", "yeongam_notice", "busan_tp_notice", "gangnam_gosi", "dtmsa_bid", "esk_recruit"]
 
 [sources.andong_related]
 municipality = "안동시"
@@ -117,3 +117,382 @@ page_param = "gotoPage"
 search_param = "search_name"
 request_encoding = "euc-kr"
 page_number_selector = ".centents td[colspan='4'] > div > b"
+
+# Official boards discovered from the 65 older Hibrain candidates.
+[sources.gangwon_design]
+municipality = "강원디자인진흥원"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.gidp.kr/gidp/notice/notification?searchCondition=TITLE"
+recruitment_only = false
+max_pages = 100
+[sources.gangwon_design.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.gangwon_design.html_profile]
+container_selector = "table.skinTb-data-resList"
+row_selector = "tbody > tr"
+link_selector = "td.skinTb-sbj a"
+date_selector = "td.skinTb-date"
+detail_title_selector = ".skinTb-sbj"
+detail_date_selector = ".skinTb-tr .skinTb-date"
+id_pattern = "articleSeq=([1-9][0-9]*)"
+detail_url_template = "/gidp/notice/notification?articleSeq={id}"
+search_param = "searchKeyword"
+page_param = "pageIndex"
+page_number_selector = ".pager a.active"
+request_method = "POST"
+
+[sources.kict]
+municipality = "한국건설기술연구원"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.kict.re.kr/board.es?mid=a10501010000&bid=ntfct&act=list&keyField=TITLE"
+recruitment_only = false
+max_pages = 100
+[sources.kict.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.kict.html_profile]
+container_selector = "#listView"
+row_selector = ":scope > ul"
+link_selector = "li.title a"
+date_selector = "li[aria-title=\"작성일자\"]"
+detail_title_selector = ".tstyle_view > .title"
+detail_date_selector = ".tstyle_view .head li.date > span"
+id_pattern = "list_no=([1-9][0-9]*)"
+detail_url_template = "/board.es?mid=a10501010000&bid=ntfct&act=view&list_no={id}"
+search_param = "keyWord"
+page_param = "nPage"
+page_number_selector = ".page_info .current_page > strong"
+request_method = "POST"
+
+[sources.incheon_tourism]
+municipality = "인천관광공사"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.ito.or.kr/main/bbs/bbsMsgList.do?bcd=notice&keyfield=title"
+recruitment_only = false
+max_pages = 100
+[sources.incheon_tourism.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.incheon_tourism.html_profile]
+container_selector = "ul.generalList"
+row_selector = ":scope > li"
+link_selector = "p.title > a"
+date_selector = "li[title=\"작성일\"]"
+detail_title_selector = ".board_view .title > p"
+detail_date_selector = "dt:-soup-contains-own(\"작성일\") + dd"
+id_pattern = "msg_seq=([1-9][0-9]*)"
+detail_url_template = "/main/bbs/bbsMsgDetail.do?bcd=notice&msg_seq={id}"
+search_param = "keyword"
+page_param = "pgno"
+page_number_selector = ".paging.dp_pc a.select"
+
+[sources.jeongseon_market]
+municipality = "정선군상권활성화재단"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "http://www.jmrf.or.kr/bbs/board.php?bo_table=notice&sfl=wr_subject"
+recruitment_only = false
+max_pages = 100
+[sources.jeongseon_market.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.jeongseon_market.html_profile]
+container_selector = "#bo_list"
+row_selector = "tbody > tr"
+link_selector = "td.td_subject a.title"
+date_selector = "td.td_datetime"
+detail_title_selector = "#bo_v_title"
+detail_date_selector = "#bo_v_info p.date"
+id_pattern = "wr_id=([1-9][0-9]*)"
+detail_url_template = "/bbs/board.php?bo_table=notice&wr_id={id}"
+search_param = "stx"
+page_param = "page"
+
+[sources.jeonnam_tp]
+municipality = "전남테크노파크"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.jntp.or.kr/base/board/list?boardManagementNo=16&menuLevel=2&menuNo=60&searchType=title"
+recruitment_only = false
+max_pages = 100
+[sources.jeonnam_tp.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.jeonnam_tp.html_profile]
+container_selector = "table.table-board"
+row_selector = "tbody > tr"
+link_selector = "td.tit a"
+date_selector = "td.date"
+detail_title_selector = ".board_view_top > strong.tit"
+detail_date_selector = ".board_view_top .info .each:-soup-contains-own(\"작성일\")"
+id_pattern = "boardNo=([1-9][0-9]*)"
+detail_url_template = "/base/board/read?boardManagementNo=16&boardNo={id}&menuLevel=2&menuNo=60"
+search_param = "searchWord"
+page_param = "page"
+page_number_selector = ".pagination-custom .is-active a"
+
+[sources.gyeongnam_tourism]
+municipality = "경남관광재단"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://gnto.or.kr/sub04/sub01_01.php?code=040101&search=title"
+recruitment_only = false
+max_pages = 100
+[sources.gyeongnam_tourism.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.gyeongnam_tourism.html_profile]
+# Preserve the site-provided encoded ID and strip search/pagination parameters.
+container_selector = "ul.board_ul"
+row_selector = ":scope > li:not(.title_li)"
+link_selector = "h5 a"
+title_selector = "h5 .title"
+date_selector = ".boardInfo .date"
+detail_title_selector = "h4.tit"
+detail_date_selector = ".info .each:-soup-contains-own(\"작성일\")"
+detail_query_exclude = "page,search,searchstring,gubunx,m2"
+search_param = "searchstring"
+page_param = "page"
+page_number_selector = ".pageList a.on"
+total_count_selector = "p.list_info > b"
+total_count_pattern = "([0-9,]+)"
+
+[sources.gyeongbuk_rise]
+municipality = "경상북도RISE센터"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.gbanchor.or.kr/notice?searchType=title"
+recruitment_only = false
+max_pages = 100
+[sources.gyeongbuk_rise.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.gyeongbuk_rise.html_profile]
+container_selector = ".noticeBox .ntCont"
+row_selector = ".notice > ul > li, :scope > div[style] > p"
+link_selector = ""
+link_attribute = "onclick"
+title_selector = ".ntTit .tit"
+title_exclude_selector = ".nPoint"
+date_selector = ".ntTit .day"
+detail_title_selector = ".viewPage .titWrap h1"
+detail_date_selector = ".txtTit li:-soup-contains(\"등록일\")"
+id_pattern = "idx=([1-9][0-9]*)"
+detail_url_template = "/notice/view?idx={id}"
+search_param = "keyword"
+page_param = "page"
+page_number_selector = ".pagination .pg_current"
+total_count_selector = ".pageCount .allPost"
+total_count_pattern = "([0-9,]+)"
+
+[sources.gangwon_education]
+municipality = "강원특별자치도교육청"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.gwe.go.kr/main/bbs/list.do?key=m2307210573615&sc=BBS_SJ"
+recruitment_only = false
+max_pages = 100
+[sources.gangwon_education.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.gangwon_education.html_profile]
+container_selector = "table.board_table"
+row_selector = "tbody > tr"
+link_selector = "a[onclick^=\"goView\"]"
+link_attribute = "onclick"
+date_selector = "td:nth-of-type(5)"
+detail_title_selector = ".bo_head em.title"
+detail_date_selector = ".bo_head dt:-soup-contains-own(\"작성일\") + dd"
+id_pattern = "goView\\('([1-9][0-9]*)'"
+detail_url_template = "/main/bbs/view.do?key=m2307210573615&bbsSn={id}"
+search_param = "sw"
+page_param = "pageIndex"
+page_number_selector = ".pagination a.on"
+request_method = "POST"
+
+[sources.busan_tourism]
+municipality = "부산관광공사"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://bto.or.kr/kor/CMS/Board/Board.do?mCode=MN090&mgr_seq=65&mode=list&searchID=sch001"
+recruitment_only = false
+max_pages = 100
+[sources.busan_tourism.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.busan_tourism.html_profile]
+container_selector = "table.board-list-table"
+row_selector = "tbody > tr"
+link_selector = "td.subject a"
+date_selector = "td.date"
+detail_title_selector = "h4.vtitle"
+detail_date_selector = ".vtitle-winfo span.txt:-soup-contains-own(\"-\")"
+id_pattern = "board_seq=([1-9][0-9]*)"
+detail_url_template = "/kor/CMS/Board/Board.do?mCode=MN090&mgr_seq=65&mode=view&board_seq={id}"
+search_param = "searchKeyword"
+page_param = "page"
+page_number_selector = ".pagelist strong > span"
+request_method = "POST"
+
+[sources.yeongam_notice]
+municipality = "영암군"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.yeongam.go.kr/home/www/open_information/yeongam_news/notice?search=search_title"
+recruitment_only = false
+max_pages = 100
+[sources.yeongam_notice.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.yeongam_notice.html_profile]
+container_selector = "table.list_table"
+row_selector = "tbody > tr"
+link_selector = "td.list_title a"
+date_selector = "td.list_reg_date"
+detail_title_selector = ".show_info > h3"
+detail_date_selector = ".show_info .reg_info"
+id_format = "alphanumeric"
+id_pattern = "/notice/show/([A-Za-z0-9]+)"
+detail_url_template = "/home/www/open_information/yeongam_news/notice/show/{id}"
+search_param = "keyword"
+page_param = "page"
+
+[sources.busan_tp_notice]
+municipality = "부산테크노파크"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.btp.or.kr/kor/CMS/Board/Board.do?mCode=MN018&mgr_seq=35&mode=list"
+recruitment_only = false
+max_pages = 100
+[sources.busan_tp_notice.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.busan_tp_notice.html_profile]
+# The list date is the expiry date; use the detail registration date only.
+container_selector = "table.bdListTbl"
+row_selector = "tbody > tr"
+link_selector = "td.subject a"
+detail_title_selector = "h3.view-tit"
+detail_date_selector = ".viewTitWinfo li.date:has(> .tit:-soup-contains-own(\"작성일\"))"
+id_pattern = "board_seq=([1-9][0-9]*)"
+detail_url_template = "/kor/CMS/Board/Board.do?mCode=MN018&mgr_seq=35&mode=view&board_seq={id}"
+search_param = "searchKeyword"
+page_param = "page"
+page_number_selector = ".pagelist strong > span"
+request_method = "POST"
+
+[sources.gangnam_gosi]
+municipality = "강남구"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.gangnam.go.kr/notice/list.do?mid=ID05_040201&keyfield=BNI_MAIN_TITLE"
+recruitment_only = false
+max_pages = 100
+[sources.gangnam_gosi.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.gangnam_gosi.html_profile]
+# Full titles and registration dates are available in the public list.
+container_selector = "table.table-hover"
+row_selector = "tbody > tr"
+link_selector = "td.align-l a"
+date_selector = "td:nth-of-type(5)"
+id_pattern = "not_ancmt_mgt_no=([1-9][0-9]*)"
+detail_url_template = "/notice/view.do?mid=ID05_040201&not_ancmt_mgt_no={id}"
+search_param = "keyword"
+page_param = "pgno"
+page_number_selector = ".pagination a.on"
+
+# Additional public repost boards found while reviewing unresolved Hibrain notices.
+[sources.dtmsa_bid]
+municipality = "대구전통시장진흥재단"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.dtmsa.or.kr/board/bid?searchKey=ARTICLE_TITLE"
+recruitment_only = false
+max_pages = 100
+[sources.dtmsa_bid.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.dtmsa_bid.html_profile]
+request_method = "POST"
+container_selector = ".boardList ul.articleList"
+row_selector = ":scope > li"
+link_selector = "a"
+title_selector = "a > div.title"
+date_selector = "a > div.rdate"
+detail_title_selector = "table thead tr:first-child th"
+detail_date_selector = "table thead tr:nth-of-type(2) span:has(> em:-soup-contains-own('작성일'))"
+id_pattern = "/bid/([1-9][0-9]*)"
+detail_url_template = "/board/bid/{id}"
+search_param = "searchword"
+page_param = "page"
+
+[sources.esk_recruit]
+municipality = "대한인간공학회"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://esk.or.kr/recruit?bo_table=recruit&sfl=wr_subject&sop=and"
+recruitment_only = false
+max_pages = 100
+[sources.esk_recruit.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.esk_recruit.html_profile]
+container_selector = "#bo_list table"
+# A terminal page has a blank empty_table cell. Never discard it if it contains a link.
+row_selector = "tbody > tr:not(:has(> td.empty_table:only-child:not(:has(a[href]))))"
+link_selector = "td.td_subject a"
+date_selector = "td.td_wr_date"
+detail_title_selector = "#bo_v_title"
+detail_date_selector = "#bo_v_info .w30"
+id_pattern = "/recruit/([1-9][0-9]*)"
+detail_url_template = "/recruit/{id}"
+search_param = "stx"
+page_param = "page"

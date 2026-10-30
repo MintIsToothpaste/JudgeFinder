@@ -17,7 +17,8 @@ from judgefinder.domain.source_profiles import HtmlProfile
 
 EMPTY_TEXT = re.compile(
     r"(?:게시물|게시글|자료|데이터|데이타|검색\s*결과|등록된\s*글).*(?:없|존재하지\s*않)"
-    r"|^\s*(?:결과가|등록된\s*(?:소식이|내용이)|등록/검색된\s*정보가|입력된\s*글이|검색내역이)\s*없습니다[.!]?\s*$",
+    r"|^\s*(?:(?:고시공고\s*)?결과가|등록된\s*(?:소식이|내용이)"
+    r"|등록/검색된\s*정보가|입력된\s*글이|검색내역이)\s*없습니다[.!]?\s*$",
 )
 
 
@@ -126,6 +127,7 @@ def parse_profiled_html(
             identifier_pattern = (
                 r"[a-fA-F0-9]{32}" if profile.id_format == "hex32"
                 else r"0*[1-9][0-9]*" if profile.id_format == "zero_padded_numeric"
+                else r"[A-Za-z0-9]{1,64}" if profile.id_format == "alphanumeric"
                 else r"[1-9][0-9]*"
             )
             if match is None or re.fullmatch(identifier_pattern, match.group(1)) is None:

@@ -254,4 +254,4 @@ id_pattern = 'notAncmtMgtNo=([1-9][0-9]*)'
 detail_url_template = "/web/saeallOfr/BD_ofrView.do?notAncmtMgtNo={id}"
 search_param = "q_searchVal"
 page_param = "q_currPage"
-page_number_selector = "#dataForm em.em_b_black"
+page_number_selector = "#dataForm em.em_b_black, .p-pagination strong.p-page__link.active"

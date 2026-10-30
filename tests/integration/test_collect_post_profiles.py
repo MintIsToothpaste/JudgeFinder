@@ -468,6 +468,10 @@ def test_ten_sources_cli_dates_detail_enrichment_and_sqlite_dedup(
         (ROOT / "tests/fixtures/hibrain_profiles.json").read_text(encoding="utf-8"),
     )
     cases["nowon_gosi"] = hibrain["nowon_gosi"]
+    october_30 = json.loads(
+        (ROOT / "tests/fixtures/cafe_20261030_profiles.json").read_text(encoding="utf-8"),
+    )
+    cases["dobong_gosi"] = october_30["dobong_gosi"]
     example = ROOT / "config/batch-seoul-ten.example.toml"
     settings = load_config(example)
     db = tmp_path / "notices.db"
@@ -567,7 +571,7 @@ def test_ten_sources_cli_dates_detail_enrichment_and_sqlite_dedup(
     outputs = []
     with caplog.at_level(logging.WARNING):
         for _ in range(2):
-            result = runner.invoke(app, [*base, "collect", "--date", "2026-10-27", "--days", "400"])
+            result = runner.invoke(app, [*base, "collect", "--date", "2026-10-30", "--days", "400"])
             assert result.exit_code == 0, result.output
             outputs.append(result.stdout)
     assert "Skipping source" not in caplog.text
@@ -591,7 +595,7 @@ def test_ten_sources_cli_dates_detail_enrichment_and_sqlite_dedup(
             2 if cases[slug]["detail_html"] else 0
         )
     before = len(calls)
-    result = runner.invoke(app, [*base, "list", "--date", "2026-10-27", "--days", "400"])
+    result = runner.invoke(app, [*base, "list", "--date", "2026-10-30", "--days", "400"])
     assert result.exit_code == 0
     assert result.stdout == outputs[0]
     assert len(calls) == before

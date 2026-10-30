@@ -1,7 +1,7 @@
 # Isolated live validation; production config/config.toml is unchanged.
 timezone = "Asia/Seoul"
 db_path = "data/live-tests/seoul-ten-2026-09-27/notices.db"
-enabled_sources = ["gwangjin", "dongdaemun", "jungnang", "gangbuk", "dobong", "nowon", "eunpyeong", "seodaemun", "mapo", "yangcheon", "yangcheon_gosi", "gangbuk_gosi", "seodaemun_gosi", "mapo_gosi", "nowon_gosi"]
+enabled_sources = ["gwangjin", "dongdaemun", "jungnang", "gangbuk", "dobong", "nowon", "eunpyeong", "seodaemun", "mapo", "yangcheon", "yangcheon_gosi", "gangbuk_gosi", "seodaemun_gosi", "mapo_gosi", "nowon_gosi", "dobong_gosi"]
 
 [sources.gwangjin]
 municipality = "광진구"
@@ -320,3 +320,30 @@ detail_title_selector = "h1.article-subject"
 detail_date_selector = "th:-soup-contains-own('등록일') + td"
 search_param = "q_searchVal"
 page_param = "q_currPage"
+
+# The portal's announcement mirror omits some live Saeol notices.
+[sources.dobong_gosi]
+municipality = "도봉구"
+source_type = "html"
+engine_type = "eminwon_ofr"
+list_url = "https://dobong.eminwon.seoul.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&method=selectListOfrNotAncmt&methodnm=selectListOfrNotAncmtHomepage&subCheck=Y&ofr_pageSize=10"
+recruitment_only = false
+max_pages = 80
+[sources.dobong_gosi.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 30.0
+throttle_seconds = 0.3
+[sources.dobong_gosi.html_profile]
+container_selector = "table[summary][cellspacing='1']"
+row_selector = "tbody > tr:has(> td:nth-of-type(3) a[onclick])"
+link_selector = "td:nth-of-type(3) a[onclick]"
+link_attribute = "onclick"
+date_selector = "td:nth-of-type(5)"
+detail_title_selector = "th:-soup-contains-own('제목') + td"
+detail_date_selector = "th:-soup-contains-own('등록일') + td"
+id_pattern = "searchDetail[(]'([1-9][0-9]*)'"
+detail_url_template = "/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&subCheck=Y&not_ancmt_mgt_no={id}"
+search_param = "not_ancmt_sj"
+page_param = "pageIndex"

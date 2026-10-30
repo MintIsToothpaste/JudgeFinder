@@ -85,9 +85,9 @@
   "muan": {
     "title": "제안서 평가위원(후보자) 공개 모집 공고",
     "date": "2026-09-22",
-    "url": "https://eminwon.muan.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&subCheck=Y&not_ancmt_mgt_no=34869",
+    "url": "https://www.muan.go.kr/www/openmuan/new/announcement?idx=34869&mode=view",
     "category": "recruitment",
-    "list_html": "<table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"1\" width=\"98%\"><tbody><tr align=\"center\" bgcolor=\"BAE6E7\" height=\"23\">\n\t\t\t<td width=\"40\">번호</td>\n\t\t\t<td>고시공고번호</td>\n\t\t\t<td width=\"300\">제목</td>\n\t\t\t<td width=\"80\">담당부서</td>\n\t\t\t<td width=\"80\">등록일</td>\n\t\t</tr><tr> \n   <td align=\"center\" height=\"22\" onclick=\"javaScript:searchDetail('34869')\" style=\"cursor:hand;\" width=\"40\"></td>\n\t<td align=\"left\" onclick=\"javaScript:searchDetail('34869')\" style=\"cursor:hand;\"></td>\n    <td align=\"left\" onclick=\"javaScript:searchDetail('34869')\" style=\"cursor:hand;\"><p align=\"left\">제안서 평가위원(후보자) 공개 모집 공고</p></td>\n    <td align=\"center\" onclick=\"javaScript:searchDetail('34869')\" style=\"cursor:hand;\"></td>\n    <td align=\"center\" onclick=\"javaScript:searchDetail('34869')\" style=\"cursor:hand;\">2026-09-22</td>\n  </tr></tbody></table>",
-    "detail_html": "<html> <body leftmargin=\"0\" topmargin=\"0\"> <form method=\"post\" name=\"form\"> <table bgcolor=\"ffffff\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" height=\"390\" width=\"639\"> <tbody><tr> <td align=\"center\" valign=\"top\"> <table border=\"0\" cellpadding=\"0\" cellspacing=\"1\" width=\"98%\"> <tbody> <tr> <td align=\"center\" bgcolor=\"BAE6E7\" height=\"22\">등록일</td> <td bgcolor=\"#F5FAF5\">2026-09-22</td> </tr> <tr> <td align=\"center\" bgcolor=\"BAE6E7\" height=\"22\" width=\"90\">제목</td> <td bgcolor=\"#F5FAF5\" width=\"330\">제안서 평가위원(후보자) 공개 모집 공고</td> </tr> </tbody></table> </td> </tr> </tbody></table> </form> </body></html>"
+    "list_html": "<table class=\"board_t1 t_w_fixed\"><tbody><tr><td>1</td><td class=\"title\"><a href=\"/www/openmuan/new/announcement?idx=34869&amp;mode=view\">제안서 평가위원(후보자) 공개 모집 공고</a></td><td>지역개발과</td><td>2026-09-22</td><td>1</td></tr></tbody></table>",
+    "detail_html": "<div class=\"news_tit\"><h3>제안서 평가위원(후보자) 공개 모집 공고</h3><dl><dt>작성일</dt><dd>2026.09.22</dd></dl></div>"
   }
 }

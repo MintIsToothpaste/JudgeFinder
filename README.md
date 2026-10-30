@@ -329,3 +329,44 @@ judgefinder --config-path config/batch-hibrain.example.toml list --date today --
 노원구 고시공고는 기존 서울 배치에, 안산 게시일 수정은 기존 경기 배치에 반영되어 있습니다.
 검수 결과와 성남 재단·안전보건공단 등의 남은 제약은
 [하이브레인 경로 검증 기록](docs/hibrain-month-20261029.md)에 정리했습니다.
+
+## 10월 30일 카페 대조 누락 보완
+
+`config/batch-cafe-20261030.example.toml`은 인천창조경제혁신센터의 공개 JSON 공지사항과
+안성산업진흥원의 공식 공지사항을 추가합니다. 두 소스는 `recruitment_only = false`로 넓게 수집합니다.
+안성산업진흥원은 버튼의 영문·숫자 ID로 원문 URL을 만들고, 본문 서명일이 아닌 등록일을 사용합니다.
+도봉구는 기존 서울 배치에 `dobong_gosi`를 추가해 공지사항과 별도 새올 고시공고를 함께 조회합니다.
+도봉구 홈페이지의 고시공고 미러에도 일부 모집 공고가 빠져 있어 공식 새올 원문 목록을 사용합니다.
+
+```bash
+judgefinder --config-path config/batch-cafe-20261030.example.toml collect --date today --days 7
+judgefinder --config-path config/batch-cafe-20261030.example.toml list --date today --days 7
+judgefinder --config-path config/batch-seoul-ten.example.toml collect --date today --days 7
+```
+
+신규 기관 배치의 기본 DB는 `data/cafe-20261030.db`입니다. 개인 운영 설정으로 합칠 때는
+소스 설정과 `enabled_sources`를 모두 추가해야 합니다. 카페 게시일과 원기관 게시일이 달라
+최근 7일을 함께 수집하고 DB 중복 제거를 적용합니다.
+
+기존 배치의 수원시는 변경된 현재 페이지 표시를 인식하며, 무안군은 차단 응답을 반환하는
+이전 새올 호스트 대신 공식 홈페이지 고시공고를 조회합니다. 빈 검색 결과와 차단 문서는
+구분하며 TLS 검증은 유지합니다.
+
+## 과거 하이브레인 후보에서 확보한 공식 게시판
+
+[하이브레인 보완 배치](config/batch-hibrain-recovery.example.toml)에 공식 게시판 14개를 추가했습니다.
+기존 보완 경로 4개를 유지해 총 18개를 활성화하며 신규 14개는 recruitment_only = false로 넓게 수집합니다.
+하이브레인은 경로 발견에만 사용하고 실제 수집은 원기관과 학회·재단의 공식 재게시 게시판에서 진행합니다.
+
+~~~bash
+judgefinder --config-path config/batch-hibrain-recovery.example.toml collect --date today --days 7
+judgefinder --config-path config/batch-hibrain-recovery.example.toml list --date today --days 7
+~~~
+
+개인 운영 설정에는 소스 설정과 enabled_sources를 함께 반영해야 합니다.
+부산TP는 만료일 대신 상세 작성일을 사용하고 영암군은 상세의 전체 제목을 읽습니다.
+기존 5개 경로의 현재 목록 미노출과 수집 오류를 구분한 결과는
+[경로 추가·실수집 검증 기록](docs/hibrain-routes65-20261030.md)에 정리했습니다.
+
+대구전통시장진흥재단 사업공고(dtmsa_bid)와 대한인간공학회 채용·공고(esk_recruit)도 포함합니다.
+재게시 공고는 해당 재단·학회의 기관명, 게시일, URL을 보존하므로 같은 사업이 다른 경로에도 존재할 수 있습니다.

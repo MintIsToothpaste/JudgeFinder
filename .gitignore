@@ -84,6 +84,7 @@ config/*.toml
 !config/batch-cafe-20261023.example.toml
 !config/batch-cafe-20261028.example.toml
 !config/batch-cafe-20261029.example.toml
+!config/batch-cafe-20261030.example.toml
 !config/batch-hibrain.example.toml
 !config/batch-hibrain-recovery.example.toml
 

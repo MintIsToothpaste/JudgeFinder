@@ -724,7 +724,7 @@ def test_missing_listing_is_not_a_successful_zero_result(slug: str) -> None:
         )
 
 
-@pytest.mark.parametrize("slug", ["gokseong", "goheung", "yeongam", "muan"])
+@pytest.mark.parametrize("slug", ["gokseong", "goheung", "yeongam"])
 def test_legacy_td_links_and_td_headers_need_no_anchor_or_javascript(slug: str) -> None:
     batch = PROFILE_BATCHES["jeonnam_counties_ten"]
     profile = batch.settings.sources[slug].html_profile
@@ -737,7 +737,7 @@ def test_legacy_td_links_and_td_headers_need_no_anchor_or_javascript(slug: str) 
     assert header is not None and "등록일" in header.get_text() and "제목" in header.get_text()
 
 
-@pytest.mark.parametrize("slug", ["gokseong", "goheung", "yeongam", "muan"])
+@pytest.mark.parametrize("slug", ["gokseong", "goheung", "yeongam"])
 def test_non_numeric_legacy_identifier_cannot_be_executed(slug: str) -> None:
     batch = PROFILE_BATCHES["jeonnam_counties_ten"]
     source = batch.settings.sources[slug]

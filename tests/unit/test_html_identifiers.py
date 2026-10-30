@@ -287,3 +287,35 @@ def test_zero_padding_is_opt_in_and_keeps_origin_validation() -> None:
             replace(HEX_PROFILE, id_format="zero_padded_numeric",
                     detail_url_template="https://other.org/?no={id}"),
         )
+
+
+def test_alphanumeric_data_identifier_preserves_case_and_canonical_url() -> None:
+    profile = replace(
+        DATA_PROFILE, id_format="alphanumeric", id_pattern=r"^(.+)$",
+    )
+    identifier = "B000000000627Pn8wA8"
+    html = DATA_LISTING.replace('data-key-no="123"', f'data-key-no="{identifier}"')
+    notice = parse_profiled_html(
+        html, list_url="https://example.org/list", profile=profile,
+    )[0]
+    assert notice.url == f"https://example.org/view?id={identifier}"
+    with pytest.raises(ValueError, match="configured host"):
+        parse_profiled_html(
+            html, list_url="https://example.org/list",
+            profile=replace(profile, detail_url_template="https://evil.example/?id={id}"),
+        )
+
+
+@pytest.mark.parametrize(
+    "identifier",
+    ["a" * 65, "abc_def", "１２３", "../123", "a%26b", "123;alert(1)", "https://evil/123"],
+)
+def test_alphanumeric_identifier_rejects_non_ascii_and_url_syntax(identifier: str) -> None:
+    profile = replace(DATA_PROFILE, id_format="alphanumeric", id_pattern=r"^(.+)$")
+    with pytest.raises(ValueError, match="identifier"):
+        parse_profiled_html(
+            DATA_LISTING.replace('data-key-no="123"', f'data-key-no="{identifier}"'),
+            list_url="https://example.org/list", profile=profile,
+        )
+    with pytest.raises(ValueError, match="identifier pattern"):
+        replace(profile, id_pattern="", detail_url_template="")
