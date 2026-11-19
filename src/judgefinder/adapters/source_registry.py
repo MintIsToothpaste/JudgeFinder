@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+from urllib.parse import urlparse
 from zoneinfo import ZoneInfo
 
 from judgefinder.adapters.config import AppConfig, SourceConfig
 from judgefinder.adapters.sources.generic_engine.mapo_search import MapoSearchSource
 from judgefinder.adapters.sources.generic_engine.openworks_board import OpenworksBoardSource
 from judgefinder.adapters.sources.generic_engine.source import GenericEngineSource
+from judgefinder.adapters.sources.generic_engine.wonkwang_contract import WonkwangContractSource
 from judgefinder.adapters.sources.municipal_rss.source import MunicipalRssSource
 from judgefinder.adapters.sources.noop.source import NoopSource
 from judgefinder.adapters.sources.pocheon_eminwon.source import PocheonEminwonSource
@@ -14,6 +16,7 @@ from judgefinder.adapters.sources.seongbuk.source import SeongbukSource
 from judgefinder.domain.ports import NoticeSource
 from judgefinder.domain.source_profiles import AccessProfile, EngineType, FallbackStrategy
 from judgefinder.infrastructure.http.client import HttpClient
+from judgefinder.infrastructure.http.windows_curl import WindowsCurlHttpClient
 
 MUNICIPAL_RSS_SLUGS: set[str] = {
     "cheorwon",
@@ -45,6 +48,7 @@ class SourceRegistry:
         self._config = config
         self._http_client = http_client
         self._timezone = timezone
+        self._transport_clients: dict[str, HttpClient] = {}
 
     def build_enabled_sources(self) -> list[NoticeSource]:
         sources: list[NoticeSource] = []
@@ -75,7 +79,7 @@ class SourceRegistry:
                         list_url=source_config.list_url,
                         fixture_path=source_config.fixture_path,
                         timezone=self._timezone,
-                        http_client=self._http_client,
+                        http_client=self._source_http_client(source_config),
                     )
                 )
                 continue
@@ -113,6 +117,15 @@ class SourceRegistry:
 
         return sources
 
+    def _source_http_client(self, source_config: SourceConfig) -> HttpClient:
+        if source_config.request_strategy.transport == "requests":
+            return self._http_client
+        if urlparse(source_config.list_url).scheme != "https":
+            raise ValueError("windows_curl transport requires an HTTPS source URL")
+        if source_config.slug not in self._transport_clients:
+            self._transport_clients[source_config.slug] = WindowsCurlHttpClient()
+        return self._transport_clients[source_config.slug]
+
     def list_enabled_source_slugs(self) -> list[str]:
         return list(self._config.enabled_sources)
 
@@ -125,7 +138,7 @@ class SourceRegistry:
             list_url=source_config.list_url,
             fixture_path=source_config.fixture_path,
             timezone=self._timezone,
-            http_client=self._http_client,
+            http_client=self._source_http_client(source_config),
             timeout_seconds=strategy.timeout_seconds,
             max_retries=strategy.retries,
             use_session=strategy.session,
@@ -142,7 +155,7 @@ class SourceRegistry:
             list_url=source_config.list_url,
             fixture_path=source_config.fixture_path,
             timezone=self._timezone,
-            http_client=self._http_client,
+            http_client=self._source_http_client(source_config),
             timeout_seconds=strategy.timeout_seconds,
             max_retries=strategy.retries,
             use_session=strategy.session,
@@ -159,7 +172,7 @@ class SourceRegistry:
             list_url=source_config.list_url,
             fixture_path=source_config.fixture_path,
             timezone=self._timezone,
-            http_client=self._http_client,
+            http_client=self._source_http_client(source_config),
             timeout_seconds=strategy.timeout_seconds,
             max_retries=strategy.retries,
             use_session=strategy.session,
@@ -169,16 +182,16 @@ class SourceRegistry:
 
     def _build_generic_engine_source(self, source_config: SourceConfig) -> GenericEngineSource:
         strategy = source_config.request_strategy
-        source_class = (
-            MapoSearchSource
-            if source_config.engine_type is EngineType.JSON_LIST_API
-            and source_config.list_url == "https://www.mapo.go.kr/site/rest"
-            else OpenworksBoardSource
-            if source_config.list_url.split("?")[0] in {
-                "https://www.gne.go.kr/user/bbs/BD_selectBbsList.do",
-            }
-            else GenericEngineSource
-        )
+        source_class: type[GenericEngineSource] = GenericEngineSource
+        if source_config.list_url == "https://intra.wku.ac.kr/services/contract/cntrc.jsp":
+            source_class = WonkwangContractSource
+        elif (source_config.engine_type is EngineType.JSON_LIST_API
+              and source_config.list_url == "https://www.mapo.go.kr/site/rest"):
+            source_class = MapoSearchSource
+        elif source_config.list_url.split("?")[0] == (
+            "https://www.gne.go.kr/user/bbs/BD_selectBbsList.do"
+        ):
+            source_class = OpenworksBoardSource
         return source_class(
             slug=source_config.slug,
             municipality=source_config.municipality,
@@ -187,13 +200,14 @@ class SourceRegistry:
             engine_type=source_config.engine_type,
             fixture_path=source_config.fixture_path,
             timezone=self._timezone,
-            http_client=self._http_client,
+            http_client=self._source_http_client(source_config),
             timeout_seconds=strategy.timeout_seconds,
             max_retries=strategy.retries,
             use_session=strategy.session,
             include_referer=_should_include_referer(source_config),
             verify_tls=strategy.verify_tls,
             throttle_seconds=strategy.throttle_seconds,
+            keywords=source_config.keywords,
             recruitment_only=source_config.recruitment_only,
             html_profile=source_config.html_profile,
             json_profile=source_config.json_profile,

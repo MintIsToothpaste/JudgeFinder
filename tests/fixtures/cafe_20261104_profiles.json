@@ -1,0 +1,38 @@
+{
+  "gogung_bid": {
+    "config_path": "config/batch-cafe.example.toml",
+    "title": "제안서 평가위원(후보자) 모집 공고문_2027년도 국립고궁박물관 전산장비 통합 유지보수",
+    "date": "2026-11-03",
+    "url": "https://online.gogung.go.kr/gogung/bbs/BMSR00022/view.do?boardId=7030&menuNo=800091&gubunCd=B22_004",
+    "list_html": "<table class=\"board-list\"><caption>번호,제목,작성자,등록일,조회수 제공 표</caption><colgroup><col class=\"w-5p\"/><col/><col class=\"w-5p mobile-hide\"/><col class=\"w-10p mobile-hide\"/><col class=\"w-5p mobile-hide\"/></colgroup><thead><tr><th scope=\"col\">번호</th><th scope=\"col\">제목</th><th class=\"mobile-hide\" scope=\"col\">작성자</th><th class=\"mobile-hide\" scope=\"col\">등록일</th><th class=\"mobile-hide\" scope=\"col\">조회수</th></tr></thead><tbody><tr><td>\n\n\t\t\t\t\t\n\n\t\t\t\t\t2\n\n\t\t\t\t</td><td class=\"ellipsis\"><a href=\"view.do?boardId=7030&amp;menuNo=800091&amp;gubunCd=B22_004&amp;pageIndex=1&amp;searchCondition=1&amp;searchKeyword=평가위원\" title=\"페이지 이동\">\n\n\t\t\t\t\t\t\n\n\t\t\t\t\t\t\n\n\t\t\t\t\t\t제안서 평가위원(후보자) 모집 공고문_2027년도 국립고궁박물관 전산장비 통합 유지보수\n\n\t\t\t\t\t</a></td><td class=\"mobile-hide\">김정미</td><td class=\"mobile-hide\">2026-11-03</td><td class=\"mobile-hide\">62</td></tr></tbody></table>",
+    "detail_html": "<div class=\"board-view\"><p class=\"subject\">제안서 평가위원(후보자) 모집 공고문_2027년도 국립고궁박물관 전산장비 통합 유지보수</p><ul class=\"item\"><li><p class=\"title\">등록일</p><p class=\"text\">2026-11-03</p></li></ul></div>",
+    "window_end": "2026-11-04"
+  },
+  "sokcho_cultural": {
+    "config_path": "config/batch-cafe.example.toml",
+    "title": "「속고양 음식문화패스 BI 개발 용역」 제안서 평가위원(후보자) 모집공고",
+    "date": "2026-11-03",
+    "url": "http://sokchocf.or.kr/sokchocf/community/announce?articleSeq=4408",
+    "list_html": "<table class=\"skinTb skinTb-data-resList skinTb-data-bgEven\"><caption class=\"blind\">게시판 제목</caption><thead data-hidden=\"mob\"><tr><th data-hidden=\"tablet\" scope=\"col\">번호</th><th class=\"skinTb-sbj\" data-seq=\"first\" scope=\"col\">제목</th><th scope=\"col\">작성자</th><th class=\"skinTb-date\" scope=\"col\">등록일</th><th class=\"skinTb-date\" data-hidden=\"tablet mob\" scope=\"col\">조회수</th></tr></thead><tbody><tr><td class=\"skinTxa-center\" data-hidden=\"tablet\"><img alt=\"공지\" src=\"/page/common/images/notice_speaker_icon.png\"/></td><td class=\"skinTb-sbj\" data-seq=\"first\"><a href=\"/sokchocf/community/announce?articleSeq=4408\" onclick=\"goPage(this.href); return false;\">\n\n\t\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t「속고양 음식문화패스 BI 개발 용역」 제안서 평가위원(후보자) 모집공고\n\n\t\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t</a></td><td class=\"skinTb-name skinTxa-center\">\n\n\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t문화도시센터\n\n\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t</td><td class=\"skinTb-date skinTxa-center\">2026-11-03</td><td class=\"skinTxa-center\" data-hidden=\"tablet\">26</td></tr></tbody></table><div class=\"pager\"><a class=\"pager-link pager-link-data-first\" href=\"?pageIndex=1\" onclick=\"linkPage(1);return false; \">10페이지 앞으로 이동</a><a class=\"pager-link pager-link-data-prev\" href=\"?pageIndex=1\" onclick=\"linkPage(1);return false; \">1페이지 앞으로 이동</a><span class=\"pager-num\">1/2</span><a class=\"pager-link active\" onclick=\"return false;\">1</a><a class=\"pager-link\" href=\"?pageIndex=2\" onclick=\"linkPage(2);return false; \">2</a><a class=\"pager-link pager-link-data-next\" href=\"?pageIndex=2\" onclick=\"linkPage(2);return false; \">1페이지 뒤로 이동</a><a class=\"pager-link pager-link-data-last\" href=\"?pageIndex=2\" onclick=\"linkPage(2);return false; \">10페이지 뒤로 이동</a></div>",
+    "detail_html": "<div class=\"skinTb-td skinTb-sbj\">「속고양 음식문화패스 BI 개발 용역」 제안서 평가위원(후보자) 모집공고</div><div class=\"skinTb-td col2 skinTb-date\">2026-11-03</div>",
+    "window_end": "2026-11-04"
+  },
+  "gyeonggi_sports_bid": {
+    "config_path": "config/batch-cafe.example.toml",
+    "title": "제108회 전국동계체육대회 대비 훈련기자재 구매대행 용역 입찰 제안서 평가위원(후보자) 공개모집",
+    "date": "2026-11-03",
+    "url": "https://ggsports.or.kr/archives/193118",
+    "list_html": "<ul class=\"board-webzine\"><li><div class=\"new-board-list\"><span>182</span><span><h4><a href=\"https://ggsports.or.kr/archives/193118\">제108회 전국동계체육대회 대비 훈련기자재 구매대행 용역 입찰 제안서 평가위원(후보자) 공개모집</a></h4></span><span><span class=\"icon-floppy\">첨부파일</span><span class=\"hide\">파일 다운로드</span></span><span>2026-11-03</span><span>40</span></div></li></ul><div class=\"wp-pagenavi\"><strong class=\"current\"><span>1</span></strong><a class=\"page\" href=\"https://ggsports.or.kr/gg_sports_notice/notice_bidding/page/2\">2</a><a class=\"page\" href=\"https://ggsports.or.kr/gg_sports_notice/notice_bidding/page/3\">3</a><a class=\"page\" href=\"https://ggsports.or.kr/gg_sports_notice/notice_bidding/page/4\">4</a><a class=\"page\" href=\"https://ggsports.or.kr/gg_sports_notice/notice_bidding/page/5\">5</a><a class=\"page\" href=\"https://ggsports.or.kr/gg_sports_notice/notice_bidding/page/6\">6</a><a class=\"page\" href=\"https://ggsports.or.kr/gg_sports_notice/notice_bidding/page/7\">7</a><a class=\"page\" href=\"https://ggsports.or.kr/gg_sports_notice/notice_bidding/page/8\">8</a><a class=\"page\" href=\"https://ggsports.or.kr/gg_sports_notice/notice_bidding/page/9\">9</a><a class=\"page\" href=\"https://ggsports.or.kr/gg_sports_notice/notice_bidding/page/10\">10</a><span class=\"extend\">...</span><a class=\"nextpostslink\" href=\"https://ggsports.or.kr/gg_sports_notice/notice_bidding/page/2\" rel=\"next\" title=\"다음페이지\">&gt;</a><a class=\"last\" href=\"https://ggsports.or.kr/gg_sports_notice/notice_bidding/page/19\" title=\"마지막페이지\">&gt;|</a></div>",
+    "detail_html": "<h1 class=\"post__title-2025\">제108회 전국동계체육대회 대비 훈련기자재 구매대행 용역 입찰 제안서 평가위원(후보자) 공개모집</h1><header class=\"post__header-2025\"><time datetime=\"2025-09-15\">2026-11-03</time></header>",
+    "window_end": "2026-11-04"
+  },
+  "pohang_tp_notice": {
+    "config_path": "config/batch-cafe.example.toml",
+    "title": "흡입식 풍동장치 제안서 평가위원(후보자) 모집 계획",
+    "date": "2026-11-03",
+    "url": "https://www.ptp.or.kr/main/board/view.do?manage_idx=2&menu_idx=113&board_idx=8215",
+    "list_html": "<div class=\"board-list\"><table class=\"table text-sm\" style=\"table-layout:fixed;\" title=\"공지사항\"><thead><tr><th abbr=\"번호\" scope=\"col\" style=\"width:50px;\">번호</th><th abbr=\"구분\" scope=\"col\" style=\"width:200px;\">구분</th><th abbr=\"제목\" scope=\"col\">제목</th><th abbr=\"파일\" scope=\"col\" style=\"width:50px;\">파일</th><th abbr=\"작성자\" scope=\"col\" style=\"width:120px;\">작성자</th><th abbr=\"작성일\" scope=\"col\" style=\"width:80px;\">작성일</th><th abbr=\"조회\" scope=\"col\" style=\"width:50px;\">조회</th></tr></thead><tbody><tr title=\"흡입식 풍동장치 제안서 평가위원(후보자) 모집 계획\"><td class=\"num\">10</td><td>\n\n\t\t\t\t\t\t포항TP\n\n\n\t\t\t\t\t</td><td class=\"subject\"><a href=\"javascript:void(0);\" onclick=\"viewBoard(8215);\"><span>\n\n\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t흡입식 풍동장치 제안서 평가위원(후보자) 모집 계획\n\n\t\t\t\t\t\t</span><em class=\"new\">새글</em></a></td><td><i class=\"fas fa-save\"></i></td><td>에너지산업팀</td><td class=\"date\">2026.11.03</td><td class=\"num\">62</td></tr></tbody></table></div>",
+    "detail_html": "<p class=\"subject\">흡입식 풍동장치 제안서 평가위원(후보자) 모집 계획</p>",
+    "window_end": "2026-11-04"
+  }
+}

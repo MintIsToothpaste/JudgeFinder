@@ -1,0 +1,35 @@
+# Official committee boards requiring proposal-role verification.
+timezone = "Asia/Seoul"
+db_path = "data/committee.db"
+enabled_sources = ["okcheon_notice"]
+
+[origin_recovery]
+enabled = true
+hibrain = false
+committee_search = true
+
+[sources.okcheon_notice]
+municipality = "옥천군"
+source_type = "html"
+engine_type = "generic_egov_bbs"
+list_url = "https://www.oc.go.kr/www/selectBbsNttList.do?bbsNo=40&key=236&searchCnd=SJ"
+recruitment_only = true
+max_pages = 20
+[sources.okcheon_notice.request_strategy]
+session = true
+referer = true
+retries = 2
+timeout_seconds = 20.0
+throttle_seconds = 0.3
+[sources.okcheon_notice.html_profile]
+container_selector = "table.p-table.simple"
+row_selector = "tbody > tr:has(td.p-subject a[href*='nttNo='])"
+link_selector = "td.p-subject a"
+date_selector = "td:nth-of-type(4)"
+id_pattern = '[?&]nttNo=([1-9][0-9]*)(?:&|$)'
+detail_url_template = "/www/selectBbsNttView.do?key=236&bbsNo=40&nttNo={id}"
+detail_title_selector = ".p-table__subject_text"
+detail_date_selector = ".p-author__info .p-split:first-child"
+detail_body_selector = ".bbs__view table.p-table"
+search_param = "searchKrwd"
+page_param = "pageIndex"

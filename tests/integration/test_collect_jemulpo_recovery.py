@@ -27,7 +27,7 @@ def test_original_disappearance_preserves_db_and_repost_keeps_its_registration_d
         (ROOT / "tests/fixtures/cafe_20261023_profiles.json").read_text(encoding="utf-8"),
     )
     slugs = ["jemulpo_notice", "jemulpo_khu"]
-    example = ROOT / "config/batch-cafe-20261023.example.toml"
+    example = ROOT / "config/batch-cafe.example.toml"
     settings = load_config(example)
     config, db = tmp_path / "config.toml", tmp_path / "notices.db"
     text = re.sub(

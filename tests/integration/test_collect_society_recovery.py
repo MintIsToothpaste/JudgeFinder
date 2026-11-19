@@ -24,7 +24,7 @@ CASES = json.loads((ROOT / "tests/fixtures/hibrain_recovery_societies.json").rea
 def test_public_html_and_json_routes_collect_reposts_and_replay_without_duplicates(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture,
 ) -> None:
-    example = ROOT / "config/batch-hibrain-recovery.example.toml"
+    example = ROOT / "config/batch-hibrain.example.toml"
     db = tmp_path / "societies.db"
     config = tmp_path / "config.toml"
     text = re.sub(r"^db_path = .+$", "db_path = " + json.dumps(db.as_posix()),
@@ -104,7 +104,7 @@ def test_repost_requires_its_own_explicit_detail_publication_date(slug: str) -> 
 
 
 def test_reposts_keep_publishers_and_have_no_runtime_fixtures_or_pinned_notice_ids() -> None:
-    settings = load_config(ROOT / "config/batch-hibrain-recovery.example.toml")
+    settings = load_config(ROOT / "config/batch-hibrain.example.toml")
     assert set(CASES).issubset(settings.enabled_sources)
     for slug, case in CASES.items():
         setting = settings.sources[slug]

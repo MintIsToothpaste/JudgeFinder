@@ -480,7 +480,7 @@ def test_wonju_typo_uses_scoped_body_without_accepting_unrelated_evaluations() -
     ],
 )
 def test_openworks_missing_or_ambiguous_token_does_not_send_paging_request(previous: str) -> None:
-    settings = load_config(ROOT / "config/batch-cafe-20261023.example.toml")
+    settings = load_config(ROOT / "config/batch-cafe.example.toml")
     settings.enabled_sources = ["gyeongnam_education"]
     client = Mock()
     source = SourceRegistry(
@@ -495,7 +495,7 @@ def test_openworks_missing_or_ambiguous_token_does_not_send_paging_request(previ
 
 
 def test_openworks_uses_each_previous_page_token_and_requires_session() -> None:
-    settings = load_config(ROOT / "config/batch-cafe-20261023.example.toml")
+    settings = load_config(ROOT / "config/batch-cafe.example.toml")
     settings.enabled_sources = ["gyeongnam_education"]
     client = Mock()
     source = SourceRegistry(

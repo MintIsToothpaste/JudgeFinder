@@ -1,6 +1,6 @@
 {
   "udik": {
-    "config_path": "config/batch-cafe-20261023.example.toml",
+    "config_path": "config/batch-cafe.example.toml",
     "slug": "udik",
     "title": "(서울특별시) 제안서 평가위원(후보자) 추천 안내",
     "date": "2026-10-22",
@@ -9,7 +9,7 @@
     "detail_html": "<table class=\"table-header\"><tr><td>(서울특별시) 제안서 평가위원(후보자) 추천 안내</td><td>-</td><td>2026-10-22</td></tr></table>"
   },
   "jemulpo_notice": {
-    "config_path": "config/batch-cafe-20261023.example.toml",
+    "config_path": "config/batch-cafe.example.toml",
     "slug": "jemulpo_notice",
     "title": "「제물포구 행정구역 조정 연구용역」 제안서 평가위원 후보자 모집 및 추천 요청",
     "date": "2026-10-22",
@@ -18,7 +18,7 @@
     "detail_html": "<dl><dt>작성일</dt><dd>2026-10-22</dd></dl>"
   },
   "gwacheon_uc": {
-    "config_path": "config/batch-cafe-20261023.example.toml",
+    "config_path": "config/batch-cafe.example.toml",
     "slug": "gwacheon_uc",
     "title": "시민회관 실내골프연습장 스크린 시뮬레이터 제안서 평가위원(후보자) 모집 공고",
     "date": "2026-10-22",
@@ -27,7 +27,7 @@
     "detail_html": "<div class=\"view_bbs_title\">시민회관 실내골프연습장 스크린 시뮬레이터 제안서 평가위원(후보자) 모집 공고</div><div class=\"view_bbs_info\"><em>2026-10-22</em></div>"
   },
   "chungnam": {
-    "config_path": "config/batch-cafe-20261023.example.toml",
+    "config_path": "config/batch-cafe.example.toml",
     "slug": "chungnam",
     "title": "충남 사회연대경제 기본계획 수립 학술연구용역 제안서 평가위원 후보자 모집 공고",
     "date": "2026-10-22",
@@ -36,7 +36,7 @@
     "detail_html": ""
   },
   "yulgok": {
-    "config_path": "config/batch-cafe-20261023.example.toml",
+    "config_path": "config/batch-cafe.example.toml",
     "slug": "yulgok",
     "title": "｢스마트 아카이브 구축｣ 사업 제안서 예비평가위원 모집 공고",
     "date": "2026-10-21",
@@ -45,7 +45,7 @@
     "detail_html": "<div class=\"bbsTitleArea\"><span class=\"subject\">｢스마트 아카이브 구축｣ 사업 제안서 예비평가위원 모집 공고</span><span class=\"writedate\">2026-10-21</span></div>"
   },
   "jeonju_cultural": {
-    "config_path": "config/batch-cafe-20261023.example.toml",
+    "config_path": "config/batch-cafe.example.toml",
     "slug": "jeonju_cultural",
     "title": "흑석골 주민 참여 닥무지 재현 행사 운영 용역 제안서 평가위원(후보자) 모집 공고",
     "date": "2026-10-22",
@@ -54,7 +54,7 @@
     "detail_html": "<div class=\"subject\"><span>흑석골 주민 참여 닥무지 재현 행사 운영 용역 제안서 평가위원(후보자) 모집 공고</span></div><ul class=\"datestat\"><li>2026-10-22</li></ul>"
   },
   "gyeongnam_education": {
-    "config_path": "config/batch-cafe-20261023.example.toml",
+    "config_path": "config/batch-cafe.example.toml",
     "slug": "gyeongnam_education",
     "title": "2027~2029학년도 다자녀 학생 교육비 지원 카드 운영사업자 선정 제안서 평가위원(후보자) 공개모집",
     "date": "2026-10-22",
@@ -63,7 +63,7 @@
     "detail_html": "<h3 class=\"vtitle\"><span class=\"tit\">2027~2029학년도 다자녀 학생 교육비 지원 카드 운영사업자 선정 제안서 평가위원(후보자) 공개모집</span></h3><ul class=\"vinfo\"><li><span class=\"blind\">등록일시</span>2026-10-22</li></ul>"
   },
   "jeju_education": {
-    "config_path": "config/batch-cafe-20261023.example.toml",
+    "config_path": "config/batch-cafe.example.toml",
     "slug": "jeju_education",
     "title": "2026 고등학생 국외대학 R&E 프로그램 용역 제안서 평가위원(후보자) 공개모집",
     "date": "2026-10-22",
@@ -72,7 +72,7 @@
     "detail_html": ""
   },
   "seoul_education": {
-    "config_path": "config/batch-cafe-20261023.example.toml",
+    "config_path": "config/batch-cafe.example.toml",
     "slug": "seoul_education",
     "title": "「2026 초등 AI·디지털 기반 교수학습 역량강화 글로벌 직무연수 위탁용역」 제안서 평가위원(후보자) 모집 공고",
     "date": "2026-10-22",
@@ -90,7 +90,7 @@
     "detail_html": "<table><tr><th>제목</th><td>2027년 원주형 아이키움 원스톱 통합 플랫폼 유지관리 용역 제안서평가 심의위원(후보자) 모집 정정 공고</td></tr><tr><th>내용</th><td>평가위원(후보자) 공개 모집. 모집기간: 2026.10.13.~10.27. 모집인원: 24명. 접수방법: 전자우편.</td></tr></table>"
   },
   "chungbuk_sido": {
-    "config_path": "config/batch-cafe-20261023.example.toml",
+    "config_path": "config/batch-cafe.example.toml",
     "slug": "chungbuk_sido",
     "title": "「2027 충청권 하계세계대학경기대회 생수 및 음료 구매」 제안서 평가위원(후보자) 모집 공고",
     "date": "2026-10-02",
@@ -99,7 +99,7 @@
     "detail_html": ""
   },
   "jemulpo_khu": {
-    "config_path": "config/batch-cafe-20261023.example.toml",
+    "config_path": "config/batch-cafe.example.toml",
     "slug": "jemulpo_khu",
     "title": "[공지] 「제물포구 행정구역 조정 연구용역」 제안서 평가위원 후보자 모집 및 추천 요청",
     "date": "2026-10-27",

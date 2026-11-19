@@ -49,6 +49,7 @@ detail_title_selector = "div.view_titlebox h3"
 detail_date_selector = "div.view_titlebox dt:-soup-contains-own('날짜') + dd"
 id_pattern = "idx=([1-9][0-9]*)"
 detail_url_template = "/www/govt/news/notify/new_notifys/new_notify?idx={id}&mode=view"
+detail_body_selector = "div.text_viewbox"
 search_param = "search_word"
 page_param = "page"
 
@@ -56,7 +57,7 @@ page_param = "page"
 municipality = "순천시"
 source_type = "html"
 engine_type = "generic_egov_bbs"
-list_url = "https://www.suncheon.go.kr/kr/news/0004/0005/0001/?searchCondition=title"
+list_url = "https://www.suncheon.go.kr/kr/news/0004/0005/0001/?searchCondition=content"
 recruitment_only = true
 max_pages = 40
 [sources.suncheon.request_strategy]

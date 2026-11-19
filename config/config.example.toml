@@ -2,6 +2,18 @@ timezone = "Asia/Seoul"
 db_path = "data/judgefinder.db"
 enabled_sources = ["sample_city", "seongbuk"]
 
+# Optional: after official boards, discover official URLs from Hibrain.
+# Only enabled sources with explicit detail title/date/body selectors can be recovered.
+[origin_recovery]
+enabled = false
+hibrain = true
+# Also search compatible official boards for 심의위원 and 심사위원.
+committee_search = false
+max_pages = 3
+timeout_seconds = 20.0
+throttle_seconds = 0.3
+# candidate_file = "data/origin-candidates.json"
+
 [sources.sample_city]
 municipality = "sample_city"
 source_type = "html"

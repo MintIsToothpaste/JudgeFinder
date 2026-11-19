@@ -76,7 +76,10 @@ def test_chungbuk_chungnam_jeonbuk_thirty_collect_store_deduplicate_and_list(
         seen.add(source.slug)
         profile, case = source.html_profile or source.json_profile, cases[source.slug]
         assert profile is not None
-        assert query[profile.search_param] == ["평가위원"]
+        if profile.search_param:
+            assert query[profile.search_param] == ["평가위원"]
+        else:
+            assert "searchKeyword" not in query
         page = int(query[profile.page_param][0])
         assert page in (1, 2)
         if source.json_profile:
@@ -404,7 +407,8 @@ def test_actual_profiles_cli_pagination_dedup_and_offline_list(
 
     monkeypatch.setattr(RequestsHttpClient, "get_text", get_text)
     runner, args = CliRunner(), ["--config-path", str(config)]
-    window = ["--date", "2026-10-05", "--days", "365"]
+    end_date = max(c["date"] for c in cases.values() if not c.get("empty"))
+    window = ["--date", end_date, "--days", "365"]
     outputs = []
     with caplog.at_level(logging.WARNING):
         for _ in range(2):
@@ -413,7 +417,7 @@ def test_actual_profiles_cli_pagination_dedup_and_offline_list(
             outputs.append(result.stdout)
     assert "Skipping source" not in caplog.text and outputs[0] == outputs[1]
     assert seen == set(settings.enabled_sources)
-    assert len(outputs[0].splitlines()) == 21
+    assert len(outputs[0].splitlines()) == 20
     with sqlite3.connect(db) as conn:
         actual = conn.execute(
             "select municipality,title,published_date,url from notices",

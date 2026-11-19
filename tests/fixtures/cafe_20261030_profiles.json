@@ -9,7 +9,7 @@
     "window_end": "2026-10-30"
   },
   "anseong_industry": {
-    "config_path": "config/batch-cafe-20261030.example.toml",
+    "config_path": "config/batch-cafe.example.toml",
     "title": "⌜안성산업진흥원 기업지원시스템 구축⌟ 용역 제안서 평가위원(후보자) 모집 공고",
     "date": "2026-10-28",
     "url": "https://www.asbiz.or.kr/bbs/BBSMSTR_000000000003/view.do?nttId=B000000000627Pn8wA8",
@@ -18,7 +18,7 @@
     "window_end": "2026-10-30"
   },
   "incheon_ccei": {
-    "config_path": "config/batch-cafe-20261030.example.toml",
+    "config_path": "config/batch-cafe.example.toml",
     "title": "K-바이오랩허브 네트워킹 플랫폼(3단계) 구축 및 감리 제안서평가 평가위원(후보자) 모집 공고",
     "date": "2026-10-29",
     "url": "https://ccei.creativekorea.or.kr/incheon/custom/notice_view.do?no=39139",

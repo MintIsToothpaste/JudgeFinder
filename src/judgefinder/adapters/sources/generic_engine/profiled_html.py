@@ -13,19 +13,26 @@ from judgefinder.adapters.sources.generic_engine.parser import (
     _extract_date_from_text,
 )
 from judgefinder.domain.notice_classification import NoticeCategory, classify_notice_title
-from judgefinder.domain.source_profiles import HtmlProfile
+from judgefinder.domain.source_profiles import NOTICE_ID_PATTERNS, HtmlProfile
 
 EMPTY_TEXT = re.compile(
     r"(?:게시물|게시글|자료|데이터|데이타|검색\s*결과|등록된\s*글).*(?:없|존재하지\s*않)"
     r"|^\s*(?:(?:고시공고\s*)?결과가|등록된\s*(?:소식이|내용이)"
-    r"|등록/검색된\s*정보가|입력된\s*글이|검색내역이)\s*없습니다[.!]?\s*$",
+    r"|등록/검색된\s*정보가|입력된\s*글이|검색내역이)\s*없습니다[.!]?\s*$"
+    r"|^\s*전체게시물\s*:\s*0개\s*페이지\s*:\s*[0-9]+/1\s*$",
 )
 
 
 def _registration_date(text: str, profile: HtmlProfile) -> date | None:
     if profile.two_digit_year_base is not None:
         # The board's explicitly configured century is independent of today's date.
-        match = re.fullmatch(r"\s*([0-9]{2})[./-]([0-9]{1,2})[./-]([0-9]{1,2})[.]?\s*", text)
+        # A configured registration field may include its label and clock time.
+        # Full matching prevents application periods or other prose becoming dates.
+        match = re.fullmatch(
+            r"\s*(?:작성일\s*)?([0-9]{2})[./-]([0-9]{1,2})[./-]([0-9]{1,2})[.]?"
+            r"(?:\s+(?:[01][0-9]|2[0-3]):[0-5][0-9](?::[0-5][0-9])?)?\s*",
+            text,
+        )
         if match:
             try:
                 return date(
@@ -43,6 +50,42 @@ def _title_text(node: Tag, exclude_selector: str) -> str:
         for badge in node.select(exclude_selector):
             badge.decompose()
     return " ".join(node.get_text().split())
+
+
+def _body_text(node: Tag) -> str:
+    node = deepcopy(node)
+    for tag in node.select("script,style,nav,header,footer"):
+        tag.decompose()
+    return " ".join(node.get_text(" ", strip=True).split())
+
+
+def parse_profiled_detail(
+    payload: str, *, url: str, profile: HtmlProfile, allow_empty_body: bool = False,
+) -> GenericNoticeCandidate:
+    """Extract an official detail without inventing metadata from a listing or referrer."""
+    if not (profile.detail_title_selector and profile.detail_date_selector
+            and profile.detail_body_selector):
+        raise ValueError("Explicit detail title/date/body selectors are required")
+    soup = BeautifulSoup(payload, "html5lib")
+    titles = soup.select(profile.detail_title_selector)
+    stamps = soup.select(profile.detail_date_selector)
+    if len(titles) != 1 or len(stamps) != 1:
+        raise ValueError("Official detail title or registration date missing or ambiguous")
+    title = _title_text(titles[0], profile.title_exclude_selector)
+    stamp = (stamps[0].get(profile.detail_date_attribute, "") if profile.detail_date_attribute
+             else stamps[0].get_text(" ", strip=True))
+    day = _registration_date(stamp if isinstance(stamp, str) else "", profile)
+    if not title or day is None:
+        raise ValueError("Official detail title or registration date invalid")
+    body_nodes = soup.select(profile.detail_body_selector)
+    if len(body_nodes) != 1:
+        raise ValueError("Configured notice body missing or ambiguous")
+    body = _body_text(body_nodes[0])
+    if not body and not allow_empty_body:
+        raise ValueError("Official detail body is empty")
+    if EMPTY_TEXT.search(body):
+        raise ValueError("Official detail body reports a missing notice")
+    return GenericNoticeCandidate(title, url, day, f"{title} {body}", body)
 
 
 def profiled_html_total_count(payload: str, *, profile: HtmlProfile) -> int | None:
@@ -89,7 +132,8 @@ def parse_profiled_html(
         return []
     if profile.page_number_selector and expected_page is not None:
         current = soup.select_one(profile.page_number_selector)
-        text = current.get_text(strip=True) if current else ""
+        # Screen-reader labels are not part of the selected page number.
+        text = _title_text(current, ".hidden, .sound_only") if current else ""
         if not text.isdigit() or int(text) != expected_page:
             raise ValueError("HTML listing page does not match requested page")
     if total_count is not None and expected_page is not None:
@@ -124,11 +168,8 @@ def parse_profiled_html(
         if profile.id_pattern:
             # Explicit formats preserve strict validation without evaluating JavaScript.
             match = re.search(profile.id_pattern, href)
-            identifier_pattern = (
-                r"[a-fA-F0-9]{32}" if profile.id_format == "hex32"
-                else r"0*[1-9][0-9]*" if profile.id_format == "zero_padded_numeric"
-                else r"[A-Za-z0-9]{1,64}" if profile.id_format == "alphanumeric"
-                else r"[1-9][0-9]*"
+            identifier_pattern = NOTICE_ID_PATTERNS.get(
+                profile.id_format, NOTICE_ID_PATTERNS["numeric"],
             )
             if match is None or re.fullmatch(identifier_pattern, match.group(1)) is None:
                 # Expired legacy identifiers cannot block the requested date window.
@@ -195,10 +236,7 @@ def parse_profiled_html(
             body_node = detail.select_one(profile.detail_body_selector)
             if body_node is None:
                 raise ValueError(f"HTML row {index}: configured notice body missing")
-            body_node = deepcopy(body_node)
-            for tag in body_node.select("script,style,nav,header,footer"):
-                tag.decompose()
-            body_text = " ".join(body_node.get_text(" ", strip=True).split())
+            body_text = _body_text(body_node)
         candidates.append(GenericNoticeCandidate(
             title=title, url=url, published_date=published_date,
             searchable_text=f"{title} {body_text}".strip(),

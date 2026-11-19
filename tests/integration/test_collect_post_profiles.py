@@ -392,11 +392,12 @@ def test_ten_html_sources_cli_repeated_collect_and_offline_list(
         profile = source.html_profile
         assert profile is not None
         query = parse_qs(urlparse(url).query)
-        expected_search = parse_qs(urlparse(source.list_url).query).get(
-            profile.search_param,
-            ["평가위원"],
-        )
-        assert query[profile.search_param] == expected_search
+        if profile.search_param:
+            expected_search = parse_qs(urlparse(source.list_url).query).get(
+                profile.search_param,
+                ["평가위원"],
+            )
+            assert query[profile.search_param] == expected_search
         if "list_gubun" in query:
             assert query["list_gubun"] == ["A"]
         if source.slug == "gangdong":
@@ -472,6 +473,9 @@ def test_ten_sources_cli_dates_detail_enrichment_and_sqlite_dedup(
         (ROOT / "tests/fixtures/cafe_20261030_profiles.json").read_text(encoding="utf-8"),
     )
     cases["dobong_gosi"] = october_30["dobong_gosi"]
+    cases.update(json.loads(
+        (ROOT / "tests/fixtures/hibrain_20261110_profiles.json").read_text(encoding="utf-8"),
+    ))
     example = ROOT / "config/batch-seoul-ten.example.toml"
     settings = load_config(example)
     db = tmp_path / "notices.db"
@@ -479,12 +483,13 @@ def test_ten_sources_cli_dates_detail_enrichment_and_sqlite_dedup(
     config.write_text(
         example.read_text(encoding="utf-8")
         .replace("data/live-tests/seoul-ten-2026-09-27/notices.db", db.as_posix())
-        .replace("throttle_seconds = 1.0", "throttle_seconds = 0.0"),
+        .replace("throttle_seconds = 1.0", "throttle_seconds = 0.0")
+        .replace("throttle_seconds = 0.3", "throttle_seconds = 0.0"),
         encoding="utf-8",
     )
     by_host = {
         urlparse(s.list_url).netloc: s
-        for s in settings.sources.values() if s.slug != "nowon_gosi"
+        for s in settings.sources.values() if s.slug not in {"nowon_gosi", "nowon_notice"}
     }
     calls: list[tuple[str, str, int]] = []
 
@@ -507,10 +512,13 @@ def test_ten_sources_cli_dates_detail_enrichment_and_sqlite_dedup(
         use_session: bool = False,
         verify_tls: bool = True,
     ) -> str:
-        source = by_host[urlparse(url).netloc]
-        # Nowon news and public notices share a host but have different board IDs.
-        if source.slug == "nowon" and parse_qs(urlparse(url).query).get("q_bbsCode") == ["1003"]:
-            source = settings.sources["nowon_gosi"]
+        parsed = urlparse(url)
+        source = by_host[parsed.netloc]
+        params = parse_qs(parsed.query)
+        if source.slug == "nowon":
+            board_code = params["q_bbsCode"][0]
+            board_slugs = {"1001": "nowon_notice", "1003": "nowon_gosi", "1004": "nowon"}
+            source = settings.sources[board_slugs[board_code]]
         case = cases[source.slug]
         assert verify_tls
         if url == case["url"]:
@@ -519,8 +527,10 @@ def test_ten_sources_cli_dates_detail_enrichment_and_sqlite_dedup(
             return str(case["detail_html"])
         profile = source.html_profile
         assert profile is not None and profile.request_method == "GET"
-        params = parse_qs(urlparse(url).query)
-        assert params[profile.search_param] == ["평가위원"]
+        if profile.search_param:
+            assert params[profile.search_param] == ["평가위원"]
+        else:
+            assert "q_searchVal" not in params
         page = int(params[profile.page_param][0])
         calls.append((source.slug, "GET", page))
         return listing(source.slug, page)
@@ -571,7 +581,7 @@ def test_ten_sources_cli_dates_detail_enrichment_and_sqlite_dedup(
     outputs = []
     with caplog.at_level(logging.WARNING):
         for _ in range(2):
-            result = runner.invoke(app, [*base, "collect", "--date", "2026-10-30", "--days", "400"])
+            result = runner.invoke(app, [*base, "collect", "--date", "2026-11-10", "--days", "411"])
             assert result.exit_code == 0, result.output
             outputs.append(result.stdout)
     assert "Skipping source" not in caplog.text
@@ -595,7 +605,7 @@ def test_ten_sources_cli_dates_detail_enrichment_and_sqlite_dedup(
             2 if cases[slug]["detail_html"] else 0
         )
     before = len(calls)
-    result = runner.invoke(app, [*base, "list", "--date", "2026-10-30", "--days", "400"])
+    result = runner.invoke(app, [*base, "list", "--date", "2026-11-10", "--days", "411"])
     assert result.exit_code == 0
     assert result.stdout == outputs[0]
     assert len(calls) == before
@@ -618,6 +628,10 @@ def test_five_profiles_through_cli_with_pagination_and_sqlite_dedup(
     )
     by_host = {urlparse(s.list_url).netloc: s for s in settings.sources.values()}
     calls: list[tuple[str, int]] = []
+    detail_calls: list[str] = []
+    junggu = json.loads(
+        (ROOT / "tests/fixtures/cafe_20261028_profiles.json").read_text(encoding="utf-8"),
+    )["seoul_junggu_gosi"]
 
     def get_text(
         self: RequestsHttpClient,
@@ -632,6 +646,10 @@ def test_five_profiles_through_cli_with_pagination_and_sqlite_dedup(
         profile = source.html_profile
         assert profile is not None
         query = parse_qs(parsed.query)
+        if source.slug == "seoul_junggu" and query.get("mode") == ["view"]:
+            assert query["cid"] == ["1484623120"]
+            detail_calls.append(url)
+            return junggu["detail_html"]
         assert query[profile.search_param] == ["평가위원"]
         assert verify_tls is True
         page = int(query[profile.page_param][0])
@@ -652,7 +670,7 @@ def test_five_profiles_through_cli_with_pagination_and_sqlite_dedup(
     outputs: list[str] = []
     with caplog.at_level(logging.WARNING):
         for _ in range(2):
-            result = runner.invoke(app, [*base, "collect", "--date", "2026-09-27", "--days", "180"])
+            result = runner.invoke(app, [*base, "collect", "--date", "2026-10-27", "--days", "180"])
             assert result.exit_code == 0, result.output
             outputs.append(result.stdout)
     assert "Skipping source" not in caplog.text
@@ -660,6 +678,7 @@ def test_five_profiles_through_cli_with_pagination_and_sqlite_dedup(
     assert len(outputs[0].splitlines()) == 5
     assert set(calls) == {(slug, page) for slug in settings.sources for page in (1, 2)}
     assert len(calls) == 20  # Pages are fetched once per run, not once per target date.
+    assert len(detail_calls) == 2
     with sqlite3.connect(db) as conn:
         actual = conn.execute(
             "SELECT municipality, published_date, source_type FROM notices ORDER BY municipality"
@@ -668,12 +687,12 @@ def test_five_profiles_through_cli_with_pagination_and_sqlite_dedup(
         [
             ("서울특별시", "2026-08-05", "html"),
             ("종로구", "2026-09-21", "html"),
-            ("서울 중구", "2026-04-08", "html"),
+            ("서울 중구", "2026-10-27", "html"),
             ("용산구", "2026-07-22", "html"),
             ("성동구", "2026-09-22", "html"),
         ]
     )
-    result = runner.invoke(app, [*base, "list", "--date", "2026-09-27", "--days", "180"])
+    result = runner.invoke(app, [*base, "list", "--date", "2026-10-27", "--days", "180"])
     assert result.exit_code == 0
     assert result.stdout == outputs[0]
     assert len(calls) == 20

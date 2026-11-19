@@ -178,7 +178,7 @@ def test_gyeonggi_gangwon_chungbuk_thirty_settings_are_explicit() -> None:
 def test_only_verified_public_sources_are_enabled() -> None:
     batch = PROFILE_BATCHES["gyeongnam_jeju_final"]
     assert len(batch.cases) == len(batch.settings.enabled_sources) == 22
-    assert len([slug for slug, case in batch.cases.items() if not case.get("empty")]) == 21
+    assert len([slug for slug, case in batch.cases.items() if not case.get("empty")]) == 20
     assert len({s.municipality for s in batch.settings.sources.values()}) == 20
     assert "jejusi" not in batch.settings.enabled_sources
     for source in batch.settings.sources.values():
@@ -215,7 +215,8 @@ def test_only_recovered_sources_are_enabled_and_tls_is_preserved() -> None:
     assert "isLinkage=Y" in batch.settings.sources["andong"].html_profile.detail_url_template
     assert "list_gubun=A" in batch.settings.sources["sangju"].list_url
     for source in batch.settings.sources.values():
-        assert source.fixture_path is None and source.recruitment_only
+        assert source.fixture_path is None
+        assert source.recruitment_only == (source.slug != "pyeongchang")
         assert source.request_strategy.verify_tls and source.max_pages == 80
 
 
@@ -342,7 +343,9 @@ def test_official_pagination_and_archive_profiles_cover_ten_municipalities() -> 
     for source in batch.settings.sources.values():
         assert source.fixture_path is None and source.recruitment_only
         assert source.request_strategy.verify_tls and source.max_pages == 40
-    profile = batch.settings.sources["suncheon"].html_profile
+    suncheon = batch.settings.sources["suncheon"]
+    assert parse_qs(urlparse(suncheon.list_url).query)["searchCondition"] == ["content"]
+    profile = suncheon.html_profile
     assert profile is not None and profile.page_param == "pageIndex"
     assert profile.page_number_selector
     for slug in ["yeosu", "naju", "gwangju_seogu"]:

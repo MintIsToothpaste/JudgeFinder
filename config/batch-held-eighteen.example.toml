@@ -8,7 +8,7 @@ municipality = "평창군"
 source_type = "html"
 engine_type = "eminwon_ofr"
 list_url = "https://eminwon.pc.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&method=selectListOfrNotAncmt&methodnm=selectListOfrNotAncmtHomepage&homepage_pbs_yn=Y&subCheck=Y&ofr_pageSize=10&list_gubun=A&not_ancmt_se_code=01%2C04"
-recruitment_only = true
+recruitment_only = false
 max_pages = 80
 [sources.pyeongchang.request_strategy]
 session = true
@@ -25,9 +25,10 @@ date_selector = "td:nth-of-type(8)"
 link_selector = "td:nth-of-type(4)"
 link_attribute = "onclick"
 id_pattern = "searchDetail[(]'([1-9][0-9]*)'"
-detail_origin = "https://www.pc.go.kr"
-detail_url_template = "https://www.pc.go.kr/portal/government/government-notification?noticeMgrNo={id}"
-detail_title_selector = "div.skinTb-sbj"
+detail_url_template = "/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&subCheck=Y&not_ancmt_mgt_no={id}"
+detail_title_selector = "td.bbs_title[colspan='3']"
+detail_date_selector = "td.bbshistory:-soup-contains-own('등록일') + td"
+detail_body_selector = "table[width='660px'] td[width='638px'][colspan='5']"
 page_number_selector = ".page_no b"
 
 [sources.sangju]

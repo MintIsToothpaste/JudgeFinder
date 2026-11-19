@@ -17,6 +17,17 @@ def read_cases(filename: str) -> dict[str, Any]:
     return json.loads((ROOT / "tests/fixtures" / filename).read_text(encoding="utf-8"))
 
 
+def load_source_subset(config_path: Path, slugs: Iterable[str]) -> AppConfig:
+    settings = load_config(config_path)
+    selected = set(slugs)
+    assert selected <= set(settings.enabled_sources)
+    settings.enabled_sources = [slug for slug in settings.enabled_sources if slug in selected]
+    settings.sources = {
+        slug: source for slug, source in settings.sources.items() if slug in selected
+    }
+    return settings
+
+
 @dataclass
 class ProfileBatch:
     cases: dict[str, Any]

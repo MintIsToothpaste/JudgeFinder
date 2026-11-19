@@ -55,6 +55,17 @@ def test_explicit_fields_supply_full_title_registration_date_and_safe_url() -> N
     ]
 
 
+def test_boolean_success_status_is_validated() -> None:
+    profile = replace(PROFILE, success_value="true")
+    data = payload()
+    data["status"] = True
+    assert len(parse_profiled_json(json.dumps(data), list_url=URL, profile=profile)) == 1
+
+    data["status"] = False
+    with pytest.raises(ValueError, match="reports failure"):
+        parse_profiled_json(json.dumps(data), list_url=URL, profile=profile)
+
+
 @pytest.mark.parametrize("value", ["<h1>FORBIDDEN</h1>", "{", "null", "[]", "{}"])
 def test_http_200_errors_are_not_empty_search_results(value: str) -> None:
     with pytest.raises(ValueError):
@@ -156,6 +167,8 @@ def test_verified_zero_and_past_last_page_are_allowed() -> None:
         {"page_size": True},
         {"page_size": 0},
         {"page_param": ""},
+        {"page_base": False},
+        {"page_base": 2},
         {"request_method": "DELETE"},
         {"request_encoding": "bad"},
     ],
@@ -178,6 +191,46 @@ def test_config_and_registry_preserve_real_api_offset_pagination() -> None:
     assert query["CUR_PAGE_IDX"] == ["2"] and query["BEGIN_ROW_IDX"] == ["11"]
     assert query["ROW_CNT"] == ["10"] and query["searchVal"] == ["평가위원"]
     assert query["searchKey"] == ["B_Subject"] and query["listGubun"] == ["A"]
+
+
+def test_ulsan_culture_api_uses_zero_based_pages_and_validates_the_response() -> None:
+    root = Path(__file__).parents[2]
+    settings = load_config(root / "config/batch-cafe.example.toml")
+    settings.enabled_sources = ["ulsan_culture"]
+    calls: list[int] = []
+    target = {
+        "id": "202411312937", "title": "울산 무장애 팸투어 평가위원 후보자 모집 공고",
+        "registrationDatetime": "2026-11-05 08:42:59",
+    }
+    pages = {
+        0: [dict(target, id=str(i), registrationDatetime="2026-11-06") for i in range(1, 11)],
+        1: [target],
+        2: [],
+    }
+
+    def get_text(url: str, **kwargs: object) -> str:
+        query = parse_qs(urlparse(url).query)
+        assert query["keyword"] == ["평가위원"] and kwargs["verify_tls"]
+        page = int(query["page"][0])
+        calls.append(page)
+        return json.dumps({"content": pages[page], "number": page, "totalElements": 11})
+
+    client = Mock(get_text=get_text)
+    source = SourceRegistry(
+        settings, client, ZoneInfo(settings.timezone),
+    ).build_enabled_sources()[0]
+    assert isinstance(source, GenericEngineSource) and source.json_profile is not None
+    source.throttle_seconds = 0
+    result = source.fetch(date(2026, 11, 5))
+    assert calls == [0, 1, 2]
+    assert [(n.url, n.published_date) for n in result] == [
+        ("https://uctf.or.kr/board/notice/view/202411312937", date(2026, 11, 5)),
+    ]
+    with pytest.raises(ValueError, match="page does not match"):
+        parse_profiled_json(
+            json.dumps({"content": [target], "number": 0, "totalElements": 11}),
+            list_url=source.list_url, profile=source.json_profile, expected_page=2,
+        )
 
 
 @pytest.mark.parametrize(

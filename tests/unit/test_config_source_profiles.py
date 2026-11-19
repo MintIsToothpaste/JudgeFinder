@@ -38,9 +38,11 @@ def test_load_config_uses_default_engine_access_and_strategy(tmp_path: Path) -> 
     assert source.access_profile is AccessProfile.UNKNOWN_ACCESS
     assert source.fallback_strategy is FallbackStrategy.NONE
     assert source.recruitment_only is False
+    assert source.keywords == ("평가위원",)
     assert source.request_strategy.session is False
     assert source.request_strategy.referer is False
     assert source.request_strategy.retries == 3
+    assert source.request_strategy.transport == "requests"
     assert source.request_strategy.verify_tls is True
 
 
@@ -143,3 +145,61 @@ def test_html_profile_requires_unambiguous_identity(pattern: str, template: str)
             container_selector="table", row_selector="tr", date_selector="td.date",
             id_pattern=pattern, detail_url_template=template,
         )
+
+
+@pytest.mark.parametrize("transport,verify_tls,valid", [
+    ('"windows_curl"', True, True), ('"requests"', False, True),
+    ('"windows_curl"', False, False), ('"other"', True, False),
+    ('false', True, False), ('{name="windows_curl"}', True, False),
+])
+def test_request_transport_is_explicit_and_windows_curl_keeps_certificate_verification(
+    tmp_path: Path, transport: str, verify_tls: bool, valid: bool,
+) -> None:
+    config = tmp_path / "transport.toml"
+    config.write_text(
+        'timezone="Asia/Seoul"\ndb_path="notices.db"\nenabled_sources=["demo"]\n'
+        '[sources.demo]\nmunicipality="Demo"\nsource_type="html"\n'
+        'list_url="https://example.com"\n[sources.demo.request_strategy]\n'
+        + f'transport={transport}\nverify_tls={str(verify_tls).lower()}\n', encoding="utf-8",
+    )
+    if valid:
+        source = load_config(config).sources["demo"]
+        assert source.request_strategy.transport == transport.strip('"')
+    else:
+        with pytest.raises(ValueError, match="transport|verify_tls"):
+            load_config(config)
+
+
+@pytest.mark.parametrize("value", ['[]', '[" "]', '["평가위원", ""]', '"평가위원"', '[1]'])
+def test_source_keywords_reject_empty_or_invalid_configuration(tmp_path: Path, value: str) -> None:
+    example = Path(__file__).parents[2] / "config/batch-cafe.example.toml"
+    text = example.read_text(encoding="utf-8").replace(
+        'keywords = ["사업계획서 선정심의위원"]', f"keywords = {value}",
+    )
+    path = tmp_path / "config.toml"
+    path.write_text(text, encoding="utf-8")
+    with pytest.raises(ValueError, match="keywords"):
+        load_config(path)
+
+
+@pytest.mark.parametrize(
+    ("name", "count", "committee"),
+    [("cafe", 137, False), ("hibrain", 66, False), ("committee", 1, True)],
+)
+def test_consolidated_batches_keep_all_routes_enabled_with_separate_verification(
+    tmp_path: Path, name: str, count: int, committee: bool,
+) -> None:
+    root = Path(__file__).parents[2]
+    settings = load_config(root / f"config/batch-{name}.example.toml", base_dir=tmp_path)
+    assert len(settings.enabled_sources) == len(set(settings.enabled_sources)) == count
+    assert set(settings.enabled_sources) == set(settings.sources)
+    assert settings.db_path == tmp_path / f"data/{name}.db"
+    assert settings.origin_recovery.enabled is committee
+    assert settings.origin_recovery.committee_search is committee
+    if committee:
+        assert not settings.origin_recovery.hibrain
+    for source in settings.sources.values():
+        assert source.fixture_path is None
+        assert source.request_strategy.verify_tls
+    assert not list((root / "config").glob("batch-cafe-[0-9]*.example.toml"))
+    assert not list((root / "config").glob("batch-hibrain-[0-9]*.example.toml"))

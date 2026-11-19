@@ -20,6 +20,7 @@ from judgefinder.domain.source_profiles import (
     RequestStrategy,
 )
 from judgefinder.infrastructure.http.client import HttpResponse
+from judgefinder.infrastructure.http.windows_curl import WindowsCurlHttpClient
 
 
 class DummyHttpClient:
@@ -254,3 +255,28 @@ def test_source_registry_skips_manual_review_fallback_sources() -> None:
 
     assert len(sources) == 1
     assert isinstance(sources[0], NoopSource)
+
+
+def test_source_registry_scopes_windows_curl_and_reuses_its_cookie_session() -> None:
+    config = AppConfig(
+        timezone="Asia/Seoul", db_path=Path("unused.db"),
+        enabled_sources=["normal", "sscmc"],
+        sources={
+            slug: SourceConfig(
+                slug=slug, municipality=slug, source_type=SourceType.HTML,
+                list_url="https://example.com/list", engine_type=EngineType.GENERIC_EGOV_BBS,
+                request_strategy=RequestStrategy(transport=transport),
+            )
+            for slug, transport in [("normal", "requests"), ("sscmc", "windows_curl")]
+        },
+    )
+    original = DummyHttpClient()
+    registry = SourceRegistry(config, original, ZoneInfo(config.timezone))
+    normal, special = registry.build_enabled_sources()
+    assert isinstance(normal, GenericEngineSource) and normal.http_client is original
+    assert isinstance(special, GenericEngineSource)
+    assert isinstance(special.http_client, WindowsCurlHttpClient)
+    assert registry.build_enabled_sources()[1].http_client is special.http_client
+    config.sources["sscmc"].list_url = "http://example.com/list"
+    with pytest.raises(ValueError, match="HTTPS"):
+        registry.build_enabled_sources()

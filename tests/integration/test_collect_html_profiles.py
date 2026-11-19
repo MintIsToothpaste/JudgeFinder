@@ -321,7 +321,8 @@ def test_recovered_profiles_cli_pagination_dedup_and_offline_list(
 
     monkeypatch.setattr(RequestsHttpClient, "get_text", get_text)
     runner, args = CliRunner(), ["--config-path", str(config)]
-    window = ["--date", "2026-10-05", "--days", "365"]
+    end_date = max(c["date"] for c in cases.values() if not c.get("empty"))
+    window = ["--date", end_date, "--days", "365"]
     outputs = []
     with caplog.at_level(logging.WARNING):
         for _ in range(2):

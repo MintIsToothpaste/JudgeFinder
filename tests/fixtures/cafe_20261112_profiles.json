@@ -1,0 +1,82 @@
+{
+  "anyang_senior_welfare": {
+    "config_path": "config/batch-cafe.example.toml",
+    "title": "2027년 식자재 납품업체 제안서 평가위원(후보자) 모집 공고",
+    "date": "2026-11-11",
+    "url": "https://www.aysilver.kr/main/sub.html?Mode=view&boardID=www18&num=4152",
+    "list_html": "<table class=\"jmboardskin1\"><tbody><tr><td class=\"jNum\">공지</td><td class=\"jSubject\"><a href=\"https://www.aysilver.kr/main/sub.html?Mode=view&amp;boardID=www18&amp;num=4152\"><span class=\"noticeIconM\">공지</span>2027년 식자재 납품업체 제안서 평가위원(후보자) 모집 공고</a></td><td class=\"jDate\">2026-11-11</td></tr></tbody></table>",
+    "detail_html": "",
+    "window_end": "2026-11-12",
+    "requests_per_collect": "2"
+  },
+  "iksan_senior_welfare": {
+    "config_path": "config/batch-cafe.example.toml",
+    "title": "[경로식당]2027년 경로식당 식자재 구매 입찰 /제안서 평가위원 모집공고",
+    "date": "2026-11-11",
+    "url": "http://www.iksansilver.or.kr/bbs/board.php?bo_table=b_01&wr_id=530",
+    "list_html": "<form id=\"fboardlist\"><table><tbody><tr><td class=\"td_subject\"><a href=\"http://www.iksansilver.or.kr/bbs/board.php?bo_table=b_01&amp;wr_id=530\">[경로식당]2027년 경로식당 식자재 구매 입찰 /제안서 평가위원 모집공고</a></td><td class=\"td_date\">11-11</td></tr></tbody></table></form>",
+    "detail_html": "<article><h1 id=\"bo_v_title\">[경로식당]2027년 경로식당 식자재 구매 입찰 /제안서 평가위원 모집공고</h1><section id=\"bo_v_info\"><strong>관리자</strong><strong>26-11-11 10:39</strong></section></article>",
+    "window_end": "2026-11-12",
+    "requests_per_collect": "3"
+  },
+  "seohae_eminwon": {
+    "config_path": "config/batch-cafe.example.toml",
+    "title": "「청라국제도시 생활폐기물 자동집하시설 운영관리 용역」 제안서 평가위원(후보자) 공개모집 공고",
+    "date": "2026-11-11",
+    "url": "https://eminwon.seohae.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?context=NTIS&countYn=Y&epcCheck=Y&homepage_pbs_yn=Y&initValue=Y&jndinm=OfrNotAncmtEJB&not_ancmt_se_code=01%2C04%2C05%2C06&ofr_pageSize=10&subCheck=Y&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&not_ancmt_mgt_no=78119",
+    "list_html": "<table align=\"center\" cellspacing=\"1\"><tbody><tr><td>25</td><td onclick=\"javaScript:searchDetail('78119')\">청라국제도시 생활폐기물 자동집하시설 운영관리 용역 제안서 평가위원(후...</td><td>자원순환과</td><td>2026-11-11</td></tr></tbody></table>",
+    "detail_html": "<table><tbody><tr><td>등록일</td><td>2026-11-11</td></tr><tr><td>제목</td><td>「청라국제도시 생활폐기물 자동집하시설 운영관리 용역」 제안서 평가위원(후보자) 공개모집 공고</td></tr></tbody></table>",
+    "window_end": "2026-11-12",
+    "requests_per_collect": "3"
+  },
+  "geumsan_gosi": {
+    "config_path": "config/batch-cafe.example.toml",
+    "title": "「고려인삼테마파크 조성 타당성 조사 및 기본계획 연구용역」제안서 평가위원(후보자) 모집 공고",
+    "date": "2026-11-11",
+    "url": "https://www.geumsan.go.kr/kr/html/sub03/030302.html?mode=V&site_dvs_cd=kr&mng_no=073dcc9ad0eecd74a96e23b36ab6e352",
+    "list_html": "<div id=\"txt\"><table class=\"table table-bordered\"><tbody><tr><td>17</td><td>금산군 공고 제2026-1571호</td><td><a href=\"https://www.geumsan.go.kr/kr/html/sub03/030302.html?mode=V&amp;site_dvs_cd=kr&amp;mng_no=073dcc9ad0eecd74a96e23b36ab6e352\">[일반공고]「고려인삼테마파크 조성 타당성 조사 및 기본계획 연구용역」제안서 평가위원(후보자) 모집 공고</a></td><td>관광체육과</td><td>2026-11-11~2026-11-18</td></tr></tbody></table></div>",
+    "detail_html": "<h2 class=\"bbs--view--tit\">「고려인삼테마파크 조성 타당성 조사 및 기본계획 연구용역」제안서 평가위원(후보자) 모집 공고</h2><div class=\"bbs--view--opt\"><span>등록일 : 2026-11-11</span></div>",
+    "window_end": "2026-11-12",
+    "requests_per_collect": "3"
+  },
+  "muan_notice": {
+    "config_path": "config/batch-cafe.example.toml",
+    "title": "청계목대후문권역 상권 활성화사업 예비평가위원(후보자) 모집공고 안내",
+    "date": "2026-11-11",
+    "url": "https://www.muan.go.kr/www/openmuan/new/notice?idx=15207737&mode=view",
+    "list_html": "<table class=\"board_t1\"><tbody><tr><td class=\"title_wrap\"><a href=\"https://www.muan.go.kr/www/openmuan/new/notice?idx=15207737&amp;mode=view\">청계목대후문권역 상권 활성화사업 예비평가위원(후보자) 모집공고 ..</a></td><td class=\"date\">2026-11-11</td></tr></tbody></table>",
+    "detail_html": "<div class=\"news_tit\"><h3>청계목대후문권역 상권 활성화사업 예비평가위원(후보자) 모집공고 안내</h3><dl><dt>작성일</dt><dd>2026-11-11 13:59</dd></dl></div>",
+    "window_end": "2026-11-12",
+    "requests_per_collect": "3"
+  },
+  "korea_univ_education_reposts": {
+    "config_path": "config/batch-cafe.example.toml",
+    "title": "[서울특별시]「2027년 서울인쇄센터 관리운영」용역 사업 제안서 평가위원(후보자) 추천 요청",
+    "date": "2026-11-11",
+    "url": "https://kuedu.korea.ac.kr/educa/notice/new_page.do?mode=view&articleNo=1588732",
+    "list_html": "<div class=\"t_list\"><table class=\"w\"><tbody><tr><td>2842</td><td class=\"txt_left\"><a class=\"article-title\" href=\"https://kuedu.korea.ac.kr/educa/notice/new_page.do?mode=view&amp;articleNo=1588732\">[서울특별시]「2027년 서울인쇄센터 관리운영」용역 사업 제안서 평가위원(후보자) 추천 요청</a></td><td>사범대학</td><td>32</td><td>2026-11-11</td></tr></tbody></table></div>",
+    "detail_html": "",
+    "window_end": "2026-11-12",
+    "requests_per_collect": "2"
+  },
+  "incheon_math_education_reposts": {
+    "config_path": "config/batch-cafe.example.toml",
+    "title": "[공고] 2026. 충북수학체험센터 AI·디지털 기반 전시체험물 개선 사업 제안서 평가위원(후보자) 모집 안내",
+    "date": "2026-11-09",
+    "url": "https://gotoschool.ice.go.kr/icmath/na/ntt/selectNttInfo.do?mi=11925&bbsId=1462&nttSn=3388449",
+    "list_html": "<div id=\"board-imgTxt\"><table><tbody><tr><td>130</td><td class=\"bbs_tit\"><a data-id=\"3388449\" href=\"javascript:;\">[공고] 2026. 충북수학체험센터 AI·디지털 기반 전시체험물 개선 사업 제안서 평가위원(후보자) 모집 안내</a></td><td data-table=\"date\">2026-11-09</td></tr></tbody></table></div>",
+    "detail_html": "",
+    "window_end": "2026-11-12",
+    "requests_per_collect": "2"
+  },
+  "fc_anyang": {
+    "config_path": "config/batch-cafe.example.toml",
+    "title": "2027년 FC안양 연간회원권 및 구성품 제작 대행 용역 제안서평가위원회 예비평가위원 모집 공고(11.10~11.17)",
+    "date": "2026-11-10",
+    "url": "https://www.fc-anyang.com/news/newsDetail.asp?menu=TNotice&seq=740",
+    "list_html": "<table class=\"b_list\"><tbody><tr><th>479</th><td class=\"txt_left\"><a href=\"javascript:goDetail(740);\">2027년 FC안양 연간회원권 및 구성품 제작 대행 용역 제안서평가위원회 예비평가위원 모집 공고(11.10~11.17)<img alt=\"새글\"></a></td><td>2026-11-10</td></tr></tbody></table>",
+    "detail_html": "",
+    "window_end": "2026-11-12",
+    "requests_per_collect": "2"
+  }
+}

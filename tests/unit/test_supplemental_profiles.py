@@ -10,12 +10,13 @@ from zoneinfo import ZoneInfo
 
 import pytest
 from bs4 import BeautifulSoup
-from profile_cases import PROFILE_BATCHES
+from profile_cases import PROFILE_BATCHES, load_source_subset, read_cases
 
 from judgefinder.adapters.config import load_config
 from judgefinder.adapters.source_registry import SourceRegistry
 from judgefinder.adapters.sources.generic_engine.profiled_html import parse_profiled_html
 from judgefinder.adapters.sources.generic_engine.source import GenericEngineSource
+from judgefinder.adapters.sources.generic_engine.wonkwang_contract import WonkwangContractSource
 from judgefinder.infrastructure.http.client import RequestsHttpClient
 
 ROOT = Path(__file__).parents[2]
@@ -349,7 +350,7 @@ def test_navigation_keywords_do_not_turn_unrelated_notice_into_recruitment() -> 
 
 
 def test_supplemental_batch_is_enabled_and_does_not_pin_search_dates() -> None:
-    settings = load_config(ROOT / "config/batch-cafe-20261028.example.toml")
+    settings = load_config(ROOT / "config/batch-cafe.example.toml")
     assert set(settings.enabled_sources) == set(settings.sources)
     for config in settings.sources.values():
         assert config.fixture_path is None
@@ -451,7 +452,10 @@ def test_recovered_board_fixtures_are_sanitized(recovered_board_case: dict[str, 
 
 
 def test_october_22_boards_are_enabled_without_historical_search_cutoffs() -> None:
-    settings = load_config(ROOT / "config/batch-cafe-20261022.example.toml")
+    settings = load_source_subset(
+        ROOT / "config/batch-cafe.example.toml",
+        ["jemulpo_eminwon", "cheonan_uc", "gimje_education", "geoje_gohyeon", "gimhae_cultural"],
+    )
     assert set(settings.enabled_sources) == {
         "jemulpo_eminwon", "cheonan_uc", "gimje_education", "geoje_gohyeon", "gimhae_cultural",
     }
@@ -492,7 +496,10 @@ def test_geoje_recovers_body_keyword_without_importing_navigation_text() -> None
 
 
 def test_october_21_boards_and_jeju_have_no_fixed_search_dates() -> None:
-    settings = load_config(ROOT / "config/batch-cafe-20261021.example.toml")
+    settings = load_source_subset(
+        ROOT / "config/batch-cafe.example.toml",
+        read_cases("cafe_20261021_profiles.json"),
+    )
     assert set(settings.enabled_sources) == {
         "seoul_women", "incheon_seohae_culture", "jeonnam_tourism",
         "jeju_international_university",
@@ -541,7 +548,10 @@ def test_hibrain_sources_and_nowon_original_board_remain_enabled() -> None:
     assert "q_bbsCode=1004" in seoul.sources["nowon"].list_url
     assert "q_bbsCode=1003" in seoul.sources["nowon_gosi"].list_url
     config_path = "config/batch-hibrain.example.toml"
-    settings = load_config(ROOT / config_path)
+    settings = load_source_subset(
+        ROOT / config_path,
+        (c["slug"] for c in HIBRAIN_CASES.values() if c["config_path"] == config_path),
+    )
     assert len(settings.enabled_sources) == 30
     assert set(settings.enabled_sources) == {
         c["slug"] for c in HIBRAIN_CASES.values() if c["config_path"] == config_path
@@ -611,7 +621,10 @@ def test_public_empty_messages_do_not_hide_valid_links(message: str) -> None:
 def test_october_30_channels_remain_public_without_replacing_dobong_notices() -> None:
     seoul = load_config(ROOT / "config/batch-seoul-ten.example.toml")
     assert {"dobong", "dobong_gosi"} <= set(seoul.enabled_sources)
-    config = load_config(ROOT / "config/batch-cafe-20261030.example.toml")
+    config = load_source_subset(
+        ROOT / "config/batch-cafe.example.toml",
+        ["incheon_ccei", "anseong_industry"],
+    )
     assert set(config.enabled_sources) == {"incheon_ccei", "anseong_industry"}
     for source in [seoul.sources["dobong_gosi"], *config.sources.values()]:
         assert source.fixture_path is None and not source.recruitment_only
@@ -672,25 +685,33 @@ def test_muan_public_portal_empty_search_does_not_accept_firewall_documents() ->
 
 
 def test_hibrain_route_additions_use_public_boards_without_pinned_notice_ids() -> None:
-    path = "config/batch-hibrain-recovery.example.toml"
+    path = "config/batch-hibrain.example.toml"
     settings = load_config(ROOT / path)
     cases = json.loads(
         (ROOT / "tests/fixtures/hibrain_routes_profiles.json").read_text(encoding="utf-8"),
     )
     additions = {slug: c for slug, c in cases.items() if c["config_path"] == path}
-    assert len(additions) == 14
+    assert len(additions) == 30
     assert set(settings.enabled_sources) == {
-        "andong_related", "kigas_notices", "kila_news", "railway_notices", *additions,
+        "andong_related", "kigas_notices", "kila_news", "railway_notices",
+        "wonkwang_contract", "woo_jin_metro_ui", *additions,
+        *(c["slug"] for c in HIBRAIN_CASES.values() if c["config_path"] == path),
     }
     for slug in additions:
         source = settings.sources[slug]
-        assert source.fixture_path is None and not source.recruitment_only
-        assert source.request_strategy.verify_tls and source.max_pages == 100
+        recruitment_only = slug == "gimhae_bio_industry"
+        assert source.fixture_path is None and source.request_strategy.verify_tls
+        assert source.recruitment_only == recruitment_only
+        assert source.max_pages == (10 if recruitment_only else 100)
         assert "hibrain.net" not in source.list_url
         assert not {
             "articleSeq", "list_no", "msg_seq", "wr_id", "boardNo", "bbsData",
             "idx", "bbsSn", "board_seq", "not_ancmt_mgt_no",
         } & parse_qs(urlparse(source.list_url).query).keys()
+    assert {slug for slug in settings.enabled_sources
+            if settings.sources[slug].request_strategy.transport == "windows_curl"} == {
+        "sscmc_notice",
+    }
     # 부산TP 목록은 만료일을 표시하므로 등록일의 대체값으로 사용하지 않는다.
     profile = settings.sources["busan_tp_notice"].html_profile
     assert profile is not None and not profile.date_selector
@@ -701,7 +722,7 @@ def test_hibrain_route_additions_use_public_boards_without_pinned_notice_ids() -
 
 
 def test_rise_terminal_page_can_have_zero_pager_and_no_notice_container() -> None:
-    source = load_config(ROOT / "config/batch-hibrain-recovery.example.toml").sources[
+    source = load_config(ROOT / "config/batch-hibrain.example.toml").sources[
         "gyeongbuk_rise"
     ]
     html = (
@@ -733,7 +754,7 @@ def test_muan_current_empty_listing_does_not_synthesize_an_archived_notice() -> 
 
 
 def test_added_repost_boards_preserve_original_channels_and_search_contracts() -> None:
-    settings = load_config(ROOT / "config/batch-hibrain-recovery.example.toml")
+    settings = load_config(ROOT / "config/batch-hibrain.example.toml")
     assert {"dtmsa_bid", "esk_recruit"} <= set(settings.enabled_sources)
     profile = settings.sources["dtmsa_bid"].html_profile
     assert profile is not None and profile.request_method == "POST"
@@ -743,8 +764,8 @@ def test_added_repost_boards_preserve_original_channels_and_search_contracts() -
     }
     assert settings.sources["esk_recruit"].municipality == "대한인간공학회"
     for config_path, slug in (
-        ("config/batch-cafe-20261028.example.toml", "daegu_market"),
-        ("config/batch-cafe-20261029.example.toml", "daegu_market_announcement"),
+        ("config/batch-cafe.example.toml", "daegu_market"),
+        ("config/batch-cafe.example.toml", "daegu_market_announcement"),
     ):
         original = load_config(ROOT / config_path)
         assert slug in original.enabled_sources
@@ -771,4 +792,408 @@ def test_esk_blank_terminal_cell_cannot_hide_a_real_notice_link() -> None:
     with pytest.raises(ValueError, match="notice link missing"):
         parse_profiled_html(
             str(html), list_url=source.list_url, profile=source.html_profile, expected_page=2,
+        )
+
+
+def test_october_31_boards_extend_existing_channels_without_pinned_dates() -> None:
+    settings = load_source_subset(
+        ROOT / "config/batch-cafe.example.toml",
+        read_cases("cafe_20261031_profiles.json"),
+    )
+    assert set(settings.enabled_sources) == {
+        "yongsan_gosi", "ebs_notice", "jecheon_cultural",
+        "gwangju_bukgu_facilities", "ulsan_volunteer", "kfce_notice", "silla_heritage",
+    }
+    assert "yongsan" in load_config(
+        ROOT / "config/batch-seoul-five.example.toml",
+    ).enabled_sources
+    for slug in settings.enabled_sources:
+        source = settings.sources[slug]
+        assert not source.recruitment_only
+        assert source.request_strategy.verify_tls
+        assert source.fixture_path is None
+        assert not {"sdate", "edate", "bgnDts", "endDts", "idx", "nttId", "postId", "aseq"} & (
+            parse_qs(urlparse(source.list_url).query).keys()
+        )
+
+
+    assert settings.sources["kfce_notice"].html_profile.search_param == "sv"
+    assert parse_qs(urlparse(settings.sources["kfce_notice"].list_url).query)["sk"] == [
+        "article_title",
+    ]
+    assert urlparse(settings.sources["silla_heritage"].list_url).scheme == "http"
+    for source in SourceRegistry(
+        settings, RequestsHttpClient(), ZoneInfo(settings.timezone),
+    ).build_enabled_sources():
+        if source.slug in {"kfce_notice", "silla_heritage"}:
+            assert isinstance(source, GenericEngineSource)
+            assert source.request_headers["User-Agent"].startswith("Mozilla/5.0")
+
+
+@pytest.mark.parametrize("metadata,valid", [
+    ("작성일 26-10-30 15:05", True),
+    ("작성일 26-10-30 00:00:59", True),
+    ("작성일 26-10-30 24:00", False),
+    ("작성일 26-10-30 15:60", False),
+    ("작성일 26-02-30 15:05", False),
+    ("접수기간 26-10-30 15:05", False),
+    ("작성일 26-10-30 ~ 26-11-04", False),
+])
+def test_explicit_two_digit_registration_metadata_with_time(
+    metadata: str, valid: bool,
+) -> None:
+    case = json.loads(
+        (ROOT / "tests/fixtures/cafe_20261031_profiles.json").read_text(encoding="utf-8"),
+    )["jecheon_cultural"]
+    config = load_config(ROOT / case["config_path"]).sources["jecheon_cultural"]
+    profile = config.html_profile
+    assert profile is not None
+    detail = BeautifulSoup(case["detail_html"], "html5lib")
+    node = detail.select_one(profile.detail_date_selector)
+    assert node is not None
+    node.string = metadata
+    loader = Mock(return_value=str(detail))
+    if valid:
+        notices = parse_profiled_html(
+            case["list_html"], list_url=config.list_url, profile=profile,
+            detail_loader=loader,
+        )
+        assert [notice.published_date for notice in notices] == [date(2026, 10, 30)]
+    else:
+        with pytest.raises(ValueError, match="invalid title or registration date"):
+            parse_profiled_html(
+                case["list_html"], list_url=config.list_url, profile=profile,
+                detail_loader=loader,
+            )
+
+
+@pytest.mark.parametrize("date_order,reverse_rows,error", [
+    ("descending", False, ""),
+    ("", False, "historical page unavailable"),
+    ("descending", True, "registration dates are not descending"),
+])
+def test_ordered_board_keeps_current_notice_when_older_page_is_broken(
+    date_order: str, reverse_rows: bool, error: str,
+) -> None:
+    case = json.loads(
+        (ROOT / "tests/fixtures/cafe_20261031_profiles.json").read_text(encoding="utf-8"),
+    )["jecheon_cultural"]
+    settings = load_config(ROOT / case["config_path"])
+    settings.enabled_sources = ["jecheon_cultural"]
+    profile = settings.sources["jecheon_cultural"].html_profile
+    assert profile is not None
+    profile.date_order = date_order
+    listing = BeautifulSoup(case["list_html"], "html5lib")
+    row = listing.select_one(profile.row_selector)
+    assert row is not None
+    # Parse a standalone table row in its required table context.
+    older_row = BeautifulSoup(
+        "<table><tbody>" + str(row).replace("686", "675") + "</tbody></table>", "html5lib",
+    ).select_one("tr")
+    assert older_row is not None
+    if reverse_rows:
+        row.insert_before(older_row)
+    else:
+        row.insert_after(older_row)
+    old_url = case["url"].replace("686", "675")
+    old_detail = case["detail_html"].replace("26-10-30", "26-10-02")
+    client = Mock()
+
+    def response(url: str, **_: object) -> str:
+        if url == case["url"]:
+            return str(case["detail_html"])
+        if url == old_url:
+            return str(old_detail)
+        if parse_qs(urlparse(url).query)["page"] == ["1"]:
+            return str(listing)
+        raise ValueError("historical page unavailable")
+
+    client.get_text.side_effect = response
+    source = SourceRegistry(
+        settings, client, ZoneInfo(settings.timezone),
+    ).build_enabled_sources()[0]
+    assert isinstance(source, GenericEngineSource)
+    source.throttle_seconds = 0
+    if error:
+        with pytest.raises(ValueError, match=error):
+            source.fetch(date(2026, 10, 30))
+    else:
+        notices = source.fetch(date(2026, 10, 30))
+        assert [notice.url for notice in notices] == [case["url"]]
+        assert not any("page=2" in call.args[0] for call in client.get_text.call_args_list)
+
+
+
+def test_second_hibrain_boards_use_public_searches_and_keep_existing_channels() -> None:
+    settings = load_config(ROOT / "config/batch-hibrain.example.toml")
+    slugs = {
+        "daegu_sports", "jeonbuk_education", "gri_bid", "gwangju_cultural",
+        "incheon_smartcity", "eumseong_notice", "sancheong_recruit", "jejusi_notice",
+    }
+    assert slugs <= set(settings.enabled_sources)
+    assert settings.sources["gri_bid"].html_profile.link_attribute == "onclick"
+    assert "공고일자" in settings.sources["gri_bid"].html_profile.detail_date_selector
+    assert not settings.sources["gwangju_cultural"].html_profile.date_order
+    assert not settings.sources["incheon_smartcity"].html_profile.date_order
+    for config_path, slug in (
+        ("config/batch-chungbuk-chungnam-jeonbuk-thirty.example.toml", "eumseong"),
+        ("config/batch-gyeongnam-jeju-final-twenty.example.toml", "sancheong"),
+        ("config/batch-gyeongnam-jeju-final-twenty.example.toml", "jeju"),
+    ):
+        assert slug in load_config(ROOT / config_path).enabled_sources
+    sources = SourceRegistry(
+        settings, RequestsHttpClient(), ZoneInfo(settings.timezone),
+    ).build_enabled_sources()
+    jejusi = next(source for source in sources if source.slug == "jejusi_notice")
+    assert isinstance(jejusi, GenericEngineSource)
+    query = parse_qs(urlparse(jejusi._build_request_url(page_index=2)).query)
+    assert query["searchText"] == ["평가"]
+    assert query["currentPageNo"] == ["2"]
+    sports = next(source for source in sources if source.slug == "daegu_sports")
+    assert isinstance(sports, GenericEngineSource)
+    query = parse_qs(urlparse(sports._build_request_url(page_index=2)).query)
+    assert query["start"] == ["10"] and query["keyword"] == ["평가위원"]
+
+
+def test_bdi_starts_with_first_page_and_finds_notice_on_second_page() -> None:
+    cases = json.loads(
+        (ROOT / "tests/fixtures/hibrain_routes_profiles.json").read_text(encoding="utf-8"),
+    )
+    case = cases["bdi_notice"]
+    settings = load_config(ROOT / case["config_path"])
+    settings.enabled_sources = ["bdi_notice"]
+    client = Mock()
+    calls: list[str] = []
+
+    def respond(url: str, **kwargs: object) -> str:
+        assert kwargs["use_session"] and kwargs["verify_tls"]
+        calls.append(url)
+        if url == case["url"]:
+            return str(case["detail_html"])
+        if url == case["preceding_url"]:
+            return str(case["preceding_detail_html"])
+        page = int(urlparse(url).path.rsplit("/", 1)[1])
+        assert page in {1, 2, 3}
+        if page == 1:
+            return str(case["preceding_list_html"])
+        if page == 2:
+            return str(case["list_html"])
+        soup = BeautifulSoup(case["list_html"], "html5lib")
+        soup.select_one("#tablelist tbody").clear()
+        return str(soup)
+
+    client.get_text.side_effect = respond
+    source = SourceRegistry(
+        settings, client, ZoneInfo(settings.timezone),
+    ).build_enabled_sources()[0]
+    assert isinstance(source, GenericEngineSource)
+    source.throttle_seconds = 0
+    for _ in range(2):
+        notices = source.fetch(date.fromisoformat(case["date"]))
+        assert [(n.title, str(n.published_date), n.url) for n in notices] == [
+            (case["title"], case["date"], case["url"]),
+        ]
+    assert calls == [
+        "https://www.bdi.re.kr/www/board/1/1", case["preceding_url"],
+        "https://www.bdi.re.kr/www/board/1/2", case["url"],
+        "https://www.bdi.re.kr/www/board/1/3",
+    ]
+    client.post_text.assert_not_called()
+
+@pytest.mark.parametrize("evaluator_body", [True, False])
+def test_suwon_committee_recovery_requires_evaluator_keywords_in_scoped_body(
+    evaluator_body: bool,
+) -> None:
+    case = json.loads(
+        (ROOT / "tests/fixtures/cafe_20261103_profiles.json").read_text(encoding="utf-8"),
+    )["suwon_committee"]
+    settings = load_config(ROOT / case["config_path"])
+    settings.enabled_sources = ["suwon_committee"]
+    detail = BeautifulSoup(case["detail_html"], "html5lib")
+    if not evaluator_body:
+        body = detail.select_one("td.p-table__content")
+        assert body is not None
+        body.string = "민간위탁기관선정심의위원회 위원 후보자를 모집합니다."
+    # Unrelated navigation cannot turn a non-evaluator committee into a match.
+    payload = str(detail) + "<aside>다른 게시판 평가위원 모집</aside>"
+    client = Mock()
+
+    def response(url: str, **_: object) -> str:
+        if url == case["url"]:
+            return payload
+        query = parse_qs(urlparse(url).query)
+        assert query["q_searchVal"] == ["심의위원"]
+        return (case["list_html"] if query["q_currPage"] == ["1"] else (
+            '<table class="p-table"><tbody></tbody></table>'
+            '<div class="p-pagination"><strong class="p-page__link active">2</strong></div>'
+        ))
+
+    client.get_text.side_effect = response
+    source = SourceRegistry(
+        settings, client, ZoneInfo(settings.timezone),
+    ).build_enabled_sources()[0]
+    assert isinstance(source, GenericEngineSource)
+    source.throttle_seconds = 0
+    notices = source.fetch(date(2026, 11, 2))
+    assert [notice.url for notice in notices] == ([case["url"]] if evaluator_body else [])
+    if notices:
+        assert notices[0].title == case["title"]
+        assert "평가위원" not in notices[0].title
+
+
+def test_november_4_routes_activate_existing_collectors_and_preserve_board_boundaries() -> None:
+    settings = load_source_subset(
+        ROOT / "config/batch-cafe.example.toml",
+        [*read_cases("cafe_20261104_profiles.json"), "hanam", "jecheon"],
+    )
+    assert set(settings.enabled_sources) == {
+        "gogung_bid", "gyeonggi_sports_bid", "sokcho_cultural", "pohang_tp_notice",
+        "hanam", "jecheon",
+    }
+    base = load_config(ROOT / "config/config.example.toml")
+    for slug in ("hanam", "jecheon"):
+        assert settings.sources[slug] == base.sources[slug]
+        assert slug not in base.enabled_sources
+    previous = load_config(ROOT / "config/batch-cafe.example.toml")
+    old = parse_qs(urlparse(previous.sources["pohang_technopark"].list_url).query)
+    new = parse_qs(urlparse(settings.sources["pohang_tp_notice"].list_url).query)
+    assert old["manage_idx"] == ["15"] and new["manage_idx"] == ["2"]
+    for source in settings.sources.values():
+        assert source.fixture_path is None and source.request_strategy.verify_tls
+        assert not {"srchBeginDt", "srchEndDt", "q_startDt", "q_endDt", "conIfmEnddt"} & (
+            set(parse_qs(urlparse(source.list_url).query))
+        )
+
+
+def test_wonkwang_public_post_extracts_official_date_and_caches_without_url_tokens(
+    wonkwang_contract_case: dict[str, str], wonkwang_contract_http: list[str],
+) -> None:
+    case = wonkwang_contract_case
+    settings = load_config(ROOT / case["config_path"])
+    settings.enabled_sources = [case["slug"]]
+    source = SourceRegistry(settings, RequestsHttpClient(), ZoneInfo(settings.timezone))
+    collector = source.build_enabled_sources()[0]
+    assert isinstance(collector, WonkwangContractSource)
+    collector.throttle_seconds = 0
+    for _ in range(2):
+        notices = collector.fetch(date.fromisoformat(case["date"]))
+        assert [(n.title, str(n.published_date), n.url) for n in notices] == [
+            (case["title"], case["date"], case["url"]),
+        ]
+    assert len(wonkwang_contract_http) == 3
+    assert not any(k in notices[0].url for k in ("g_secure", "g_ipaddr", "g_accountyear"))
+    assert not notices[0].title.startswith("work")
+
+
+@pytest.mark.parametrize("failure", ["token", "page", "total", "identity", "date"])
+def test_wonkwang_rejects_incomplete_forms_and_unverified_detail(
+    wonkwang_contract_case: dict[str, str], wonkwang_contract_http: list[str], failure: str,
+) -> None:
+    case = wonkwang_contract_case
+    if failure == "token":
+        case["seed_html"] = case["seed_html"].replace('name="g_secure"', 'name="unrelated"')
+    elif failure == "page":
+        case["list_html"] = case["list_html"].replace('name="page" value="1"',
+                                                    'name="page" value="2"')
+    elif failure == "total":
+        case["list_html"] = case["list_html"].replace('name="tpage" value="1"',
+                                                    'name="tpage" value="invalid"')
+    elif failure == "identity":
+        identifier = parse_qs(urlparse(case["url"]).query)["notice_no"][0]
+        case["detail_html"] = case["detail_html"].replace(identifier, "b" * 32)
+    else:
+        case["detail_html"] = case["detail_html"].replace("2026.10.30", "2026.02.30")
+    settings = load_config(ROOT / case["config_path"])
+    settings.enabled_sources = [case["slug"]]
+    collector = SourceRegistry(
+        settings, RequestsHttpClient(), ZoneInfo(settings.timezone),
+    ).build_enabled_sources()[0]
+    collector.throttle_seconds = 0
+    with pytest.raises(ValueError):
+        collector.fetch(date.fromisoformat(case["date"]))
+
+
+def test_wonkwang_tracks_rotating_context_and_server_page_count(
+    wonkwang_contract_case: dict[str, str], wonkwang_contract_http: list[str],
+) -> None:
+    case = wonkwang_contract_case
+    case["list_html"] = case["list_html"].replace('name="tpage" value="1"',
+                                                'name="tpage" value="2"')
+    empty = BeautifulSoup(case["list_html"], "html5lib")
+    empty.select_one('.cards').decompose()
+    empty.select_one('input[name="page"]')["value"] = "2"
+    empty.select_one('.page > .on').string = "2"
+    case["empty_html"] = str(empty)
+    settings = load_config(ROOT / case["config_path"])
+    settings.enabled_sources = [case["slug"]]
+    collector = SourceRegistry(
+        settings, RequestsHttpClient(), ZoneInfo(settings.timezone),
+    ).build_enabled_sources()[0]
+    collector.throttle_seconds = 0
+    assert len(collector.fetch(date.fromisoformat(case["date"]))) == 1
+    assert len(wonkwang_contract_http) == 4
+
+
+def test_wonkwang_uses_the_boards_selected_year_instead_of_a_fixed_year(
+    wonkwang_contract_case: dict[str, str], wonkwang_contract_http: list[str],
+) -> None:
+    case = wonkwang_contract_case
+    for name in ("seed_html", "list_html", "detail_html", "date"):
+        case[name] = case[name].replace("2026", "2027")
+    settings = load_config(ROOT / case["config_path"])
+    settings.enabled_sources = [case["slug"]]
+    collector = SourceRegistry(
+        settings, RequestsHttpClient(), ZoneInfo(settings.timezone),
+    ).build_enabled_sources()[0]
+    collector.throttle_seconds = 0
+    assert collector.fetch(date.fromisoformat(case["date"]))[0].published_date.year == 2027
+
+
+def test_november_5_selection_keyword_is_scoped_to_the_supplemental_board() -> None:
+    settings = load_source_subset(
+        ROOT / "config/batch-cafe.example.toml",
+        read_cases("cafe_20261105_profiles.json"),
+    )
+    assert set(settings.enabled_sources) == set(settings.sources)
+    assert len(settings.enabled_sources) == 12
+    special = settings.sources["hwaseong_selection"]
+    assert special.keywords == ("사업계획서 선정심의위원",)
+    previous = load_config(ROOT / "config/batch-gyeonggi-gangwon-chungbuk-thirty.example.toml")
+    assert previous.sources["hwaseong"].keywords == ("평가위원",)
+    assert previous.sources["hwaseong"].recruitment_only
+    for slug, source in settings.sources.items():
+        assert source.fixture_path is None and source.request_strategy.verify_tls
+        if slug != "hwaseong_selection":
+            assert source.keywords == ("평가위원",)
+        query = parse_qs(urlparse(source.list_url).query)
+        assert not {"searchStrtDt", "searchEndDt", "srchBeginDt", "srchEndDt"} & query.keys()
+    old = load_config(ROOT / "config/batch-jeonbuk-gyeongbuk-gyeongnam-thirty.example.toml")
+    assert "boardMngNo=71" in old.sources["gyeongbuk"].list_url
+    assert "boardMngNo=8" in settings.sources["gyeongbuk_announcements"].list_url
+    assert urlparse(old.sources["goryeong"].list_url).hostname == "www.goryeong.go.kr"
+    assert urlparse(settings.sources["goryeong_eminwon"].list_url).hostname == (
+        "eminwon.goryeong.go.kr"
+    )
+
+
+def test_accessibility_page_label_keeps_selected_page_validation() -> None:
+    case = json.loads(
+        (ROOT / "tests/fixtures/cafe_20261105_profiles.json").read_text(encoding="utf-8"),
+    )["kotsa_notice"]
+    source = load_config(ROOT / case["config_path"]).sources["kotsa_notice"]
+    profile = source.html_profile
+    assert profile is not None
+    soup = BeautifulSoup(case["list_html"], "html5lib")
+    pager = soup.select_one(profile.page_number_selector)
+    assert pager is not None
+    assert pager.select_one(".hidden") is not None
+    candidates = parse_profiled_html(
+        str(soup), list_url=source.list_url, profile=profile,
+        detail_loader=Mock(return_value=case["detail_html"]), expected_page=1,
+    )
+    assert [candidate.url for candidate in candidates] == [case["url"]]
+    with pytest.raises(ValueError, match="page does not match"):
+        parse_profiled_html(
+            str(soup), list_url=source.list_url, profile=profile,
+            detail_loader=Mock(return_value=case["detail_html"]), expected_page=2,
         )

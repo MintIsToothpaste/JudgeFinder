@@ -6,6 +6,13 @@ from enum import Enum
 from urllib.parse import urlparse
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
+NOTICE_ID_PATTERNS = {
+    "numeric": r"[1-9][0-9]*",
+    "hex32": r"[a-fA-F0-9]{32}",
+    "zero_padded_numeric": r"0*[1-9][0-9]*",
+    "alphanumeric": r"[A-Za-z0-9]{1,64}",
+}
+
 
 @dataclass(slots=True)
 class HtmlProfile:
@@ -37,8 +44,11 @@ class HtmlProfile:
     page_path_template: str = ""
     listing_date_attribute: str = ""
     detail_date_attribute: str = ""
+    date_order: str = ""
 
     def __post_init__(self) -> None:
+        if self.date_order not in {"", "descending"}:
+            raise ValueError("html_profile.date_order must be empty or descending")
         if self.listing_date_attribute and (not self.date_selector or not (
             self.listing_date_attribute in {"title", "datetime"}
             or re.fullmatch(r"data-[a-z][a-z0-9]*(?:-[a-z0-9]+)*", self.listing_date_attribute)
@@ -80,7 +90,7 @@ class HtmlProfile:
             )
         ):
             raise ValueError("html_profile.detail_query_exclude must list query parameter names")
-        if self.id_format not in {"numeric", "hex32", "zero_padded_numeric", "alphanumeric"}:
+        if self.id_format not in NOTICE_ID_PATTERNS:
             raise ValueError(
                 "html_profile.id_format must be numeric, hex32, zero_padded_numeric "
                 "or alphanumeric",
@@ -161,6 +171,7 @@ class JsonProfile:
     date_format: str = "text"
     date_timezone: str = "UTC"
     date_fallback_key: str = ""
+    page_base: int = 1
 
     def __post_init__(self) -> None:
         if self.date_format not in {"text", "unix_ms"}:
@@ -180,6 +191,8 @@ class JsonProfile:
             raise ValueError("json_profile status path and success value must be paired")
         if not self.status_path and not self.total_path:
             raise ValueError("json_profile requires a success status or validated total")
+        if type(self.page_base) is not int or self.page_base not in {0, 1}:
+            raise ValueError("json_profile.page_base must be 0 or 1")
         if type(self.offset_base) is not int or self.offset_base not in {0, 1}:
             raise ValueError("json_profile.offset_base must be 0 or 1")
         if self.offset_param and self.offset_param == self.page_param:
@@ -232,6 +245,14 @@ class RequestStrategy:
     timeout_seconds: float = 10.0
     throttle_seconds: float = 0.0
     verify_tls: bool = True
+    transport: str = "requests"
+
+    def __post_init__(self) -> None:
+        if (not isinstance(self.transport, str)
+            or self.transport not in {"requests", "windows_curl"}):
+            raise ValueError("request_strategy.transport must be requests or windows_curl")
+        if self.transport == "windows_curl" and not self.verify_tls:
+            raise ValueError("windows_curl transport requires verify_tls=true")
 
     @classmethod
     def from_access_profile(cls, access_profile: AccessProfile) -> RequestStrategy:

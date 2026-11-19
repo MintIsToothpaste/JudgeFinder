@@ -27,8 +27,14 @@ def test_supplemental_boards_collect_store_deduplicate_and_list(
     cases = json.loads(
         (ROOT / "tests/fixtures/cafe_20261023_profiles.json").read_text(encoding="utf-8"),
     )
-    example = ROOT / "config/batch-cafe-20261023.example.toml"
+    example = ROOT / "config/batch-cafe.example.toml"
     settings = load_config(example)
+    selected = {
+        slug for slug, case in cases.items()
+        if case["config_path"] == "config/batch-cafe.example.toml"
+    }
+    assert len(selected) == 11 and selected <= set(settings.enabled_sources)
+    settings.enabled_sources = [slug for slug in settings.enabled_sources if slug in selected]
     config, db = tmp_path / "config.toml", tmp_path / "notices.db"
     text = re.sub(
         r"^db_path = .+$",
@@ -36,10 +42,16 @@ def test_supplemental_boards_collect_store_deduplicate_and_list(
         example.read_text(encoding="utf-8"),
         flags=re.MULTILINE,
     )
+    text = re.sub(
+        r"^enabled_sources = .+$", "enabled_sources = " + json.dumps(settings.enabled_sources),
+        text, flags=re.MULTILINE,
+    )
     config.write_text(
         text.replace("throttle_seconds = 0.3", "throttle_seconds = 0.0"), encoding="utf-8"
     )
-    by_host = {urlparse(source.list_url).netloc: slug for slug, source in settings.sources.items()}
+    by_host = {
+        urlparse(settings.sources[slug].list_url).netloc: slug for slug in settings.enabled_sources
+    }
     details = {case["url"]: case["detail_html"] for case in cases.values()}
     calls: list[str] = []
     seen: set[str] = set()
@@ -133,7 +145,7 @@ def test_recovered_boards_collect_store_deduplicate_and_list(
     cases = json.loads(
         (ROOT / "tests/fixtures/cafe_20261028_profiles.json").read_text(encoding="utf-8"),
     )
-    example = ROOT / "config/batch-cafe-20261028.example.toml"
+    example = ROOT / "config/batch-cafe.example.toml"
     text = example.read_text(encoding="utf-8")
     text = re.sub(
         r"^enabled_sources = .+$",
@@ -151,7 +163,9 @@ def test_recovered_boards_collect_store_deduplicate_and_list(
         re.sub(r"throttle_seconds = [0-9.]+", "throttle_seconds = 0.0", text), encoding="utf-8"
     )
     settings = load_config(config)
-    hosts = {urlparse(c.list_url).netloc: slug for slug, c in settings.sources.items()}
+    hosts = {
+        urlparse(settings.sources[slug].list_url).netloc: slug for slug in settings.enabled_sources
+    }
     details = {case["url"]: case["detail_html"] for case in cases.values()}
     seen: set[str] = set()
     calls: list[str] = []
@@ -208,6 +222,37 @@ def test_recovered_boards_collect_store_deduplicate_and_list(
     assert listed.exit_code == 0
     assert set(listed.stdout.splitlines()) == {r[3] for r in expected}
     assert len(calls) == before
+
+
+def test_wonkwang_cli_posts_public_forms_deduplicates_and_lists_without_http(
+    wonkwang_contract_case: dict[str, str], wonkwang_contract_http: list[str],
+    tmp_path: Path, caplog: pytest.LogCaptureFixture,
+) -> None:
+    case = wonkwang_contract_case
+    text = (ROOT / case["config_path"]).read_text(encoding="utf-8")
+    text = re.sub(r"^enabled_sources = .+$", 'enabled_sources = ["wonkwang_contract"]',
+                  text, flags=re.MULTILINE)
+    db, config = tmp_path / "notices.db", tmp_path / "config.toml"
+    text = re.sub(r"^db_path = .+$", "db_path = " + json.dumps(db.as_posix()),
+                  text, flags=re.MULTILINE)
+    text = re.sub(r"throttle_seconds = [0-9.]+", "throttle_seconds = 0.0", text)
+    config.write_text(text, encoding="utf-8")
+    runner = CliRunner()
+    args = ["--config-path", str(config)]
+    window = ["--date", "2026-11-04", "--days", "14"]
+    snapshots = []
+    for _ in range(2):
+        result = runner.invoke(app, [*args, "collect", *window])
+        assert result.exit_code == 0, result.output
+        assert result.stdout.splitlines() == [case["url"]]
+        with sqlite3.connect(db) as connection:
+            snapshots.append(connection.execute("select * from notices").fetchall())
+    assert snapshots[0] == snapshots[1] and len(snapshots[0]) == 1
+    assert len(wonkwang_contract_http) == 6
+    assert "Skipping source" not in caplog.text
+    listed = runner.invoke(app, [*args, "list", *window])
+    assert listed.exit_code == 0 and listed.stdout.splitlines() == [case["url"]]
+    assert len(wonkwang_contract_http) == 6
 
 
 def test_additional_boards_cli_collect_store_deduplicate_and_list_offline(
@@ -592,7 +637,8 @@ def test_october_30_recovered_sources_collect_deduplicate_and_list_offline(
             return str(case["detail_html"])
         assert (data is not None) == (slug == "incheon_ccei")
         query = parse_qs(data.decode("ascii") if data is not None else urlparse(url).query)
-        assert query[profile.search_param] == ["평가위원"]
+        if profile.search_param:
+            assert query[profile.search_param] == ["평가위원"]
         if slug == "incheon_ccei":
             assert query["kind"] == ["my"] and query["pagePerContents"] == ["8"]
         page = query[profile.page_param][0]

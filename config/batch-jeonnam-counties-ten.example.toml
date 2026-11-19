@@ -301,3 +301,4 @@ id_pattern = '[?&]idx=([1-9][0-9]*)(?:&|$)'
 detail_url_template = "/www/openmuan/new/announcement?idx={id}&mode=view"
 search_param = "search_word"
 page_param = "page"
+detail_body_selector = "#board_basic_view .board_cont"

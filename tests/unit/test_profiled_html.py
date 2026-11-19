@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from dataclasses import replace
 from datetime import date
 from pathlib import Path
@@ -12,6 +13,7 @@ from bs4 import BeautifulSoup
 from judgefinder.adapters.config import load_config
 from judgefinder.adapters.sources.generic_engine.profiled_html import (
     _title_text,
+    parse_profiled_detail,
     parse_profiled_html,
 )
 from judgefinder.adapters.sources.generic_engine.source import GenericEngineSource
@@ -25,7 +27,7 @@ ROOT = Path(__file__).parents[2]
 CASES = [
     ("seoul", "2026-08-05", "463352"),
     ("jongno", "2026-09-21", "255848"),
-    ("seoul_junggu", "2026-04-08", "1440139692"),
+    ("seoul_junggu", "2026-10-27", "1484623120"),
     ("yongsan", "2026-07-22", "766379"),
     ("seongdong", "2026-09-22", "361639"),
 ]
@@ -53,6 +55,9 @@ def test_official_board_profiles(slug: str, published: str, identifier: str) -> 
         (ROOT / f"tests/fixtures/{slug}_profile_list.html").read_text(encoding="utf-8"),
         list_url=source.list_url,
         profile=source.html_profile,
+        detail_loader=Mock(return_value=json.loads(
+            (ROOT / "tests/fixtures/cafe_20261028_profiles.json").read_text(encoding="utf-8"),
+        )["seoul_junggu_gosi"]["detail_html"]),
     )
     notice = next(item for item in candidates if identifier in item.url)
     assert notice.published_date == date.fromisoformat(published)
@@ -96,6 +101,21 @@ def test_real_empty_table_is_supported(body: str) -> None:
         )
         == []
     )
+
+
+@pytest.mark.parametrize(("slug", "html"), [
+    ("gyeonggi_credit", '<div class="bbs_ListA"><table><tbody>'
+     '<tr><td colspan="4">등록된 게시물이 없습니다.</td></tr></tbody></table></div>'),
+    ("goryeong_eminwon", '<table width="98%" cellspacing="1" align="center"><tbody>'
+     '<tr><td colspan="8"><font>전체게시물:0개 페이지:1/1</font></td></tr>'
+     '<tr><td>번호</td><td>제목</td></tr></tbody></table>'),
+])
+def test_official_empty_search_without_current_page(slug: str, html: str) -> None:
+    source = load_config(ROOT / "config/batch-cafe.example.toml").sources[slug]
+    assert source.html_profile is not None
+    assert parse_profiled_html(
+        html, list_url=source.list_url, profile=source.html_profile, expected_page=1,
+    ) == []
 
 
 @pytest.mark.parametrize("identifier", ["0", "-1", "1/../../bad", "１２３", "abc"])
@@ -519,3 +539,35 @@ def test_detail_registration_attribute_rejects_unsupported_names(attribute: str)
 def test_detail_registration_attribute_requires_detail_selector() -> None:
     with pytest.raises(ValueError, match="detail_date_attribute"):
         replace(PROFILE, detail_date_attribute="content")
+
+
+@pytest.mark.parametrize("body_count", [0, 1, 2])
+def test_body_cleanup_preserves_listing_and_detail_selection_rules(body_count: int) -> None:
+    profile = replace(
+        PROFILE, detail_title_selector="h1", detail_date_selector="time",
+        detail_body_selector="article",
+    )
+    body = (
+        "<article>평가위원 <span>모집</span>"
+        "<script>스크립트</script><style>스타일</style><nav>다른 공고</nav>"
+        "<header>머리말</header><footer>꼬리말</footer></article>"
+    )
+    detail = '<h1>심의위원 모집 공고</h1><time>2026-09-21</time>' + body * body_count
+    url = "https://example.org/view?id=123"
+    loader = Mock(return_value=detail)
+    if body_count == 0:
+        with pytest.raises(ValueError, match="HTML row 1: configured notice body missing"):
+            parse_profiled_html(HTML, list_url="https://example.org/list", profile=profile,
+                                detail_loader=loader)
+    else:
+        candidate = parse_profiled_html(
+            HTML, list_url="https://example.org/list", profile=profile, detail_loader=loader,
+        )[0]
+        assert candidate.body_text == "평가위원 모집"
+        assert candidate.searchable_text == "심의위원 모집 공고 평가위원 모집"
+    if body_count == 1:
+        candidate = parse_profiled_detail(detail, url=url, profile=profile)
+        assert candidate.body_text == "평가위원 모집"
+    else:
+        with pytest.raises(ValueError, match="Configured notice body missing or ambiguous"):
+            parse_profiled_detail(detail, url=url, profile=profile)

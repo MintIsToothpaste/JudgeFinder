@@ -34,7 +34,7 @@ DETAIL = f"""<div class="bod_view"><h4>{TITLE}</h4><div class="view_info"><ul>
 def test_related_board_collects_real_date_and_is_idempotent(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    example = ROOT / "config/batch-hibrain-recovery.example.toml"
+    example = ROOT / "config/batch-hibrain.example.toml"
     config = tmp_path / "config.toml"
     db = tmp_path / "notices.db"
     text = re.sub(r'^db_path = .+$', f'db_path = "{db.as_posix()}"',
@@ -91,7 +91,7 @@ def test_related_board_collects_real_date_and_is_idempotent(
 
 
 def test_sokcho_uses_observed_title_form_without_a_fixture() -> None:
-    source = load_config(ROOT / "config/batch-cafe-20261028.example.toml").sources["sokcho"]
+    source = load_config(ROOT / "config/batch-cafe.example.toml").sources["sokcho"]
     assert source.fixture_path is None
     assert "searchCondition=TITLE" in source.list_url
     assert source.html_profile is not None and source.html_profile.request_method == "POST"
@@ -99,7 +99,7 @@ def test_sokcho_uses_observed_title_form_without_a_fixture() -> None:
 
 @pytest.mark.parametrize("replacement", ["", "2026-02-30"])
 def test_related_board_never_substitutes_body_or_repost_date(replacement: str) -> None:
-    source = load_config(ROOT / "config/batch-hibrain-recovery.example.toml").sources[
+    source = load_config(ROOT / "config/batch-hibrain.example.toml").sources[
         "andong_related"
     ]
     assert source.html_profile is not None

@@ -1,6 +1,6 @@
 {
   "kigas_notices": {
-    "config_path": "config/batch-hibrain-recovery.example.toml",
+    "config_path": "config/batch-hibrain.example.toml",
     "capture_date": "2026-10-29",
     "description": "Minimal public title/date/link excerpts; contacts, scripts and tokens removed.",
     "responses": [
@@ -24,7 +24,7 @@
     ]
   },
   "kila_news": {
-    "config_path": "config/batch-hibrain-recovery.example.toml",
+    "config_path": "config/batch-hibrain.example.toml",
     "capture_date": "2026-10-29",
     "description": "Minimal public title/date/link excerpts; contacts, scripts and tokens removed.",
     "responses": [
@@ -74,7 +74,7 @@
     ]
   },
   "railway_notices": {
-    "config_path": "config/batch-hibrain-recovery.example.toml",
+    "config_path": "config/batch-hibrain.example.toml",
     "capture_date": "2026-10-29",
     "description": "Minimal public title/date/link excerpts; contacts, scripts and tokens removed.",
     "responses": [

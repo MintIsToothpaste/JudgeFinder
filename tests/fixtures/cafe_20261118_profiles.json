@@ -1,0 +1,22 @@
+{
+  "gimhae_education_notice": {
+    "config_path": "config/batch-cafe.example.toml",
+    "title": "2027~2028년 김해진로교육지원센터 위탁 운영 제안서 평가위원(후보자) 모집 공고",
+    "date": "2026-11-16",
+    "url": "https://ghedu.gne.go.kr/ghedu/na/ntt/selectNttInfo.do?mi=2395&bbsId=823&nttSn=3056728",
+    "list_html": "<table id=\"nttTable\"> <thead> </thead> <tbody> <tr> <td class=\"BD_tm_none\">381</td> <td class=\"al\"> <a href=\"javascript:void(0)\" onclick=\"nttView('3056728');\"> 2027~2028년 김해진로교육지원센터 위탁 운영 제안서 평가위원(후보자) 모집 공고 </a> </td> <td>중등교육과 </td> <td>2026.11.16</td> <td class=\"BD_tm_none\">35</td> </tr> </tbody> </table>",
+    "detail_html": "<table class=\"tableList\"><tbody><tr> <th class=\"title\" colspan=\"4\" scope=\"col\">2027~2028년 김해진로교육지원센터 위탁 운영 제안서 평가위원(후보자) 모집 공고</th> </tr><tr> <th scope=\"row\">등록일</th> <td>2026.11.16</td> </tr></tbody></table>",
+    "window_end": "2026-11-18",
+    "requests_per_collect": "3"
+  },
+  "iksan_north_senior": {
+    "config_path": "config/batch-cafe.example.toml",
+    "title": "익산시북부노인종합복지관(분관 황등노인복지관 포함) 제안서 선정위원(후보자) 모집 공고",
+    "date": "2026-11-17",
+    "url": "http://www.inswc.or.kr/board_notice01/board_content.asp?board_idx=330&tname=board_notice01",
+    "list_html": "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"tableList\" width=\"100%\"> <tbody> <tr> <td class=\"alignCenter mhidden\">318</td> <td> <a href=\"board_content.asp?board_idx=330&amp;tname=board_notice01&amp;page1=1\">익산시북부노인종합복지관(분관 황등노인복지관 포함) 제안서 선정위원(후보자 <img class=\"img_middle\" src=\"/images/icon/icon_new.gif\"/></a></td> <td class=\"alignCenter mhidden\"> <a href=\"/include/asp/file_down.asp?fname=2027년평가위원회모집공고문.pdf&amp;fpath=board_notice01/202611/\"><img border=\"0\" class=\"img_middle\" src=\"/images/icon/icon_file_PDF.gif\"/></a> </td> <td class=\"alignCenter mhidden\">복지1팀</td> <td class=\"alignCenter mhidden\">19</td> <td class=\"alignCenter\">2026-11-17</td> </tr> </tbody></table>",
+    "detail_html": "<table class=\"tableList\"><tbody><tr height=\"30\"> <th class=\"alignCenter\" colspan=\"4\">익산시북부노인종합복지관(분관 황등노인복지관 포함) 제안서 선정위원(후보자) 모집 공고</th> </tr><tr height=\"30\"> <th width=\"15%\">글번호</th> <td width=\"30%\">330</td> <th width=\"15%\">등록일</th> <td width=\"40%\">2026-11-17</td> </tr><tr height=\"30\"> <th>다운로드</th> <td colspan=\"3\"> <b><a href=\"/include/asp/file_down.asp?fname=2027년평가위원회모집공고문.pdf&amp;fpath=board_notice01/202611/\">2027년평가위원회모집공고문.pdf</a></b> <b><a href=\"/include/asp/file_down.asp?fname=1.제안서평가위원(후보자)등록신청서.hwp&amp;fpath=board_notice01/202611/\">1.제안서평가위원(후보자)등록신청서.hwp</a></b> <b><a href=\"/include/asp/file_down.asp?fname=2.개인정보수집이용동의서.hwp&amp;fpath=board_notice01/202611/\">2.개인정보수집이용동의서.hwp</a></b> <b><a href=\"/include/asp/file_down.asp?fname=3.사전접촉여부확인(신고)서.hwp&amp;fpath=board_notice01/202611/\">3.사전접촉여부확인(신고)서.hwp</a></b> </td> </tr></tbody></table>",
+    "window_end": "2026-11-18",
+    "requests_per_collect": "3"
+  }
+}

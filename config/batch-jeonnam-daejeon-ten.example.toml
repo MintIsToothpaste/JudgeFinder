@@ -245,6 +245,7 @@ timeout_seconds = 75.0
 throttle_seconds = 1.0
 [sources.yuseong.html_profile]
 container_selector = "table.tbl_type"
+detail_body_selector = "table.tbl_type_view td.DATA_CONTENT"
 row_selector = "tbody > tr:has(> td:nth-of-type(3) a[onclick])"
 link_selector = "td:nth-of-type(3) a"
 link_attribute = "onclick"

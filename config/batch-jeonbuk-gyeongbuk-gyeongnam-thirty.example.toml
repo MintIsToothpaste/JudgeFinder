@@ -90,7 +90,7 @@ detail_date_selector = "th:-soup-contains-own('등록일') + td"
 municipality = "고창군"
 source_type = "html"
 engine_type = "generic_egov_bbs"
-list_url = "https://www.gochang.go.kr/board/list.gochang?boardId=BBS_0000180&menuCd=DOM_000000102003007000&searchType=DATA_TITLE&orderBy=TMP_FIELD4+DESC,TMP_FIELD1+DESC"
+list_url = "https://www.gochang.go.kr/board/list.gochang?boardId=BBS_0000180&menuCd=DOM_000000102003007000&searchType=DATA_TITLE&orderBy=TMP_FIELD4+DESC,TMP_FIELD1+DESC&paging=ok"
 recruitment_only = true
 max_pages = 80
 [sources.gochang.request_strategy]
@@ -566,6 +566,7 @@ detail_url_template = "https://www.chilgok.go.kr/portal/saeol/gosi/view.do?mId=0
 page_number_selector = ".page_num em"
 detail_title_selector = "div.bod_view > h4:nth-of-type(1)"
 detail_date_selector = ".view_info li:-soup-contains(\"등록일\")"
+detail_body_selector = ".bod_view .view_cont"
 
 [sources.bonghwa]
 municipality = "봉화군"
@@ -675,3 +676,4 @@ detail_url_template = "https://www.gyeongnam.go.kr/index.gyeong?menuCd=DOM_00000
 page_number_selector = ".paging a.on"
 detail_title_selector = "span:-soup-contains-own('제목') + p"
 detail_date_selector = "strong:-soup-contains-own('등록일 :') + span"
+detail_body_selector = ".basicView .conText"

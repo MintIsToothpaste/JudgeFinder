@@ -1,0 +1,65 @@
+{
+  "yongsan_gosi": {
+    "config_path": "config/batch-cafe.example.toml",
+    "title": "제안서 평가위원(후보자) 모집 공고 - 용산구 맞춤형복지시스템 운영업체 선정 -",
+    "date": "2026-10-30",
+    "url": "https://www.yongsan.go.kr/portal/bbs/B0000095/view.do?menuNo=200233&nttId=771165",
+    "list_html": "<div class=\"bd-list\"><table><caption>공고/고시 목록</caption><colgroup><col class=\"no\"/><col class=\"files\"/><col/><col class=\"files\"/><col class=\"depts\"/><col class=\"day\"/><col class=\"count\"/></colgroup><thead><tr><th class=\"no\">번호</th><th>카테고리</th><th>제목</th><th>첨부파일</th><th>담당부서</th><th>작성일</th><th>조회수</th></tr></thead><tbody><tr><td class=\"no\">\n\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t9651\n\t\t\t\t\t\t\n\t\t\t\t\t</td><td class=\"no-head\">\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t공고\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t</td><td class=\"title\"><a href=\"/portal/bbs/B0000095/view.do?nttId=771165&amp;menuNo=200233&amp;pageUnit=10&amp;pageIndex=1\" title=\"제안서 평가위원(후보자) 모집 공고 - 용산구 맞춤형복지시스템 운영업체 선정 -\">\n\t\t\t\t\t\t\t제안서 평가위원(후보자) 모집 공고 - 용산구 맞춤형복지시스템 운영업체 선정 -\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t</a></td><td></td><td>\n\t\t\t\t\t\t행정지원과\n\t\t\t\t\t</td><td>2026-10-30</td><td>418</td></tr></tbody></table></div>",
+    "detail_html": "<body><h2 class=\"subject\">제안서 평가위원(후보자) 모집 공고 - 용산구 맞춤형복지시스템 운영업체 선정 -</h2><dl><dt>작성일</dt><dd>2026-10-30</dd></dl></body>",
+    "window_end": "2026-10-31"
+  },
+  "ebs_notice": {
+    "config_path": "config/batch-cafe.example.toml",
+    "title": "소프트웨어사업 제안서 평가위원(후보자) 모집",
+    "date": "2026-10-28",
+    "url": "https://about.ebs.co.kr/board/bbs2?boardTypeId=34&boardId=10000140&cmd=view&postId=30005574620",
+    "list_html": "<table cellpadding=\"0\" cellspacing=\"0\" class=\"board_list\" id=\"board_table\" summary=\"이 테이블은 게시판 리스트의 번호, 제목, 작성일, 조회에 대한 내용을 제공합니다.\"><caption>게시판 리스트 페이지입니다.</caption><thead><tr><th scope=\"col\" width=\"50\">번호</th><th scope=\"col\">제목</th><th scope=\"col\" width=\"50\">첨부</th><th scope=\"col\" width=\"90\">작성일</th><th scope=\"col\" width=\"50\">조회</th></tr></thead><tbody><tr><td scope=\"row\">\n\n\t\t\t\n\n\t\t\t1</td><td class=\"title\"><a href=\"/board/bbs2?boardTypeId=34&amp;boardId=10000140&amp;cmd=view&amp;emp=N&amp;pageNo=1&amp;no=1&amp;searchCondition=title&amp;searchKeyword=%ED%8F%89%EA%B0%80%EC%9C%84%EC%9B%90&amp;postId=30005574620&amp;uri=&amp;tabVal=&amp;separate=&amp;bgnDts=&amp;endDts=\" shape=\"rect\">\n\n\t\t\t\t소프트웨어사업 제안서 평가위원(후보자) 모집<img alt=\"New\" class=\"ico1\" src=\"/kor/images/com/icon_new.gif\" title=\"\"/></a></td><td><a href=\"#none\" onclick=\"BoardJS.viewFileList('10000140','30005574620','fileList',event);\" shape=\"rect\"><img alt=\"첨부파일\" src=\"/kor/images/board/icons/etc.gif\" title=\"\"/></a></td><td>\n\n\t\t\t2026-10-28</td><td>585</td></tr></tbody></table>",
+    "detail_html": "<table class=\"board_admin_view\"><thead><tr><td><span>소프트웨어사업 제안서 평가위원(후보자) 모집</span></td></tr><tr><td><strong>작성일</strong><span>2026-10-28</span></td></tr></thead></table>",
+    "window_end": "2026-10-31"
+  },
+  "jecheon_cultural": {
+    "config_path": "config/batch-cafe.example.toml",
+    "title": "제천 겨울왕국 페스티벌 권역별 운영 용역 제안서 평가위원(후보자) 공개모집 공고",
+    "date": "2026-10-30",
+    "url": "https://www.jccf.or.kr/bbs/board.php?bo_table=w6_1&wr_id=686",
+    "list_html": "<div id=\"bo_list\"><table><caption>공지사항 목록</caption><thead><tr><th scope=\"col\">번호</th><th scope=\"col\">제목</th><th class=\"mb_disp_no\" scope=\"col\">글쓴이</th><th class=\"mb_disp_no\" scope=\"col\">조회</th><th class=\"mb_disp_no\" scope=\"col\">날짜</th></tr></thead><tbody><tr class=\"\"><td class=\"td_num2\">\n            38            </td><td class=\"td_subject\" style=\"padding-left:0px\"><div class=\"bo_tit\"><a href=\"https://www.jccf.or.kr/bbs/board.php?bo_table=w6_1&amp;wr_id=686&amp;sfl=wr_subject&amp;stx=%ED%8F%89%EA%B0%80%EC%9C%84%EC%9B%90&amp;page=1\" sch_word\"=\"\" title=\"제천 겨울왕국 페스티벌 권역별 운영 용역 제안서 &lt;b class=\">평가위원(후보자) 공개모집 공고\"&gt;\n                                                                        제천 겨울왕국 페스티벌 권역별 운영 용역 제안서 <b class=\"sch_word\">평가위원</b>(후보자) 공개모집 공고                       \n                    </a><i aria-hidden=\"true\" class=\"fa fa-download\"></i></div></td><td class=\"td_name sv_use mb_disp_no\"><span class=\"sv_member\">최고운영자</span></td><td class=\"td_num mb_disp_no\">187</td><td class=\"td_datetime mb_disp_no\">10-30</td></tr></tbody></table></div>",
+    "detail_html": "<article id=\"bo_v\"><h4 class=\"page_title\">  \n        제천 겨울왕국 페스티벌 권역별 운영 용역 제안서 평가위원(후보자) 공개모집 공고        </h4><section id=\"bo_v_info\"><strong class=\"if_date\"><span class=\"sound_only\">작성일</span> 26-10-30 15:05</strong></section></article>",
+    "window_end": "2026-10-31"
+  },
+  "gwangju_bukgu_facilities": {
+    "config_path": "config/batch-cafe.example.toml",
+    "title": "「2026년 광주비엔날레 미디어파사드 자체 콘텐츠 제작 및 운영 용역」제안서 평가위원(후보자) 모집 안내",
+    "date": "2026-10-30",
+    "url": "https://www.gbfmc.or.kr/board.es?mid=a10201000000&bid=0001&act=view&list_no=9126",
+    "list_html": "<div class=\"board-list\"><table><caption>알림마당 &gt; 공지사항 목록 - 번호, 제목, 작성자, 등록일, 첨부파일, 조회수</caption><colgroup><col class=\"W8\"/><col/><col class=\"W13\"/><col class=\"W13\"/><col class=\"W8\"/><col class=\"W8\"/></colgroup><thead><tr><th scope=\"col\">번호</th><th scope=\"col\">제목</th><th scope=\"col\">작성자</th><th scope=\"col\">등록일</th><th scope=\"col\">조회수</th><th scope=\"col\">첨부파일</th></tr></thead><tbody><tr><td aria-label=\"번호\" class=\"m_hidden\">3</td><td aria-label=\"제목\" class=\"txt_left\"><a href=\"/board.es?mid=a10201000000&amp;bid=0001&amp;act=view&amp;list_no=9126&amp;tag=&amp;nPage=1\" onclick=\"goView('9126'); return false;\"><i class=\"xi-new\"></i><span class=\"sr_only\">새글</span> 「2026년 광주비엔날레 미디어파사드 자체 콘텐츠 제작 및 운영 용역」제안서 평가위원..</a></td><td aria-label=\"작성자\" class=\"m_hidden\">문화운영팀</td><td aria-label=\"등록일\">2026.10.30</td><td aria-label=\"조회수\" class=\"m_hidden\">166</td><td aria-label=\"첨부파일\"><img alt=\"2개의 첨부파일\" src=\"/upload/skin/board/basic/attach.png\"/></td></tr></tbody></table></div>",
+    "detail_html": "<article class=\"board_view\"><h2 class=\"title\">「2026년 광주비엔날레 미디어파사드 자체 콘텐츠 제작 및 운영 용역」제안서 평가위원(후보자) 모집 안내</h2><ul class=\"info\"><li class=\"date\"><span>2026.10.30 15:52</span></li></ul></article>",
+    "window_end": "2026-10-31"
+  },
+  "ulsan_volunteer": {
+    "config_path": "config/batch-cafe.example.toml",
+    "title": "'울산광역시대학생봉사단 해외봉사' 위탁운영 용역 제안서 평가위원(후보자) 모집 공고",
+    "date": "2026-10-30",
+    "url": "https://www.ulsan1365.or.kr/Programs/User/information/notice/readnum.asp?idx=2720",
+    "list_html": "<div class=\"program_table\"><table><caption>공지사항 게시물 입니다. 번호, 제목, 첨부파일, 등록일, 조회 수의 순서로 게시물 목록을 나타낸 표입니다. 제목 링크를 통해서 게시물 상세 내용으로 이동합니다.</caption><colgroup><col width=\"7%\"/><col width=\"44%\"/><col width=\"10%\"/><col width=\"12%\"/><col width=\"10%\"/></colgroup><thead><tr><th class=\"none1000\">번호</th><th>제목</th><th>등록일</th><th>첨부</th><th>조회수</th></tr></thead><tbody class=\"programBody\"><tr><td class=\"none1000\">387</td><td class=\"text-left\"><a href=\"readnum.asp?gbn_no=&amp;idx=2720&amp;pageno=1&amp;searchType=&amp;searchVal=\" title=\"'울산광역시대학생봉사단 해외봉사' 위탁운영 용역 제안서 평가위원(후보자) 모집 공고\">\n\n\t\t\t\t'울산광역시대학생봉사단 해외봉사' 위탁운영 용역 제안서 평가위원(후보자) 모집 공고\n\n                </a></td><td>2026-10-30</td><td><img src=\"/Modules/images/ico_file2.png\"/></td><td>78</td></tr></tbody></table></div>",
+    "detail_html": "<div class=\"programRead\"><p class=\"imgTitle\">\n\n\t\t\t\t'울산광역시대학생봉사단 해외봉사' 위탁운영 용역 제안서 평가위원(후보자) 모집 공고\n\n             </p><p class=\"imgTitle_sub\">등록일2026-10-30     조회수78</p></div>",
+    "window_end": "2026-10-31"
+  },
+  "kfce_notice": {
+    "config_path": "config/batch-cafe.example.toml",
+    "title": "[공고 제2026-179호] 「2026 한국문화테마파크 특화콘텐츠 운영사업」 한국문화테마파크 실내 포토존 제작 및 운영 용역 제안서 평가위원(후보자) 모집공고",
+    "date": "2026-10-30",
+    "url": "https://www.kfce.or.kr/home/sub4/sub3.asp?bseq=7&mode=view&aseq=13542",
+    "list_html": "<section class=\"xlist x-mb\">\n\n  \n\n  <div class=\"header\">\n\n    <div class=\"num\">번호</div>\n\n    <div class=\"subject\">제목</div>\n\n    <div class=\"file\">파일</div>\n\n    <div class=\"name\">작성자</div>\n\n    <div class=\"date\">작성일</div>\n\n    <div class=\"hit\">조회</div>\n\n  </div>\n\n  \n\n  \n\n  <div class=\"article\">\n\n      <div class=\"num\">100</div>\n\n      <div class=\"subject\">\n\n        <a href=\"/home/sub4/sub3.asp?bseq=7&amp;cat=-1&amp;sk=article%5Ftitle&amp;sv=%ED%8F%89%EA%B0%80%EC%9C%84%EC%9B%90&amp;yy=&amp;page=1&amp;mode=view&amp;aseq=13542\">\n\n          [공고 제2026-179호] 「2026 한국문화테마파크 특화콘텐츠 운영사업」 한국문화테마파크 실내 포토존 제작 및 운영 용역 제안서 평가위원(후보자) 모집공고\n\n        </a>\n\n      </div>\n\n      <div class=\"file\"><img alt=\"첨부파일\" src=\"/gears/board/xicon-file.png\"/></div>\n\n      <div class=\"name\">테마파크사업팀</div>\n\n      <div class=\"date\">2026-10-30</div>\n\n      <div class=\"hit\">233</div>\n\n    \n\n  </div>\n\n  \n\n  \n\n  \n\n  \n\n  \n\n  \n\n  \n\n  \n\n  \n\n  \n\n</section>",
+    "detail_html": "<div class=\"xview\"><div class=\"header\"><div class=\"subject\"><span>\n\n      [공고 제2026-179호] 「2026 한국문화테마파크 특화콘텐츠 운영사업」 한국문화테마파크 실내 포토존 제작 및 운영 용역 제안서 평가위원(후보자) 모집공고\n\n    </span></div><ul><li><strong>작성일</strong> 2026-10-30 오후 3:48:08</li></ul></div></div>",
+    "window_end": "2026-10-31"
+  },
+  "silla_heritage": {
+    "config_path": "config/batch-cafe.example.toml",
+    "title": "「경주 황남동 120호 출토유물 3D 스캔 및 도면제작」제안서 평가위원(후보자) 공개 모집 공고",
+    "date": "2026-10-30",
+    "url": "http://www.kjsilla.re.kr/?c=user&mcd=ksf0001&me=bbs_detail&idx=142793",
+    "list_html": "<form id=\"frm\"><div class=\"tbl_wrap\"><table>\n        <caption></caption>\n        <colgroup>\n          <col/>\n          <col/>\n          <col/>\n          <col/>\n          <col/>\n        </colgroup>\n          <!-- 게시판 타이틀 -->\n\t\t\t<thead>\n                <tr>\n                    <th>번호</th>\n\t\t\t\t\t\t\t\t\t\t<th>제목</th>\n                    <th>작성일</th>\n                    <th>파일</th>\n                    <th>조회</th>\n                </tr>\n            </thead>\n\t\t\t<tbody>\n\n          <!-- 게시판 내용 -->\n       \n\t\t\t\t\n   \n\t\t\t\t\n   \n\t\t\t\t\n  \t\t\n  \n\n\t\t<tr>\n            <td>461</td>\n                   \n\t\t\t<td style=\"padding:3px 0 1px 5px; text-align:left;\">\n\t\t\t\t<a href=\"/?c=user&amp;mcd=ksf0001&amp;me=bbs_detail&amp;idx=142793&amp;cur_page=1&amp;sParam=\" title=\"내용보기\">\n\t\t\t\t\t「경주 황남동 120호 출토유물 3D 스캔 및 도면제작」제안서 평가위원(후보자) 공개 모집 공고\t\t\t\t</a>\n\t\t\t</td>\n            <td>2026-10-30</td>\n            <td><img alt=\"첨부파일\" src=\"/resources/common/images/download.png\"/> </td>\n           <td>151</td>\n\t\t</tr>\t\n  \n\n\t\t\t\n  \n\n\t\t\t\n  \n\n\t\t\t\n  \n\n\t\t\t\n  \n\n\t\t\t\n  \n\n\t\t\t\n  \n\n\t\t\t\n  \n\n\t\t\t\n  \n\n\t\t\t\n                 \n         \n \n    \n\n\n          </tbody>\n        </table></div></form>",
+    "detail_html": "<table><tbody><tr>\n\t\t\t<td class=\"first-title-td\" colspan=\"4\" style=\"text-align:left; background:#f7f7f7; border-top:1px solid #ccc;\"><strong>\n\t\t\t\t「경주 황남동 120호 출토유물 3D 스캔 및 도면제작」제안서 평가위원(후보자) 공개 모집 공고\t\t\t\t</strong>\n\t\t\t</td>\n\t\t</tr><tr>\n\t\t\t<td class=\"title-td\">작성일</td>\n\t\t\t<td style=\"text-align:left;\">2026-10-30</td>\n\t\t\t<td class=\"title-td\">조회수</td>\n\t\t\t<td style=\"text-align:left;\">151</td>\t\t\t\n\t\t</tr></tbody></table>",
+    "window_end": "2026-10-31"
+  }
+}

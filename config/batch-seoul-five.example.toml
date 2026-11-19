@@ -48,7 +48,7 @@ search_param = "searchWrd"
 municipality = "서울 중구"
 source_type = "html"
 engine_type = "generic_egov_bbs"
-list_url = "https://www.junggu.seoul.kr/content.do?cmsid=15450&searchField=all&page=1"
+list_url = "https://www.junggu.seoul.kr/content.do?cmsid=14232&searchField=all&page=1"
 recruitment_only = true
 
 [sources.seoul_junggu.request_strategy]
@@ -56,14 +56,17 @@ timeout_seconds = 30.0
 throttle_seconds = 1.0
 
 [sources.seoul_junggu.html_profile]
-container_selector = ".board_list table"
-row_selector = "tbody tr"
-link_selector = "p.title a"
-date_selector = "td:nth-of-type(4)"
-id_pattern = '[?&]cid=([1-9][0-9]*)(?:&|$)'
-detail_url_template = "/content.do?cmsid=15450&mode=view&cid={id}"
-search_param = "searchValue"
+container_selector = "div.board_list table"
+row_selector = "tbody > tr:has(> td.tal)"
+link_selector = "td.tal a"
+date_selector = "td:nth-of-type(3)"
+id_pattern = "cid=([1-9][0-9]*)"
+detail_url_template = "/content.do?cmsid=14232&mode=view&cid={id}"
 page_param = "page"
+search_param = "searchValue"
+detail_title_selector = "th.view_tit"
+detail_date_selector = "th:-soup-contains-own(\"공고기간\") + td"
+detail_body_selector = "td.article_body"
 
 [sources.yongsan]
 municipality = "용산구"

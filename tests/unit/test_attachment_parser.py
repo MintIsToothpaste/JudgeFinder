@@ -96,6 +96,20 @@ class AttachmentParserTests(unittest.TestCase):
         )
         self.assertEqual(discovery.links[0].url, "https://city.go.kr/fileDown.do?id=3")
 
+    def test_extracts_saeol_download_from_official_detail(self) -> None:
+        discovery = extract_attachment_links(
+            """<a href="javascript:goDownLoad('공고.hwpx','stored@1.hwpx',
+            '/ntishome/file/upload/ofr/ofr/20261106')">공고.hwpx</a>""",
+            page_url="https://eminwon.city.go.kr/emwp/action/OfrAction.do",
+        )
+        self.assertEqual(len(discovery.links), 1)
+        self.assertEqual(discovery.links[0].filename, "공고.hwpx")
+        self.assertEqual(
+            discovery.links[0].url,
+            "https://eminwon.city.go.kr/emwp/jsp/ofr/FileDown.jsp?user_file_nm=%EA%B3%B5%EA%B3%A0.hwpx"
+            "&sys_file_nm=stored%401.hwpx&file_path=%2Fntishome%2Ffile%2Fupload%2Fofr%2Fofr%2F20261106",
+        )
+
     def test_reports_unknown_javascript_without_executing_it(self) -> None:
         discovery = extract_attachment_links(
             """<a href="#" onclick="customDownload('secret')">신청서.hwp</a>""",

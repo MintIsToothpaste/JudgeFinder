@@ -213,6 +213,7 @@ detail_url_template = "/user/board/BD_board.view.do?bbsCd=1022&q_ctgCd=4063&seq=
 search_param = "q_searchVal"
 page_number_selector = ".pagination strong"
 title_exclude_selector = ".category-label,.ico-new"
+detail_body_selector = ".article-body .article-conetnt"
 
 [sources.icheon]
 municipality = "이천시"

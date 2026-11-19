@@ -1,6 +1,6 @@
 {
   "incheon_seohae_culture": {
-    "config_path": "config/batch-cafe-20261021.example.toml",
+    "config_path": "config/batch-cafe.example.toml",
     "title": "[2026-05-18] 2026년 정서진 해넘이 행사 운영 용역_제안서 평가위원 후보자 모집 공고",
     "date": "2026-10-20",
     "url": "https://www.inscc.kr/user/board/view.php?board_code=notice&sq=1454",
@@ -9,7 +9,7 @@
     "detail_html": "<!DOCTYPE html>\n<html lang=\"ko\">\n\n<body>\n\n\t\n\n\n\n\t\n\n\t<div class=\"wrap\" id=\"wrap\">\n\n\t\t\n\n\t\t\n\n\t\t\n\n\n\n\t\t\n\n\t\t<div class=\"container\" id=\"container\">\n\n\t\t\t\t\n\n\t\t\t\t<div class=\"sub_page\">\n\n\t\n\n\t\n\n\t<div class=\"sub_page_content\">\n\n\t\t<form id=\"formWrite\">\n\n\t\t\t\n\n\t\t\t\n\n\t\t\t\n\n\t\t\t\n\n\t\t\t\n\n\n\n\t\t\t<div class=\"cm_container\">\n\n\t\t\t\t<div class=\"inner2\">\n\n\t\t\t\t\t\n\n\t\t\t\t\t<div class=\"cm_board_view2\">\n\n\t\t\t\t\t\t<div class=\"board_item_title_area\">\n\n\t\t\t\t\t\t\t<div class=\"board_item_title_wrap\">\n\n\t\t\t\t\t\t\t\t<div class=\"board_item_title\">[2026-05-18] 2026년 정서진 해넘이 행사 운영 용역_제안서 평가위원 후보자 모집 공고</div>\n\n\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t\t<div class=\"board_item_info\">\n\n\t\t\t\t\t\t\t\t<ul class=\"cm_dl2\">\n\n\t\t\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t\t<li class=\"date\"><span>2026-10-20</span></li>\n\n\t\t\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t\t\t</ul>\n\n\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t</div>\n\n\n\n\t\t\t\t\t\t\n\n\t\t\t\t\t\t\n\n\t\t\t\t\t\t\n\n\n\n\t\t\t\t\t\t\t\t\t\t\t\n\n\t\t\t\t\t\t\n\n\t\t\t\t\t\t\n\n\t\t\t\t\t\n\n\t\t\t\t\t\t\n\n\t\t\t\t\t</div>\n\n\t\t\t\t\t\n\n\t\t\t\t</div>\n\n\t\t\t</div>\n\n\t\t</form>\n\n\n\n\t\t</div>\n\n\t\n\n\n\n\t\n\n</div>\n\n\n\n\t\t</div>\n\n\t\t\n\n\n\n\t\t\n\n\t\t\n\n\t\t\n\n\t</div>\n\n\t\n\n\n\n\n\n\t\n\n\n\n\t\n\n\n\n\n\n\n\n</body></html>"
   },
   "jeju_international_university": {
-    "config_path": "config/batch-cafe-20261021.example.toml",
+    "config_path": "config/batch-cafe.example.toml",
     "title": "제주소방안전본부 제안서 평가위원(후보자) 추천 요청",
     "date": "2026-10-21",
     "url": "https://www.jeju.ac.kr/square/professor.htm?act=view&seq=29862",
@@ -18,7 +18,7 @@
     "detail_html": "<!DOCTYPE html>\n<html lang=\"ko\">\n\t<body>\n\n\t\n\n\n\t\n\n\n\n\t\n\n\t\n\n<section id=\"subContent\">\n\n\n\n\n\n<div class=\"container\">\n\n\t<div class=\"clearfix\" id=\"contents\">\n\t\t\n\t\t\t\n\t\t\t<div>\n\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t\t<div class=\"module-wrapper\">\n<table class=\"view\">\n\t\n\t<thead>\n\t\t<tr>\n\t\t\t<th>\n\t\t\t\t <strong>제주소방안전본부 제안서 평가위원(후보자) 추천 요청</strong>\n\t\t\t\t 기획팀\n\t\t\t\t 2026-10-21 13:43:38\n\t\t\t\t 63\n\t\t\t</th>\n\t\t</tr>\n\t</thead>\n\t\n</table>\n\n\n\n\n\n</div>\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\n\t\t\t</div>\n\n\n\t</div>\n\n</div>\n</section>\n\n\n\n\n\n\n\t\n\n\t\n\t\n\n\t\t\n\t\n\t\n\t\n\t\n\n</body></html>"
   },
   "jeonnam_tourism": {
-    "config_path": "config/batch-cafe-20261021.example.toml",
+    "config_path": "config/batch-cafe.example.toml",
     "title": "「섬진강 트레일 100K 행사 운영 용역」 제안서 평가위원회(후보자) 모집 재공고",
     "date": "2026-10-19",
     "url": "https://ijnto.or.kr/plaza/notice/read/603",
@@ -27,7 +27,7 @@
     "detail_html": "<!DOCTYPE html>\n<html itemscope=\"\" itemtype=\"http://schema.org/Organization\" lang=\"ko-KR\">\n\t<body>\n\n\n  \n     \n    \n        \n\n\n\n\n    \n\n\n\n\n\n\n\n\n\n\n\n\n                \n            <div class=\"outer-container\">\n        \n\n\n\n            <div class=\"sub-page layout-container editor-make\">\n        <div class=\"board-title\"> 「섬진강 트레일 100K 행사 운영 용역」 제안서 평가위원회(후보자) 모집 재공고</div>\n        <div class=\"flr tar\">\n            <span class=\"date\">\n                관리자 | 2026-10-19 | 조회 224            </span>\n                        \n            \n                    </div>\n        \n\n                \n        \n        </div>\n        \n        \n        \n    </div>\n\n    \n\n    \n    \n        \n                \n        \n        \n        \n\n        \n        \n        \n        \n        \n\n        \n\n        \n        \n\n        \n        \n        \n        \n\n        \n        \n        \n        \n        \n\n        \n\n        \n        \n    \n\n\n\n\t  \n        \n    \n        \n\n\t\n\n</body></html>"
   },
   "seoul_women": {
-    "config_path": "config/batch-cafe-20261021.example.toml",
+    "config_path": "config/batch-cafe.example.toml",
     "title": "[모집] 「2027년 서울시여성가족재단 블라인드 채용 대행 용역」 제안서 평가위원(후보자) 공개모집",
     "date": "2026-10-20",
     "url": "https://www.seoulwomen.or.kr/sfwf/contents/sfwf-notice.do?schM=view&id=31580",

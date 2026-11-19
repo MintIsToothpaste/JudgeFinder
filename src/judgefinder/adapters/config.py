@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 import sys
 from dataclasses import dataclass, field, fields
 from datetime import date
@@ -41,6 +42,18 @@ class SourceConfig:
     max_pages: int = 8
     available_from: date | None = None
     json_profile: JsonProfile | None = None
+    keywords: tuple[str, ...] = ("평가위원",)
+
+
+@dataclass(slots=True)
+class OriginRecoveryConfig:
+    enabled: bool = False
+    hibrain: bool = True
+    committee_search: bool = False
+    candidate_file: Path | None = None
+    max_pages: int = 3
+    timeout_seconds: float = 20.0
+    throttle_seconds: float = 0.3
 
 
 @dataclass(slots=True)
@@ -49,6 +62,7 @@ class AppConfig:
     db_path: Path
     enabled_sources: list[str]
     sources: dict[str, SourceConfig]
+    origin_recovery: OriginRecoveryConfig = field(default_factory=OriginRecoveryConfig)
 
 
 def load_config(config_path: Path, base_dir: Path | None = None) -> AppConfig:
@@ -114,6 +128,7 @@ def load_config(config_path: Path, base_dir: Path | None = None) -> AppConfig:
             max_pages=_read_page_limit(value),
             available_from=_read_available_from(value),
             json_profile=_read_json_profile(value.get("json_profile")),
+            keywords=_read_keywords(value),
         )
 
     return AppConfig(
@@ -121,6 +136,33 @@ def load_config(config_path: Path, base_dir: Path | None = None) -> AppConfig:
         db_path=db_path,
         enabled_sources=enabled_sources,
         sources=sources,
+        origin_recovery=_read_origin_recovery(raw.get("origin_recovery"), resolved_base_dir),
+    )
+
+
+def _read_origin_recovery(value: Any, base_dir: Path) -> OriginRecoveryConfig:
+    if value is None:
+        return OriginRecoveryConfig()
+    if not isinstance(value, dict):
+        raise ValueError("origin_recovery must be a table")
+    if set(value) - {item.name for item in fields(OriginRecoveryConfig)}:
+        raise ValueError("Unknown origin_recovery settings")
+    file = value.get("candidate_file")
+    if file is not None and (not isinstance(file, str) or not file.strip()):
+        raise ValueError("origin_recovery.candidate_file must be a path")
+    pages = value.get("max_pages", 3)
+    if type(pages) is not int or not 1 <= pages <= 10:
+        raise ValueError("origin_recovery.max_pages must be between 1 and 10")
+    timeout = _read_optional_float(value, "timeout_seconds", default=20, min_value=0.1)
+    throttle = _read_optional_float(value, "throttle_seconds", default=0.3, min_value=0)
+    if not math.isfinite(timeout) or not math.isfinite(throttle):
+        raise ValueError("Origin recovery timing settings must be finite")
+    return OriginRecoveryConfig(
+        enabled=_read_optional_bool(value, "enabled", default=False),
+        hibrain=_read_optional_bool(value, "hibrain", default=True),
+        committee_search=_read_optional_bool(value, "committee_search", default=False),
+        candidate_file=_resolve_path(file, base_dir) if file is not None else None,
+        max_pages=pages, timeout_seconds=timeout, throttle_seconds=throttle,
     )
 
 
@@ -179,10 +221,19 @@ def _read_json_profile(value: Any) -> JsonProfile | None:
         raise ValueError(f"Unknown json_profile fields: {sorted(set(value) - allowed)}")
     for key in ("rows_path", "title_key", "date_key", "id_key", "detail_url_template"):
         _read_required_str(value, key)
-    if not all(isinstance(item, str) for key, item in value.items()
-               if key not in {"page_size", "offset_base"}):
-        raise ValueError("json_profile values other than page_size/offset_base must be strings")
+    numeric_fields = {"page_size", "offset_base", "page_base"}
+    if not all(isinstance(item, str) for key, item in value.items() if key not in numeric_fields):
+        raise ValueError("json_profile nonnumeric fields must be strings")
     return JsonProfile(**value)
+
+
+def _read_keywords(data: dict[str, Any]) -> tuple[str, ...]:
+    if "keywords" not in data:
+        return ("평가위원",)
+    keywords = tuple(item.strip() for item in _read_required_list(data, "keywords"))
+    if not keywords or not all(keywords):
+        raise ValueError("keywords must contain nonempty strings")
+    return keywords
 
 
 def _read_required_list(data: dict[str, Any], key: str) -> list[str]:
@@ -257,6 +308,7 @@ def _read_request_strategy(
         timeout_seconds=timeout_seconds,
         throttle_seconds=throttle_seconds,
         verify_tls=verify_tls,
+        transport=value.get("transport", default_strategy.transport),
     )
 
 

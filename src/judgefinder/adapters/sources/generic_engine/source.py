@@ -193,6 +193,11 @@ class GenericEngineSource:
             seen_pages.add(page_signature)
 
             page_dates = [candidate.published_date for candidate in candidates]
+            date_ordered = self.html_profile is not None and (
+                self.html_profile.date_order == "descending"
+            )
+            if date_ordered and page_dates != sorted(page_dates, reverse=True):
+                raise ValueError(f"{self.slug}: registration dates are not descending")
             page_has_target = False
             for candidate in candidates:
                 if candidate.published_date != target_date:
@@ -233,6 +238,12 @@ class GenericEngineSource:
                 page_index * self.html_profile.page_size >= total_count
             ):
                 break
+            if self._is_last_page(page_index):
+                break
+            # Only an explicitly ordered board may stop at the first older row.
+            # Default pagination still tolerates pinned or out-of-order notices.
+            if date_ordered and min(page_dates) < target_date:
+                break
             max_date = max(page_dates)
             if max_date < target_date and not page_has_target and seen_target_page:
                 break
@@ -272,6 +283,9 @@ class GenericEngineSource:
         payload = self._request_text(request_url, post=post)
         self.page_cache[page_index] = payload
         return payload
+
+    def _is_last_page(self, page_index: int) -> bool:
+        return False
 
     def _load_detail(self, url: str) -> str:
         if url not in self.detail_cache:
@@ -328,7 +342,10 @@ class GenericEngineSource:
             )
         query_params = parse_qs(parsed.query, keep_blank_values=True)
         if self.page_param:
-            query_params[self.page_param] = [str(page_index)]
+            page = page_index if self.json_profile is None else (
+                page_index - 1 + self.json_profile.page_base
+            )
+            query_params[self.page_param] = [str(page)]
         if self.profile is not None:
             search_param = self.profile.search_param
             if search_param and self.search_keyword and not query_params.get(search_param, [""])[0]:

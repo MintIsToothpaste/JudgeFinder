@@ -8,7 +8,7 @@ enabled_sources = ["jinju", "jinju-current", "tongyeong", "sacheon", "gimhae", "
 municipality = "진주시"
 source_type = "html"
 engine_type = "generic_egov_bbs"
-list_url = "https://eminwon.jinju.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&method=selectListOfrNotAncmt&methodnm=selectListOfrNotAncmtHomepage&homepage_pbs_yn=Y&subCheck=Y&ofr_pageSize=10&list_gubun=Y&not_ancmt_se_code=01%2C04%2C05"
+list_url = "https://www.jinju.go.kr/00130/02730/05588.web?stype=title"
 recruitment_only = true
 max_pages = 80
 [sources.jinju.request_strategy]
@@ -18,27 +18,27 @@ retries = 2
 timeout_seconds = 30.0
 throttle_seconds = 0.3
 [sources.jinju.html_profile]
-container_selector = "table.basic"
-row_selector = ":scope > tbody > tr:has(> td)"
-link_selector = "td:nth-of-type(3)"
-page_param = "pageIndex"
-search_param = "not_ancmt_sj"
-date_selector = "td:nth-of-type(5)"
-page_number_selector = ".page_no b"
-link_attribute = "onclick"
-id_pattern = "searchDetail[(]'([1-9][0-9]*)'"
-detail_url_template = "/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&subCheck=Y&not_ancmt_mgt_no={id}"
-detail_title_selector = "div.title > h3"
-detail_date_selector = "th:-soup-contains-own('등록일') + td"
-title_exclude_selector = "strong:-soup-contains-own(\"제목\")"
-total_count_selector = ".infomenu .right"
-total_count_pattern = "전체게시물:([0-9]+)개 / 페이지:[0-9]+/[0-9]+"
+container_selector = ".list1f1t3i1 ul.lst1"
+row_selector = "li.li1"
+link_selector = "a.a1"
+title_selector = "strong.t1"
+date_selector = ".wrap1t3 .t3:nth-of-type(2)"
+id_pattern = "not_ancmt_mgt_no=([1-9][0-9]*)"
+detail_url_template = "/00130/02730/05586.web?amode=view&not_ancmt_mgt_no={id}"
+detail_title_selector = ".bbs1view1 h1.h1"
+detail_date_selector = ".bbs1view1 dt:-soup-contains-own('게재일자') + dd"
+search_param = "sstring"
+page_param = "cpage"
+page_number_selector = ".pagination .m.on"
+total_count_selector = "div.info1:has(> b.em)"
+total_count_pattern = "총\\s+([0-9]+)\\s*건의\\s*게시물이\\s*있습니다\\.\\s*\\(\\s*[0-9]+\\s*/\\s*[0-9]+\\s*페이지\\)"
+detail_body_selector = ".bbs1view1 .substance"
 
 [sources.jinju-current]
 municipality = "진주시"
 source_type = "html"
 engine_type = "generic_egov_bbs"
-list_url = "https://eminwon.jinju.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&method=selectListOfrNotAncmt&methodnm=selectListOfrNotAncmtHomepage&homepage_pbs_yn=Y&subCheck=Y&ofr_pageSize=10&list_gubun=&not_ancmt_se_code=01%2C04%2C05"
+list_url = "https://www.jinju.go.kr/00130/02730/05586.web?stype=title"
 recruitment_only = true
 max_pages = 80
 [sources.jinju-current.request_strategy]
@@ -48,21 +48,20 @@ retries = 2
 timeout_seconds = 30.0
 throttle_seconds = 0.3
 [sources.jinju-current.html_profile]
-container_selector = "table.basic"
-row_selector = ":scope > tbody > tr:has(> td)"
-link_selector = "td:nth-of-type(3)"
-page_param = "pageIndex"
-search_param = "not_ancmt_sj"
-date_selector = "td:nth-of-type(5)"
-page_number_selector = ".page_no b"
-link_attribute = "onclick"
-id_pattern = "searchDetail[(]'([1-9][0-9]*)'"
-detail_url_template = "/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&homepage_pbs_yn=Y&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&subCheck=Y&not_ancmt_mgt_no={id}"
-detail_title_selector = "div.title > h3"
-detail_date_selector = "th:-soup-contains-own('등록일') + td"
-title_exclude_selector = "strong:-soup-contains-own(\"제목\")"
-total_count_selector = ".infomenu .right"
-total_count_pattern = "전체게시물:([0-9]+)개 / 페이지:[0-9]+/[0-9]+"
+container_selector = ".list1f1t3i1 ul.lst1"
+row_selector = "li.li1"
+link_selector = "a.a1"
+title_selector = "strong.t1"
+date_selector = ".wrap1t3 .t3:nth-of-type(2)"
+id_pattern = "not_ancmt_mgt_no=([1-9][0-9]*)"
+detail_url_template = "/00130/02730/05586.web?amode=view&not_ancmt_mgt_no={id}"
+detail_title_selector = ".bbs1view1 h1.h1"
+detail_date_selector = ".bbs1view1 dt:-soup-contains-own('게재일자') + dd"
+search_param = "sstring"
+page_param = "cpage"
+page_number_selector = ".pagination .m.on"
+total_count_selector = "div.info1:has(> b.em)"
+total_count_pattern = "총\\s+([0-9]+)\\s*건의\\s*게시물이\\s*있습니다\\.\\s*\\(\\s*[0-9]+\\s*/\\s*[0-9]+\\s*페이지\\)"
 
 [sources.tongyeong]
 municipality = "통영시"

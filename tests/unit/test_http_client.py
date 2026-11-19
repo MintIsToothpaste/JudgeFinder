@@ -1,12 +1,18 @@
 from __future__ import annotations
 
+import json
+import subprocess
 from collections.abc import Mapping
+from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import Mock
 
 import pytest
 import requests
 
+from judgefinder.infrastructure.http import windows_curl
 from judgefinder.infrastructure.http.client import RequestsHttpClient
+from judgefinder.infrastructure.http.windows_curl import WindowsCurlHttpClient
 
 
 class DummyResponse:
@@ -298,3 +304,161 @@ def test_http_decodes_declared_charset_or_utf8_fallback(
     else:
         result = client.get_text(response.url)
     assert result == markup
+
+
+def _curl_wire(body: bytes = b"ok", status: int = 200) -> bytes:
+    metadata = {"http_code": status, "url_effective": "https://example.com/final",
+                "ssl_verify_result": 0}
+    headers = {"content-type": ["text/html"], "x-test": ["one", "two"]}
+    return (body + windows_curl._METADATA_MARKER
+            + json.dumps(metadata).encode() + b"\n" + json.dumps(headers).encode())
+
+
+def _mock_windows_client(
+    monkeypatch: pytest.MonkeyPatch, *, body: bytes = b"ok", status: int = 200,
+) -> tuple[WindowsCurlHttpClient, Mock]:
+    client = WindowsCurlHttpClient()
+    client._executable = "curl.exe"
+    run = Mock(return_value=subprocess.CompletedProcess(
+        [], 0, stdout=_curl_wire(body, status), stderr=b"",
+    ))
+    monkeypatch.setattr(windows_curl.subprocess, "run", run)
+    return client, run
+
+
+@pytest.mark.parametrize("body,expected", [
+    ('<meta charset="utf-8">평가위원'.encode(), '<meta charset="utf-8">평가위원'),
+    ('<meta charset="cp949">공고'.encode("cp949"), '<meta charset="cp949">공고'),
+    (b"body" + windows_curl._METADATA_MARKER + b"inside", "body"
+     + windows_curl._METADATA_MARKER.decode() + "inside"),
+])
+def test_windows_curl_preserves_body_headers_encoding_and_verified_https(
+    monkeypatch: pytest.MonkeyPatch, body: bytes, expected: str,
+) -> None:
+    client, run = _mock_windows_client(monkeypatch, body=body)
+    response = client.get_response(
+        "https://example.com/list", headers={"User-Agent": "JudgeFinder"},
+    )
+    assert response.status_code == 200 and response.text == expected
+    assert response.url == "https://example.com/final"
+    assert response.headers["x-test"] == "one, two"
+    command = run.call_args.args[0]
+    assert command[:2] == ["curl.exe", "--disable"]
+    assert command[command.index("--proto") + 1] == "=https"
+    assert command[command.index("--proto-redir") + 1] == "=https"
+    assert command[command.index("--header") + 1] == "User-Agent: JudgeFinder"
+    assert not {"--insecure", "-k", "--ssl-no-revoke", "--cookie"} & set(command)
+    assert run.call_args.kwargs["timeout"] == 12.0
+
+
+def test_windows_curl_reuses_only_requested_session_and_cleans_up(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    client, run = _mock_windows_client(monkeypatch)
+    try:
+        for _ in range(2):
+            assert client.get_text("https://example.com", use_session=True) == "ok"
+        commands = [call.args[0] for call in run.call_args_list]
+        jars = [cmd[cmd.index("--cookie-jar") + 1] for cmd in commands]
+        assert jars[0] == jars[1]
+        directory = Path(jars[0]).parent
+        assert directory.exists()
+        assert all(cmd[cmd.index("--cookie") + 1] == jars[0] for cmd in commands)
+        client.get_text("https://example.com", use_session=False)
+        assert "--cookie-jar" not in run.call_args.args[0]
+    finally:
+        client.close()
+    assert not directory.exists()
+
+
+def test_windows_curl_get_response_exposes_http_error_but_text_methods_raise(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    client, run = _mock_windows_client(monkeypatch, status=403)
+    assert client.get_response("https://example.com").status_code == 403
+    with pytest.raises(requests.HTTPError):
+        client.get_text("https://example.com")
+    with pytest.raises(requests.HTTPError):
+        client.post_text("https://example.com", data=b"search=value")
+    command = run.call_args.args[0]
+    assert command[command.index("--data-binary") + 1] == "@-"
+    assert run.call_args.kwargs["input"] == b"search=value"
+
+
+@pytest.mark.parametrize("code,error", [
+    (28, requests.Timeout), (60, requests.exceptions.SSLError),
+    (35, requests.exceptions.SSLError), (7, requests.ConnectionError),
+])
+def test_windows_curl_propagates_transport_failures(
+    monkeypatch: pytest.MonkeyPatch, code: int, error: type[Exception],
+) -> None:
+    client, run = _mock_windows_client(monkeypatch)
+    run.return_value = subprocess.CompletedProcess([], code, stdout=b"", stderr=b"failed")
+    with pytest.raises(error, match="failed"):
+        client.get_text("https://example.com")
+
+
+def test_windows_curl_kills_timed_out_process_and_reports_timeout(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    client, run = _mock_windows_client(monkeypatch)
+    run.side_effect = subprocess.TimeoutExpired("curl.exe", 3)
+    with pytest.raises(requests.Timeout, match="timed out"):
+        client.get_text("https://example.com", timeout_seconds=1)
+
+
+@pytest.mark.parametrize("url,options", [
+    ("http://example.com", {}), ("https://user:password@example.com", {}),
+    ("https://example.com", {"verify_tls": False}),
+    ("https://example.com", {"timeout_seconds": float("inf")}),
+    ("https://example.com", {"headers": {"X-Test": "value\r\nOther: injected"}}),
+])
+def test_windows_curl_rejects_invalid_requests_before_starting_process(
+    monkeypatch: pytest.MonkeyPatch, url: str, options: dict,
+) -> None:
+    client, run = _mock_windows_client(monkeypatch)
+    with pytest.raises(ValueError):
+        client.get_text(url, **options)
+    run.assert_not_called()
+
+
+@pytest.mark.parametrize("wire", [b"no metadata", b"body" + windows_curl._METADATA_MARKER + b"bad"])
+def test_windows_curl_never_accepts_missing_or_broken_response_metadata(
+    monkeypatch: pytest.MonkeyPatch, wire: bytes,
+) -> None:
+    client, run = _mock_windows_client(monkeypatch)
+    run.return_value = subprocess.CompletedProcess([], 0, stdout=wire, stderr=b"")
+    with pytest.raises(requests.RequestException, match="metadata"):
+        client.get_text("https://example.com")
+
+
+@pytest.mark.parametrize("version,accepted", [
+    (b"curl 8.21.0 (Windows) Schannel", True),
+    (b"curl 8.21.0 (Windows) OpenSSL", False),
+    (b"curl 7.82.0 (Windows) Schannel", False),
+])
+def test_windows_curl_checks_backend_and_version_once_per_client(
+    monkeypatch: pytest.MonkeyPatch, version: bytes, accepted: bool,
+) -> None:
+    client = WindowsCurlHttpClient()
+    monkeypatch.setattr(windows_curl, "_windows_curl_executable", lambda: Path("curl.exe"))
+    run = Mock(side_effect=[
+        subprocess.CompletedProcess([], 0, stdout=version, stderr=b""),
+        subprocess.CompletedProcess([], 0, stdout=_curl_wire(), stderr=b""),
+        subprocess.CompletedProcess([], 0, stdout=_curl_wire(), stderr=b""),
+    ])
+    monkeypatch.setattr(windows_curl.subprocess, "run", run)
+    if accepted:
+        assert client.get_text("https://example.com") == "ok"
+        assert client.get_text("https://example.com") == "ok"
+        assert run.call_count == 3
+    else:
+        with pytest.raises(RuntimeError, match="Schannel"):
+            client.get_text("https://example.com")
+        assert run.call_count == 1
+
+
+def test_windows_curl_reports_unsupported_platform(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(windows_curl, "sys", SimpleNamespace(platform="linux"))
+    with pytest.raises(RuntimeError, match="requires Windows"):
+        WindowsCurlHttpClient().get_text("https://example.com")

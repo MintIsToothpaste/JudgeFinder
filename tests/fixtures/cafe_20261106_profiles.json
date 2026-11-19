@@ -1,0 +1,52 @@
+{
+  "yangju_current": {
+    "config_path": "config/batch-cafe.example.toml",
+    "title": "양주시 스스로플러스 학습튜터링 용역 제안서 평가위원(후보자) 공개모집 공고",
+    "date": "2026-11-05",
+    "url": "https://www.yangju.go.kr/www/selectEminwonView.do?key=4075&not_ancmt_mgt_no=68374",
+    "list_html": "<div id=\"contents\"><em class=\"em_black\" data-mask=\"#,##0\">1</em><table class=\"bbs_default list\" data-breakpoint=\"760\" data-table=\"rwd\" data-tabletype=\"simple\"> <colgroup> <col style=\"width:60px\"/> <col style=\"width:180px\"/> <col/> <col style=\"width:120px\"/> <col style=\"width:120px\"/> <col style=\"width:70px\"/> </colgroup> <tbody class=\"text_center\"> <tr> <td>7</td> <td class=\"p-subject\"> 공고 제2026-2421호</td> <td class=\"p-subject\"><a href=\"./selectEminwonView.do?pageUnit=10&amp;pageIndex=1&amp;searchCnd=B_Subject&amp;searchKrwd=평가위원&amp;key=4075&amp;not_ancmt_mgt_no=68374&amp;ofr_pageSize=10\">양주시 스스로플러스 학습튜터링 용역 제안서 평가위원(후보자) 공개모집 공...</a></td> <td>미래교육과</td> <td>2026-11-05</td> <td>61</td> </tr> </tbody> </table></div><div class=\"pagination\"><div class=\"page_wrap\"><strong>1</strong></div></div>",
+    "detail_html": "<table class=\"bbs_default view\"><tbody><tr class=\"subject\"> <th scope=\"row\">제목</th> <td> 양주시 스스로플러스 학습튜터링 용역 제안서 평가위원(후보자) 공개모집 공고 </td> </tr><tr> <th scope=\"row\">등록일자</th> <td> 2026-11-05 </td> </tr><tr><td class=\"bbs_content\" colspan=\"2\" title=\"내용\"><p>평가위원 후보자 모집 안내</p></td></tr></tbody></table>",
+    "window_end": "2026-11-06",
+    "requests_per_collect": "2"
+  },
+  "sejong_transport": {
+    "config_path": "config/batch-cafe.example.toml",
+    "title": "(공고)2027년 승무사원 조식·석식 운반급식 제공·운영 용역 제안서 평가위원 후보자 등록 모집 공고",
+    "date": "2026-11-05",
+    "url": "https://www.sctc.kr/www/bbs/view.do?bbsSn=23027&scBbsMngSn=1&mnucd=221",
+    "list_html": "<div id=\"board-list\"><div class=\"board-list\"> <div class=\"board-list-row head\"> <div class=\"board-list-th board-list-td\" data-th=\"번호\">번호</div> <div class=\"board-list-th board-list-td\" data-th=\"분류\">분류</div> <div class=\"board-list-th board-list-td\" data-th=\"제목\">제목</div> <div class=\"board-list-th board-list-td\" data-th=\"작성자\">작성자</div> <div class=\"board-list-th board-list-td\" data-th=\"작성일\">작성일</div> <div class=\"board-list-th board-list-td\" data-th=\"조회수\">조회수</div> </div> <div class=\"board-list-row notice\"> <div class=\"board-list-td\" data-th=\"번호\"> <span class=\"badge notice\">공지</span> </div> <div class=\"board-list-td\" data-th=\"분류\"> 일반 </div> <div class=\"board-list-td\" data-th=\"제목\"> <a class=\"title tRow1\" href=\"#\" onclick=\"return goView(23027, '')\" title=\"(공고)2027년 승무사원 조식·석식 운반급식 제공·운영 용역 제안서 평가위원 후보자 등록 모집 공고 상세 이동\">(공고)2027년 승무사원 조식·석식 운반급식 제공·운영 용역 제안서 평가위원 후보자 등록 모집 공고</a> <i class=\"ri-attachment-2\"><span class=\"sound_only\">첨부파일 있음</span></i> </div> <div class=\"board-list-td\" data-th=\"작성자\">세종도시교통공사</div> <div class=\"board-list-td\" data-th=\"작성일\">2026-11-05</div> <div class=\"board-list-td\" data-th=\"조회수\">48</div> </div> </div></div><span class=\"page-cnt\"><b>1</b><b>1Page</b></span>",
+    "detail_html": "<p class=\"board-view-title\">(공고)2027년 승무사원 조식·석식 운반급식 제공·운영 용역 제안서 평가위원 후보자 등록 모집 공고</p><div class=\"board-view-info-item\"> <span class=\"t\">작성일</span> <span class=\"c\">2026-11-05</span> </div><div class=\"board-view-content\"><p>평가위원 후보자 모집 안내</p></div>",
+    "window_end": "2026-11-06",
+    "requests_per_collect": "3"
+  },
+  "gyeongbuk_education": {
+    "config_path": "config/batch-cafe.example.toml",
+    "title": "경상북도교육청 메이커교육관 전시체험물 제작·설치 제안서 평가위원(후보자) 모집 공고",
+    "date": "2026-11-04",
+    "url": "https://www.gbe.kr/main/na/ntt/selectNttInfo.do?bbsId=5521&mi=20448&nttSn=1661760",
+    "list_html": "<div class=\"BD_list\"><table> <colgroup> <col class=\"BD_tm_none\" style=\"width:10%;\"/> <col style=\"width:40%;\"/> <col style=\"width:15%;\"/> <col style=\"width:10%;\"/> <col class=\"BD_tm_none\" style=\"width:10%;\"/> <col class=\"BD_tm_none\" style=\"width:5%;\"/> </colgroup> <tbody> <tr> <td class=\"BD_tm_none\">5</td> <td class=\"ta_l\"> <a class=\"nttInfoBtn\" data-id=\"1661760\" href=\"javascript:\"> 경상북도교육청 메이커교육관 전시체험물 제작·설치 제안서 평가위원(후보자) 모집 공고 </a> </td> <td> 창의인재과 </td> <td>2026.11.04</td> <td class=\"BD_tm_none\">84</td> <td class=\"BD_tm_none\"> </td> </tr> </tbody> </table></div><p class=\"BD_total\"><span>전체 <strong>1</strong>건</span></p><ul class=\"pagination\"><li class=\"active\"><a class=\"on\">1</a></li></ul>",
+    "detail_html": "<div class=\"BD_table\"><table><tbody><tr><th class=\"title\" colspan=\"4\" scope=\"col\"> 경상북도교육청 메이커교육관 전시체험물 제작·설치 제안서 평가위원(후보자) 모집 공고 </th></tr><tr> <th scope=\"row\">작성자</th> <td> 창의인재과 </td> <th scope=\"row\">등록일</th> <td>2026.11.04</td> </tr><tr><td colspan=\"4\"><p>평가위원 후보자 모집 안내</p></td></tr></tbody></table></div>",
+    "window_end": "2026-11-06",
+    "requests_per_collect": "2"
+  },
+  "gyeongbuk_research": {
+    "config_path": "config/batch-cafe.example.toml",
+    "title": "「K-과학자마을 시설물 운영 및 관리 용역 」 제안서 평가위원 모집 공고",
+    "date": "2026-11-05",
+    "url": "https://www.gdi.re.kr/board/b1610000?req=view&postid=261105-0D6FB46A-EC55-469E-BFE5-187DF7D10D74",
+    "list_html": "<div class=\"gdi_list_ui2\"><ul class=\"center list_box type1 fw_pl\"> <li> <div class=\"text-center f_c_g1 d-none d-lg-block\">69</div> <div> <a href=\"/board/b1610000?sfield=title&amp;stext=평가위원&amp;per_page=1&amp;req=view&amp;postid=261105-0D6FB46A-EC55-469E-BFE5-187DF7D10D74\"> <p class=\"ft_s0 text-over-h list_title fw_pb\">「K-과학자마을 시설물 운영 및 관리 용역 」 제안서 평가위원 모집 공고 </p> <p class=\"f_c_g1\">작성자 : 관리자</p> </a> </div> <div class=\"text-center f_c_g1\">2026.11.05</div> <div class=\"text-center d-none d-lg-block f_c_g1\">41</div> <div class=\"text-center d-none d-lg-block\"> </div> </li> </ul></div>",
+    "detail_html": "<div class=\"gdi_list_more_ui1\"><div class=\"top\"><p class=\"ft_s1 fw_pb\"> 「K-과학자마을 시설물 운영 및 관리 용역 」 제안서 평가위원 모집 공고 </p><p class=\"f_c_g1 mb-0 fw_pl\"> 작성자 : 관리자 <span class=\"small f_c_g3\">|</span> 등록일 : 2026.11.05 00:00 <span class=\"small f_c_g3\">|</span> 조회수 : 40 </p></div><div class=\"more_content_box mb-0\"><p>평가위원 후보자 모집 안내</p></div></div>",
+    "window_end": "2026-11-06",
+    "requests_per_collect": "3"
+  },
+  "yecheon_current": {
+    "config_path": "config/batch-cafe.example.toml",
+    "title": "예천군 경영진단 및 장기발전계획 수립 용역 제안서 평가위원 후보자 모집 공고",
+    "date": "2026-11-05",
+    "url": "https://eminwon.ycg.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?context=NTIS&countYn=Y&epcCheck=Y&homepage_pbs_yn=Y&initValue=Y&jndinm=OfrNotAncmtEJB&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&not_ancmt_mgt_no=32007&not_ancmt_se_code=01%2C02%2C03%2C04%2C05%2C06&ofr_pageSize=10&subCheck=Y",
+    "list_html": "<table class=\"bb-list\" summary=\"번호, 고시공고번호, 제목, 담당부서, 등록일, 조회수를 나타낸 표\"><colgroup><col width=\"7%\"/><col width=\"24%\"/><col/><col width=\"14%\"/><col width=\"11%\"/><col width=\"8%\"/></colgroup><tbody><tr class=\"odd\"><td class=\"td-center\">1</td><td class=\"td-left\">예천군 공고 제2026-1400호</td><td class=\"td-left space-letter\"><a href=\"?id=32007&amp;q=평가위원&amp;t=&amp;dn=\">예천군 경영진단 및 장기발전계획 수립 용역 제안서 평가위원 후보자 모집 ...</a></td><td class=\"td-left\">기획예산실</td><td class=\"td-center\">2026.11.05</td><td class=\"td-center\">89</td></tr></tbody></table>",
+    "detail_html": "<table><tbody><tr><td align=\"center\" bgcolor=\"BAE6E7\" height=\"22\" width=\"90\">제목</td><td bgcolor=\"#F5FAF5\" width=\"330\">예천군 경영진단 및 장기발전계획 수립 용역 제안서 평가위원 후보자 모집 공고</td></tr><tr><td align=\"center\" bgcolor=\"BAE6E7\" height=\"22\">등록일</td><td bgcolor=\"#F5FAF5\">2026-11-05</td></tr><tr><td colspan=\"4\" style=\"word-break:break-all;\"><p>평가위원 후보자 모집 안내</p></td></tr></tbody></table>",
+    "window_end": "2026-11-06",
+    "requests_per_collect": "3"
+  }
+}

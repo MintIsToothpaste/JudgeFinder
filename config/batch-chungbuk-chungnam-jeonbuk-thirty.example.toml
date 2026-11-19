@@ -90,7 +90,7 @@ detail_date_selector = "th:-soup-contains-own('등록일') + td"
 municipality = "음성군"
 source_type = "html"
 engine_type = "generic_egov_bbs"
-list_url = "https://eminwon.eumseong.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&method=selectListOfrNotAncmt&methodnm=selectListOfrNotAncmtHomepage&homepage_pbs_yn=Y&subCheck=Y&ofr_pageSize=10&list_gubun=A&not_ancmt_se_code=01%2C04&epcCheck=Y"
+list_url = "https://eminwon.eumseong.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&method=selectListOfrNotAncmt&methodnm=selectListOfrNotAncmtHomepage&homepage_pbs_yn=Y&subCheck=Y&ofr_pageSize=10&list_gubun=A&not_ancmt_se_code=01%2C02%2C03%2C04%2C05%2C06&countYn=Y&initValue=Y"
 recruitment_only = true
 max_pages = 80
 [sources.eumseong.request_strategy]
@@ -438,6 +438,7 @@ source_type = "html"
 engine_type = "generic_egov_bbs"
 list_url = "https://www.yesan.go.kr/prog/saeolGosi/GOSI/kor/sub04_03_01/list.do"
 recruitment_only = true
+keywords = ["평가위원", "평가(선정심사)위원"]
 max_pages = 80
 [sources.yesan.request_strategy]
 session = true
@@ -445,11 +446,11 @@ referer = true
 retries = 2
 timeout_seconds = 30.0
 throttle_seconds = 0.3
+# The server matches literal titles and misses qualifiers inserted in 평가위원.
 [sources.yesan.html_profile]
 container_selector = "table.table"
 row_selector = ":scope > tbody > tr:has(> td)"
 page_param = "pageIndex"
-search_param = "searchKeyword"
 link_selector = "td:nth-of-type(3) button"
 date_selector = "td:nth-of-type(5)"
 link_attribute = "data-list-no"
@@ -490,7 +491,7 @@ detail_date_selector = "th:-soup-contains-own('등록일') + td"
 municipality = "전북특별자치도"
 source_type = "html"
 engine_type = "generic_egov_bbs"
-list_url = "https://www.jeonbuk.go.kr/board/list.jeonbuk?menuCd=DOM_000000102002003001&boardId=BBS_0000129&searchType=DATA_TITLE"
+list_url = "https://www.jeonbuk.go.kr/board/list.jeonbuk?menuCd=DOM_000000102002005000&boardId=BBS_0000129&searchType=DATA_TITLE"
 recruitment_only = true
 max_pages = 80
 [sources.jeonbuk.request_strategy]
@@ -508,7 +509,7 @@ link_selector = "td:nth-of-type(4) a"
 date_selector = "td:nth-of-type(6)"
 link_attribute = "href"
 id_pattern = "dataSid=([1-9][0-9]*)(?:&|$)"
-detail_url_template = "https://www.jeonbuk.go.kr/board/view.jeonbuk?boardId=BBS_0000129&menuCd=DOM_000000102002003001&dataSid={id}"
+detail_url_template = "https://www.jeonbuk.go.kr/board/view.jeonbuk?boardId=BBS_0000129&menuCd=DOM_000000102002005000&dataSid={id}"
 detail_title_selector = "h4"
 detail_date_selector = ""
 detail_body_selector = ".bbs_view .bbs_con"
@@ -539,6 +540,7 @@ detail_url_template = "https://www.jeonju.go.kr/planweb/board/view.9is?contentUi
 id_format = "hex32"
 detail_title_selector = "strong:-soup-contains-own('제목') + span"
 detail_date_selector = "strong:-soup-contains-own('등록일') + span"
+detail_body_selector = ".view-con > pre"
 
 [sources.gunsan]
 municipality = "군산시"

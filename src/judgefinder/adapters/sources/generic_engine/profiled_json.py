@@ -56,13 +56,19 @@ def parse_profiled_json(
         data = json.loads(payload)
     except json.JSONDecodeError as exc:
         raise ValueError("JSON listing response is not valid JSON") from exc
-    if profile.status_path and _value(data, profile.status_path) != profile.success_value:
-        raise ValueError("JSON listing response reports failure")
+    if profile.status_path:
+        status = _value(data, profile.status_path)
+        if isinstance(status, bool):
+            status = "true" if status else "false"
+        if status != profile.success_value:
+            raise ValueError("JSON listing response reports failure")
     rows = _value(data, profile.rows_path)
     if not isinstance(rows, list):
         raise ValueError("JSON listing rows must be an array")
-    if profile.page_path and _integer(_value(data, profile.page_path), "page") != expected_page:
-        raise ValueError("JSON listing page does not match requested page")
+    if profile.page_path:
+        reported_page = _integer(_value(data, profile.page_path), "page")
+        if reported_page != expected_page - 1 + profile.page_base:
+            raise ValueError("JSON listing page does not match requested page")
     if profile.total_path:
         total = _integer(_value(data, profile.total_path), "total")
         expected_rows = min(profile.page_size, max(0, total - (expected_page - 1) *

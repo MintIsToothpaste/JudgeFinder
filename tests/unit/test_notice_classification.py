@@ -9,6 +9,7 @@ import pytest
 from judgefinder.adapters.sources.generic_engine.profiled_html import parse_profiled_html
 from judgefinder.domain.notice_classification import (
     NoticeCategory,
+    classify_committee_notice,
     classify_notice,
     classify_notice_title,
 )
@@ -88,6 +89,21 @@ def test_incomplete_or_contradictory_body_is_not_recruitment(body: str) -> None:
     assert classify_notice(TITLE, body) is NoticeCategory.UNKNOWN
 
 
+def test_evaluator_title_with_selection_qualifier() -> None:
+    title = "예산군 맑은누리센터 운영관리 민간위탁 용역 제안서 평가(선정심사)위원"
+    assert classify_notice_title(title + "(후보자) 공개모집 공고") is NoticeCategory.RECRUITMENT
+    assert classify_notice_title(title + "회 평가 결과 공개") is NoticeCategory.RESULT
+    assert classify_notice_title(title + "(후보자) 모집 취소") is NoticeCategory.UNKNOWN
+
+
+def test_proposal_evaluator_title_typo_requires_recruitment_in_body() -> None:
+    title = "제안서 평기위원(후보자) 모집 안내"
+    body = "셔틀버스 운행 용역 제안서 평가위원(후보자)을 모집하오니 참여 바랍니다."
+    assert classify_notice(title, body) is NoticeCategory.RECRUITMENT
+    assert classify_notice(title, "평가위원 연락처 안내") is NoticeCategory.UNKNOWN
+    assert classify_notice(title + " 취소", body) is NoticeCategory.UNKNOWN
+
+
 def test_body_processing_is_opt_in_and_scoped_to_notice_content() -> None:
     loader = Mock(return_value=DETAIL + "<footer>평가결과를 공개합니다.</footer>")
     candidate = parse_profiled_html(
@@ -104,6 +120,43 @@ def test_body_processing_is_opt_in_and_scoped_to_notice_content() -> None:
     )[0]
     assert not disabled.body_text
     assert classify_notice(disabled.title, disabled.body_text) is NoticeCategory.UNKNOWN
+
+
+def test_operator_selection_committee_recruits_proposal_evaluators() -> None:
+    title = "일자리센터 위탁 운영 수탁기관 선정심의위원회 위원 공개 모집 공고"
+    assert classify_committee_notice(title) is NoticeCategory.UNKNOWN
+    assert classify_committee_notice(
+        title, "일자리센터 위탁운영 제안서의 공정한 평가를 위하여 심의위원회를 구성합니다.",
+    ) is NoticeCategory.RECRUITMENT
+
+
+def test_operator_committee_requires_project_specific_proposal_evidence() -> None:
+    project = "유성구 야영장(하기숲 캠핑장, 성북동 숲속야영장) 민간위탁"
+    title = f"{project} 수탁기관 선정심사위원회 위원 공개모집 공고"
+    oath = (
+        f"보 안 각 서 본인은 『{project}』과 관련하여 등록신청서를 제출합니다 "
+        "1. 해당 심사업무 수행과정에서 습득한 심사 관련 정보(제안서 내용, 평가 결과, 위원명단)"
+    )
+    assert classify_committee_notice(title, attachment_text=oath) is NoticeCategory.RECRUITMENT
+    assert classify_committee_notice(
+        title, attachment_text=oath.replace("유성구 야영장", "타지역 야영장"),
+    ) is NoticeCategory.UNKNOWN
+    assert classify_committee_notice(
+        title, attachment_text="제안서 평가위원회 후보자 등록신청서 및 보안서약서",
+    ) is NoticeCategory.UNKNOWN
+
+
+def test_committee_candidate_notice_can_confirm_proposal_evaluation_in_attachment() -> None:
+    project = "세종특별자치시 민원콜센터 민간위탁 운영"
+    title = f"「{project}」 수탁기관 적격자 심의위원회(후보자) 모집 공고"
+    role = "다. 평가내용 : 제안서 적합성 평가(정성평가)"
+    notice = f"「{project}」 심의위원회 모집 공고. " + "모집과 신청 안내. " * 10
+
+    assert classify_committee_notice(title) is NoticeCategory.UNKNOWN
+    assert classify_committee_notice(title, attachment_text=role) is NoticeCategory.UNKNOWN
+    assert classify_committee_notice(
+        title, attachment_text=notice + role,
+    ) is NoticeCategory.RECRUITMENT
 
 
 def test_configured_body_missing_fails_closed() -> None:
@@ -246,3 +299,110 @@ def test_explicit_evaluator_nomination_request_is_recruitment(title: str) -> Non
 )
 def test_other_nomination_titles_are_not_recruitment(title: str) -> None:
     assert classify_notice_title(title) is not NoticeCategory.RECRUITMENT
+
+
+@pytest.mark.parametrize(
+    ("title", "body", "expected"),
+    [
+        (
+            "전시·체험 제작 제안서평가",
+            "제안서 평가위원 후보자 모집 공고문을 게시합니다.",
+            NoticeCategory.RECRUITMENT,
+        ),
+        (
+            "무대디머 제안서평가 모집공고",
+            "제안서 평가위원(후보자) 등록 신청서.hwp",
+            NoticeCategory.RECRUITMENT,
+        ),
+        (
+            "무대디머 제안서평가",
+            "제안서 평가위원(후보자) 등록 신청서.hwp",
+            NoticeCategory.UNKNOWN,
+        ),
+        (
+            "전시·체험 제작 제안서평가 결과 공개",
+            "제안서 평가위원 후보자 모집 공고문",
+            NoticeCategory.UNKNOWN,
+        ),
+        (
+            "전시·체험 제작 제안서평가",
+            "평가 결과를 공개합니다. 관련 글은 평가위원 후보자 모집입니다.",
+            NoticeCategory.UNKNOWN,
+        ),
+        (
+            "전시·체험 제작 사업자 모집",
+            "제안서 평가위원 후보자 모집 공고문",
+            NoticeCategory.UNKNOWN,
+        ),
+    ],
+)
+def test_proposal_headline_requires_scoped_evaluator_recruitment_evidence(
+    title: str, body: str, expected: NoticeCategory,
+) -> None:
+    assert classify_notice(title, body) is expected
+
+
+@pytest.mark.parametrize(
+    ("title", "body", "expected"),
+    [
+        (
+            "제안서 선정위원(후보자) 모집 공고",
+            "제안서평가위원(후보자)등록신청서.hwp",
+            NoticeCategory.RECRUITMENT,
+        ),
+        ("제안서 선정위원(후보자) 모집 공고", "", NoticeCategory.UNKNOWN),
+        ("제안서 선정위원(후보자) 모집 공고", "평가위원회 명단", NoticeCategory.UNKNOWN),
+        (
+            "제안서 선정위원(후보자) 모집 결과 공고",
+            "제안서평가위원(후보자)등록신청서.hwp",
+            NoticeCategory.UNKNOWN,
+        ),
+        (
+            "수탁기관 선정위원 모집 공고",
+            "제안서평가위원(후보자)등록신청서.hwp",
+            NoticeCategory.UNKNOWN,
+        ),
+    ],
+)
+def test_proposal_selection_recruitment_requires_evaluator_application(
+    title: str, body: str, expected: NoticeCategory,
+) -> None:
+    assert classify_notice(title, body) is expected
+
+
+@pytest.mark.parametrize(
+    ("title", "attachment", "expected"),
+    [
+        (
+            "옥천군 농촌활력지원센터 수탁기관 선정심의위원（후보자） 모집 공고",
+            "「옥천군 농촌활력지원센터」 심의위원 모집 공고. " + "접수 안내. " * 30
+            + "다. 방법: 입찰참여자의 제안내용을 배점표에 따라 평가",
+            NoticeCategory.RECRUITMENT,
+        ),
+        (
+            "옥천군 농촌활력지원센터 수탁기관 선정심의위원（후보자） 모집 공고",
+            "「다른 시설 운영」 방법: 입찰참여자의 제안내용을 배점표에 따라 평가",
+            NoticeCategory.UNKNOWN,
+        ),
+        (
+            "옥천군 농촌활력지원센터 수탁기관 선정심의위원（후보자） 모집 공고",
+            "「옥천군 농촌활력지원센터」 위원 선정방법: 채점기준표에 따른 서류심사",
+            NoticeCategory.UNKNOWN,
+        ),
+        (
+            "옥천군 농촌활력지원센터 수탁기관 선정심의위원 모집 결과 공개",
+            "「옥천군 농촌활력지원센터」 방법: 입찰참여자의 제안내용을 배점표에 따라 평가",
+            NoticeCategory.RESULT,
+        ),
+        (
+            "옥천군 농촌활력지원센터 수탁기관 선정심의위원 모집 취소",
+            "「옥천군 농촌활력지원센터」 방법: 입찰참여자의 제안내용을 배점표에 따라 평가",
+            NoticeCategory.UNKNOWN,
+        ),
+    ],
+)
+def test_committee_scoring_role_requires_same_project_and_current_recruitment(
+    title: str, attachment: str, expected: NoticeCategory,
+) -> None:
+    body = "「옥천군 농촌활력지원센터」 심의위원을 모집합니다."
+    assert classify_committee_notice(title, body, attachment) is expected

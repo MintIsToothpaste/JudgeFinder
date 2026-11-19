@@ -19,6 +19,11 @@ EGOV_CALL = re.compile(
     r"fn_egov_downFile\(\s*['\"]([^'\"]+)['\"]\s*,\s*['\"]([^'\"]+)['\"]\s*\)",
     re.IGNORECASE,
 )
+SAEOL_CALL = re.compile(
+    r"goDownLoad\(\s*'([^']+)'\s*,\s*'([^']+)'\s*,\s*"
+    r"'(/ntishome/file/upload/ofr/ofr/[0-9]{8})'\s*\)",
+    re.IGNORECASE,
+)
 EGOV_PATH = re.compile(r"['\"]([^'\"\s]*?/cmm/fms/FileDown\.do(?:;[^?'\"]+)?)\?")
 
 
@@ -67,6 +72,16 @@ def extract_attachment_links(payload: str | bytes, *, page_url: str) -> Attachme
         if egov_call:
             query = urlencode({"atchFileId": egov_call.group(1), "fileSn": egov_call.group(2)})
             raw_url = f"{egov_path}?{query}"
+        saeol_call = SAEOL_CALL.search(action)
+        if saeol_call and urlparse(page_url).path.startswith("/emwp/"):
+            original_name, stored_name, directory = saeol_call.groups()
+            filename = filename or original_name
+            if not _supported_name(filename):
+                continue
+            query = urlencode({
+                "user_file_nm": original_name, "sys_file_nm": stored_name, "file_path": directory,
+            })
+            raw_url = urljoin(page_url, f"/emwp/jsp/ofr/FileDown.jsp?{query}")
         if not filename and not DOWNLOAD.search(hints) and not egov_call:
             continue
         if not raw_url:

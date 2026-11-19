@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import json
 import logging
+from dataclasses import asdict
 from datetime import date, datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -58,6 +60,25 @@ def collect(container: AppContainer, raw_date: str, days: int) -> None:
                 continue
             seen_urls.add(notice.url)
             click.echo(notice.url)
+
+    # Finish every official listing first; discovery runs once for the complete window.
+    if container.origin_use_case is not None:
+        for notice in container.origin_use_case.execute(target_dates[0], target_dates[-1]):
+            if notice.url not in seen_urls:
+                seen_urls.add(notice.url)
+                click.echo(notice.url)
+
+
+@app.command("review-origins")
+@click.option("--status", type=click.Choice([
+    "review_hold", "pending", "collected", "duplicate", "outside_window", "all",
+]), default="review_hold", show_default=True)
+@click.pass_obj
+def review_origins(container: AppContainer, status: str) -> None:
+    """List retained official-URL candidates and their verification results, without HTTP."""
+    if container.origin_store is not None:
+        for record in container.origin_store.list_records(None if status == "all" else status):
+            click.echo(json.dumps(asdict(record), ensure_ascii=False, default=str))
 
 
 @app.command("list")

@@ -1,0 +1,12 @@
+{
+  "nowon_notice": {
+    "config_path": "config/batch-seoul-ten.example.toml",
+    "title": "제안서 평기위원(후보자) 모집 안내",
+    "date": "2026-11-09",
+    "url": "https://www.nowon.kr/www/user/bbs/BD_selectBbs.do?q_bbsCode=1001&q_bbscttSn=20261109092528244",
+    "list_html": "<table class=\"table-list\"><tbody><tr>\n<td class=\"cell-no\">234</td>\n<td class=\"cell-subject\"><span class=\"bbsSjMargin\" style=\"padding-left:0px;\"> </span><a href=\"BD_selectBbs.do?q_bbsCode=1001&amp;q_bbscttSn=20261109092528244\" onclick=\"opView('20261109092528244');return false;\">제안서 평기위원(후보자) 모집 안내</a> <i class=\"ico-new\">N</i></td>\n<td class=\"cell-part\">교통행정과</td><td class=\"cell-date\">2026-11-09</td><td class=\"cell-hit\">169</td>\n<td class=\"cell-file\">\n<a class=\"ico ico-file\" href=\"/component/file/zipdownload.do?q_fileSn=313801\" title=\"첨부파일이 2개 압축하여 다운로드\">첨부파일</a>\n</td>\n</tr></tbody></table>",
+    "detail_html": "<h1 class=\"article-subject\">제안서 평기위원(후보자) 모집 안내</h1><table><tr>\n<th scope=\"row\">등록일</th>\n<td>2026-11-09</td>\n<th scope=\"row\">조회수</th>\n<td>170</td>\n</tr></table><div class=\"article-body\">제안서 평가위원(후보자) 모집 안내 우리 구에서 추진하는 「노원구 공공시설 무료 셔틀버스(노원행복버스) 운행 및 관리 용역」 시행을 위한 제안서 평가위원(후보자)을 모집하오니, 교통분야에 실무경험과 전문성이 풍부한 분들의 많은 참여 바랍니다. 가. 용 역 명: 노원구 공공시설 무료 셔틀버스 운행 및 관리 용역 나. 모집기간: 2026. 11. 9.(월) ~ 2026. 11. 13.(금) 다. 모집분야: 교통분야 </div>",
+    "window_end": "2026-11-10",
+    "requests_per_collect": "3"
+  }
+}

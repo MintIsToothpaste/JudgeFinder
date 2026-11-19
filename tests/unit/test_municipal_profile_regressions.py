@@ -485,20 +485,19 @@ def test_haman_current_retains_the_boards_verified_detail_and_date_rules() -> No
     ]
 
 
-def test_jinju_label_exclusion_and_reported_count_survive_config_loading() -> None:
+@pytest.mark.parametrize("slug", ["jinju", "jinju-current"])
+def test_jinju_reported_count_matches_current_and_empty_archive_rows(slug: str) -> None:
     batch = PROFILE_BATCHES["gyeongnam_jeju_final"]
-    source, case = batch.settings.sources["jinju"], batch.cases["jinju"]
-    assert source.html_profile.total_count_selector == ".infomenu .right"
-    assert source.html_profile.total_count_pattern.count("(") == 1
-    assert not case["title"].startswith("제목 ")
+    source, case = batch.settings.sources[slug], batch.cases[slug]
+    assert source.html_profile.total_count_selector == "div.info1:has(> b.em)"
+    soup = BeautifulSoup(case["list_html"], "html5lib")
+    counter = soup.select_one(source.html_profile.total_count_selector).select_one("b.em")
+    counter.string = str(int(counter.get_text()) + 1)
     with pytest.raises(ValueError, match="row count contradicts"):
         parse_profiled_html(
-            case["list_html"].replace("전체게시물:1개", "전체게시물:2개"),
-            list_url=source.list_url,
-            profile=source.html_profile,
+            str(soup), list_url=source.list_url, profile=source.html_profile,
             expected_page=1,
         )
-
 
 def test_jeju_uses_verified_rows_not_inconsistent_total_field() -> None:
     batch = PROFILE_BATCHES["gyeongnam_jeju_final"]
@@ -565,22 +564,28 @@ def test_page_mismatch_fails_before_requesting_details(slug: str) -> None:
 def test_pyeongchang_does_not_use_posting_period_as_registration_date() -> None:
     batch = PROFILE_BATCHES["held_eighteen_recovered"]
     source, case = batch.settings.sources["pyeongchang"], batch.cases["pyeongchang"]
-    assert source.html_profile.detail_origin == "https://www.pc.go.kr"
-    assert not source.html_profile.detail_date_selector
+    assert not source.html_profile.detail_origin
+    assert "등록일" in source.html_profile.detail_date_selector
+    assert source.html_profile.detail_body_selector and not source.recruitment_only
     actual = parse_profiled_html(
-        case["list_html"],
-        list_url=source.list_url,
-        profile=source.html_profile,
+        case["list_html"], list_url=source.list_url, profile=source.html_profile,
         detail_loader=Mock(return_value=case["detail_html"] + "<p>게시기간 2000-01-01</p>"),
     )
     assert str(actual[0].published_date) == case["date"]
+    assert "평가위원" not in actual[0].title and "평가위원" in actual[0].body_text
+    with pytest.raises(ValueError, match="title or registration-date element missing"):
+        parse_profiled_html(
+            case["list_html"], list_url=source.list_url, profile=source.html_profile,
+            detail_loader=Mock(return_value=case["detail_html"].replace("등록일", "공고기간")),
+        )
     with pytest.raises(ValueError, match="configured host"):
         parse_profiled_html(
-            case["list_html"],
-            list_url=source.list_url,
-            profile=replace(source.html_profile, detail_origin=""),
+            case["list_html"], list_url=source.list_url,
+            profile=replace(
+                source.html_profile,
+                detail_url_template="https://www.pc.go.kr/view?noticeMgrNo={id}",
+            ),
         )
-
 
 def test_namyangju_uses_explicit_registration_metadata_not_body_signature() -> None:
     batch = PROFILE_BATCHES["held_eighteen_recovered"]
